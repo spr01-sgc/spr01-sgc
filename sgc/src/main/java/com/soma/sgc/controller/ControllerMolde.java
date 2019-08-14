@@ -55,10 +55,9 @@ public class ControllerMolde {
      */
     @RequestMapping(value = {"/molde"}, method = RequestMethod.GET)
     public String usuario(ModelMap model) {
-
+        model.addAttribute("user_en_sesion", usuarioEnSesion());
         if (!estaUsuarioAnonimo()) {
-
-            model.addAttribute("user_en_sesion", usuarioEnSesion());
+            //model.addAttribute("user_en_sesion", usuarioEnSesion());
             List<CatalogoMoldes> lmolde = moldeService.showMolde();
             // enviar los datos JSP
             model.addAttribute("lmolde", lmolde);
@@ -66,6 +65,21 @@ public class ControllerMolde {
         }
         return "login";
     }
+    
+     public String usuarioEnSesion() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String nicknamePrincipal = null;
+        String pass = null;
+
+        if (principal instanceof UserDetails) {
+            //Es igual al usuario que esta en sesion
+            return nicknamePrincipal = ((UserDetails) principal).getUsername();
+        } else {
+            //Es igual a usuario anonimo
+            return nicknamePrincipal = principal.toString();
+        }
+    }
+
 
     /**
      * Metodo para Agregar Moldes
@@ -147,16 +161,13 @@ public class ControllerMolde {
                     return "errorDato";
                 }
             }//termina de recorrer el arreglo
-
             List<CatalogoMoldes> lmolde = moldeService.showMolde();
-
             if (!lmolde.isEmpty()) {
                 for (CatalogoMoldes molde : lmolde) {
                     //obtiene el id del molde a eliminar
-                    int Id = Integer.parseInt(datos[0]);
-                    if (molde.getIdmolde()== Integer.parseInt(datos[0])) {
-
-                        if (moldeService.delete(Id)) {
+                    int Idmolde = Integer.parseInt(datos[0]);
+                    if (molde.getIdmolde()== Idmolde) {
+                        if (moldeService.delete(Idmolde)) {
                             return "exito";
                         } else {
                             return "error";
@@ -181,20 +192,7 @@ public class ControllerMolde {
         return buscarSerie;
     }
 
-    public String usuarioEnSesion() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String nicknamePrincipal = null;
-        String pass = null;
-
-        if (principal instanceof UserDetails) {
-            //Es igual al usuario que esta en sesion
-            return nicknamePrincipal = ((UserDetails) principal).getUsername();
-        } else {
-            //Es igual a usuario anonimo
-            return nicknamePrincipal = principal.toString();
-        }
-    }
-
+  
     /**
      * Este metodo verificara que un usuario este autenticado correctamente
      */

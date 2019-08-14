@@ -26,12 +26,12 @@
                         <input type="hidden" name="${_csrf.parameterName}"
                                value="${_csrf.token}" />
                         <input type="text" class="form-control pull-right" style="width:20%" 
-                               id="search" onkeyup="busquedaTbl('tableMolde');" placeholder="Busqueda">
+                               id="search" onkeyup="busquedaTbl('tableMoldes');" placeholder="Busqueda">
                     </div>
                     <!-- Listado de moldes -->
                     <div  class="col-md-12">
                         <div class="table-responsive">
-                            <table id="tableMolde" class="table table-striped">
+                            <table id="tableMoldes" class="table table-striped">
                                 <thead>
                                     <tr>                            
                                         <th>No</th>
@@ -85,7 +85,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="serie">Serie<b style="color: red" title="Campo Requerido">*</b></label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="serie" placeholder="Ingrese la Serie" required>
+                                <input type="text" class="form-control" id="serie" placeholder="Ingrese la Serie" onchange="verificarUsuario();"required>
                             </div>
                         </div>
                         <div class="form-group">

@@ -3,24 +3,18 @@ $(document).ready(function () {
 
 });//ready
 
-
-
-
-
 function btnMolde2() {
     //agregar usuario se deshabilita el boton actualizar
     $("#guardarM").css("display", "inline");
     $("#actualizarM").prop("disabled", true);
 }
 
-
-
 /*Funcion que muestra la informacion de la tabla molde en el formulario*/
 function mostrarMolde() {
     $("#guardarM").css("display", "none");//oculta el boton guardar
     $("#actualizarM").prop("disabled", false);//habilita el boton actualizar
     //al dar clic lo que tiene en el renglon lo pase a la caja de texto
-    $("#tableMolde tbody").on('click', 'tr', function () {
+    $("#tableMoldes tbody").on('click', 'tr', function () {
         //informacion del Molde
         var idMoldeT = $('td', this).eq(1).text();
         $("#idMolde").val(idMoldeT);
@@ -36,8 +30,8 @@ function mostrarMolde() {
 }
 /*Funcion que elimina un Molde*/
 function eliminarMolde() {
-    $("#tableMolde tbody").on('click', 'tr', function () {
-        var idmoldeT = $('td', this).eq(0).text();
+    $("#tableMoldes tbody").on('click', 'tr', function () {
+        var idmoldeT = $('td', this).eq(1).text();
         $("#idMolde").val(idmoldeT);
         var id = $("#idMolde").val();
         if (id === '') {

@@ -37,7 +37,8 @@ public class CatalogoMoldesDaoImpl extends HibernateDao<Integer, CatalogoMoldes>
         cri.add(Restrictions.eq("idmolde", idmolde));
         CatalogoMoldes molde = (CatalogoMoldes) cri.uniqueResult();
         eliminar(molde);
-        System.out.println(CatalogoPuestosDaoImpl.class + "se ha eliminado correctamente" + molde);
+        System.out.println(CatalogoMoldesDaoImpl.class + "se ha eliminado correctamente" + idmolde);
+        
     }
 
     @Override
