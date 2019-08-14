@@ -1,0 +1,68 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.FamiliarDao;
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.model.Familiar;
+import com.soma.transmisor.model.Pep;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Repository("familiarDao")
+public class FamiliarDaoImpl extends HibernateDao<Integer, Familiar>implements FamiliarDao{
+
+    @Override
+    public void save(Familiar familiar) {
+        guardar(familiar);
+        System.out.print(FamiliarDaoImpl.class + "Se ha guardado correctamente la familiar" + familiar.toString());
+    }
+
+    @Override
+    public void update(Familiar familiar) {
+        actualizar(familiar);
+           System.out.print(FamiliarDaoImpl.class + "Se ha actualizo correctamente la familiar" + familiar.toString());  
+    }
+
+    @Override
+    public void delete(int familiarid) {
+   Criteria crit = creaCriteria();
+        crit.add(Restrictions.eq("familiarid", familiarid));
+        Familiar fam = (Familiar) crit.uniqueResult();
+        eliminar(fam);
+        System.out.print(FamiliarDaoImpl.class + "Se ha eliminado correctamente el familiar " + familiarid);
+    }
+
+    @Override
+    public List<Familiar> showFamiliar() {
+     Criteria criteria = creaCriteria();
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        List<Familiar> lFamiliar = criteria.list();       
+        return lFamiliar;}
+
+    @Override
+    public Familiar busquedaId(int familiarid) {    
+    Familiar fam=getPorId(familiarid);
+    return fam;
+    }
+
+    @Override
+    public List<Familiar> showFamiliarPep(Pep pepid) {        
+     Criteria criteria = creaCriteria();   
+      //criteria.add(Restrictions.eq("pepid", pepid));
+      System.out.print(FamiliarDaoImpl.class + "Se mostro correctamente el familiar " + pepid);
+       List<Familiar> lFamiliarPep = criteria.list();       
+        return lFamiliarPep;
+    }
+    
+}

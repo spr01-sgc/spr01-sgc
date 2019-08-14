@@ -1,0 +1,30 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.service.impl;
+
+import com.soma.transmisor.dao.PersonaDao;
+import com.soma.transmisor.model.Persona;
+import com.soma.transmisor.service.PersonaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Repository("personaService")
+@Transactional
+public class PersonaServiceImpl implements PersonaService{
+    @Autowired
+    PersonaDao personaDao;
+    
+    @Override
+    public Persona buscaPersona(String curp) {
+        return personaDao.buscaPersona(curp);
+    }
+    
+}

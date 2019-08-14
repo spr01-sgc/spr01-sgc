@@ -1,0 +1,230 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.controller;
+
+import com.soma.transmisor.model.Cliente;
+import com.soma.transmisor.model.OperacionPreocupante;
+import com.soma.transmisor.model.Pago;
+import com.soma.transmisor.model.PersonaFisica;
+import com.soma.transmisor.model.Sucursal;
+import com.soma.transmisor.model.Usuario;
+import com.soma.transmisor.service.ClienteService;
+import com.soma.transmisor.service.OperacionPreocupanteService;
+import com.soma.transmisor.service.PagoService;
+import com.soma.transmisor.service.PersonaFisicaService;
+import com.soma.transmisor.service.SucursalService;
+import com.soma.transmisor.service.UsuarioService;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Controller
+@RequestMapping("/")
+public class ControllerOperacion {
+
+    @Autowired
+    SucursalService sucursalService;
+    @Autowired
+    PagoService pagoService;
+    @Autowired
+    ClienteService clienteService;
+    @Autowired
+    UsuarioService usuarioService;
+    @Autowired
+    OperacionPreocupanteService operacionPreocupanteService;
+    @Autowired
+    PersonaFisicaService personaFisicaService;
+
+    @RequestMapping(value = {"/operelevante"}, method = RequestMethod.GET)
+    public String operaciones(ModelMap model) {
+        List<Sucursal> lSucursal = sucursalService.showSucursal();
+        model.addAttribute("lSucursal", lSucursal);
+        List<Pago>lOpRel= pagoService.notificacionRelevante();
+        model.addAttribute("lOpRel",lOpRel);
+        
+        return "operelevante";
+
+    }
+    //Mostrar clientes y pagos mayores de 5000.00 DOLARES
+
+    @RequestMapping(value = "/operelevante/tblRelevant", method = RequestMethod.POST)
+    public @ResponseBody
+    List<Pago> verClientes(ModelMap model, @RequestParam(value = "datos[]") String datos[]) throws ParseException {
+        SimpleDateFormat formatoDelTexto = new SimpleDateFormat("yyyy-MM-dd");
+        Date fechaIn;
+        Date fechaTer;
+        fechaIn = formatoDelTexto.parse(datos[0]);
+        fechaTer = formatoDelTexto.parse(datos[1]);
+
+        List<Pago> lPagoR = pagoService.showPagoRel(fechaIn, fechaTer);
+        /*Iterator iterator = lPagoR.iterator();
+        while (iterator.hasNext()) {
+            Object[] tuple = (Object[]) iterator.next();
+                 String pago = (String) tuple[4];
+            Logger.getLogger("Pago").log(Level.INFO, "Lista"+pago);
+        }*/
+
+        return lPagoR;
+    }
+
+    @RequestMapping(value = "/operelevante/reporteRelevantes", method = RequestMethod.POST)
+    public @ResponseBody
+    List<Pago> generaReporte(ModelMap model, @RequestParam(value = "datos[]") String datos[]) throws ParseException {
+        SimpleDateFormat formatoDelTexto = new SimpleDateFormat("yyyy-MM-dd");
+        Date fechaIn;
+        Date fechaTer;
+        fechaIn = formatoDelTexto.parse(datos[0]);
+        fechaTer = formatoDelTexto.parse(datos[1]);
+        List<Pago> lPagoR = pagoService.consultarOperacion(fechaIn, fechaTer);
+        return lPagoR;
+    }
+
+    @RequestMapping(value = "/operelevante/notOpRel", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Pago> verOpeRele(ModelMap model){
+        List<Pago> lOpre = new ArrayList<>();
+        Calendar calendario = Calendar.getInstance();
+        int hora, minutos, segundos;
+        hora = calendario.get(Calendar.HOUR_OF_DAY);
+        minutos = calendario.get(Calendar.MINUTE);
+        //segundos = calendario.get(Calendar.SECOND);
+        if (hora == 13 && minutos==5) {
+            lOpre = pagoService.notificacionRelevante();
+        }
+        Iterator iterator = lOpre.iterator();
+        while (iterator.hasNext()) {
+            Object[] tuple = (Object[]) iterator.next();
+            Date fechai = new Date();
+            // Logger.getLogger("Fecha ").log(Level.INFO, "Tiene "+fecha);
+            int clienteid = (int) tuple[0];
+            Cliente cl = clienteService.buscaCliente(clienteid);
+            
+        }
+        return lOpre;
+    }
+    /***
+     * Operaciones Internas Preocupantes
+     * @param model
+     * @rol Oficial de cumplimiento
+     * @return la vista opepreocupante 
+     */
+      @RequestMapping(value = {"/opepreocupante"}, method = RequestMethod.GET)
+    public String operacionpreocupante(ModelMap model) {
+        List<Sucursal> lSucursal = sucursalService.showSucursal();
+        model.addAttribute("lSucursal", lSucursal);
+        List<OperacionPreocupante> lOperacionPre=operacionPreocupanteService.showOperacionPreocupante();
+        model.addAttribute("lOperacionPre", lOperacionPre);
+        return "opepreocupante";
+    }
+    //muestra la vista de Denuncia Operacion Preocupante
+         @RequestMapping(value = {"/denunopepreocupante"}, method = RequestMethod.GET)
+    public String denunciaOperacionPreocupante(ModelMap model) {
+        List<Sucursal> lSucursal = sucursalService.showSucursal();
+        model.addAttribute("lSucursal", lSucursal);
+        List<OperacionPreocupante> lOperacionPre=operacionPreocupanteService.showOperacionPreocupante();
+        model.addAttribute("lOperacionPre", lOperacionPre);
+        return "denunopepreocupante";
+    }
+     //Guarda las denuncias de operaciones Internas Preocupantes
+@RequestMapping(value = "/opepreocupante/guardarOperacionP",method = RequestMethod.POST)
+public @ResponseBody 
+ List<OperacionPreocupante> guardarOperacionP(@RequestParam(value = "datos[]") String datos[]) throws ParseException {
+        SimpleDateFormat formatoDelTexto = new SimpleDateFormat("yyyy-MM-dd");
+        OperacionPreocupante operacion=new OperacionPreocupante();
+        Date fecha=formatoDelTexto.parse(datos[2]);
+        operacion.setNombre(datos[0]);
+        operacion.setDescripcion(datos[1]);
+        operacion.setFecha(fecha);
+        operacion.setEstatus("justificar");
+        Usuario usuarioid=usuarioService.busquedaNinckname(datos[3]);
+        operacion.setUsuarioid(usuarioid);
+        operacionPreocupanteService.save(operacion);
+              // bitacoraAcciones("agregar");
+/***
+ Al guardar se mostraran las operaciones preocupantes existentes al oficial
+ * de cumplimiento.
+ * @return lista de operaciones no reportadas
+ */              List<OperacionPreocupante>lopePre=operacionPreocupanteService.showOperacionPreocupante();
+                return lopePre;
+
+    }
+     //Consulta para generar reporte operaciones Internas Preocupantes
+@RequestMapping(value = "/opepreocupante/reportePreocupante",method = RequestMethod.POST)
+public @ResponseBody 
+List<OperacionPreocupante> reportePreocupante(@RequestParam(value = "datos[]") String datos[]){
+  List<String>usuarios=new ArrayList();    
+    for (String dato : datos) {
+                if (dato!="") {
+                    usuarios.add(dato);
+                }
+                
+            }//for 
+     List<OperacionPreocupante> usuario =operacionPreocupanteService.showOpePreocupanteUs(usuarios);
+        return usuario;
+      
+    }//metodo
+/**
+ * Metodo que retorna la vista de operaciones inusuales
+ * @param model
+ * @return opeinusual
+ */
+    @RequestMapping(value = {"/opeinusual"}, method = RequestMethod.GET)
+    public String operacionInusual(ModelMap model) { 
+        List<Sucursal> lSucursal = sucursalService.showSucursal();
+        model.addAttribute("lSucursal", lSucursal);
+        //List<Pago>lPerfil=pagoService.showOperacionInusualSeg(sucursalid);
+        //model.addAttribute("lPerfil",lPerfil);
+        return "opeinusual";
+    }
+@RequestMapping(value = {"/opeinusual/movimientos"}, method = RequestMethod.POST)
+public @ResponseBody 
+List<Pago> operacionInusualMovimeinto(@RequestParam(value = "datos[]") String datos[]) { 
+        int sucursalid=Integer.parseInt(datos[0]);
+        double porcentaje=Double.parseDouble(datos[1]);
+        List<Pago>lPerfil=pagoService.showOperacionInusualSeg(sucursalid);
+       
+        return lPerfil;
+    }
+ @RequestMapping(value = {"/cliente"}, method = RequestMethod.GET)
+    public String clientes(ModelMap model) {
+        List<PersonaFisica>lpersonaCl=personaFisicaService.showFisica();
+        model.addAttribute("lpersonaCl", lpersonaCl);        
+        return "cliente";
+    }
+    @RequestMapping(value = {"/cliente/perfil"}, method = RequestMethod.POST)
+public @ResponseBody 
+List<Cliente> clientePerfil(@RequestParam(value = "datos[]") String datos[]) { 
+     List<Cliente>lPerfil=null;  
+    int clienteid=Integer.parseInt(datos[0]);
+        lPerfil=clienteService.showCliente(clienteid);
+        return lPerfil;
+    }
+    @RequestMapping(value = {"/cliente/limite"}, method = RequestMethod.POST)
+public @ResponseBody 
+ List<Float> perfil(@RequestParam(value = "datos[]") String datos[]){
+     int clienteid=Integer.parseInt(datos[0]);
+    double porcentaje=Double.parseDouble(datos[1]);
+    List<Float>lPerfil=clienteService.perfilTransaccional(clienteid, porcentaje);
+
+    return lPerfil;
+}
+       
+}//clase

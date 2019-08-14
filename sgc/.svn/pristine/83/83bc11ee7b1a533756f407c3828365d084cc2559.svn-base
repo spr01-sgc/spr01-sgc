@@ -1,0 +1,24 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao;
+
+import com.soma.transmisor.model.BitacoraPago;
+import com.soma.transmisor.model.Pago;
+import java.util.List;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+public interface BitacoraPagoDao {
+    void save(BitacoraPago bitacoraP);
+
+    BitacoraPago buscaId(int bitapagoid);
+
+    List<BitacoraPago> showBitacoraP();
+    List<Object> buscarPorRemesa(int pagoId);
+    
+}

@@ -1,0 +1,287 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl.auxiliar;
+
+import com.soma.transmisor.dao.auxiliar.PagoDaoAux;
+import com.soma.transmisor.model.ActividadEco;
+import com.soma.transmisor.model.Cliente;
+import com.soma.transmisor.model.CodigoPostal;
+import com.soma.transmisor.model.Direccion;
+import com.soma.transmisor.model.EstatusIdentificacion;
+import com.soma.transmisor.model.Persona;
+import com.soma.transmisor.model.PersonaFisica;
+import com.soma.transmisor.model.Sexo;
+import com.soma.transmisor.model.Telefono;
+import com.soma.transmisor.model.TipoIdentidad;
+import com.soma.transmisor.model.TipoTelefono;
+import com.soma.transmisor.service.ActividadEconomicaService;
+import com.soma.transmisor.service.BeneficiarioService;
+import com.soma.transmisor.service.ClienteService;
+import com.soma.transmisor.service.CodigoPostalService;
+import com.soma.transmisor.service.EstatusIdentificacionService;
+import com.soma.transmisor.service.GiroService;
+import com.soma.transmisor.service.InstrumentoMonetarioService;
+import com.soma.transmisor.service.MonedaDivisaService;
+import com.soma.transmisor.service.PersonaFisicaService;
+import com.soma.transmisor.service.PersonaService;
+import com.soma.transmisor.service.SexoService;
+import com.soma.transmisor.service.TelefonoService;
+import com.soma.transmisor.service.TipoServicioService;
+import com.soma.transmisor.service.TipoTelefonoService;
+import com.soma.transmisor.service.TiposIdentidadService;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Formatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Service("pagoDaoAux")
+@Transactional(propagation = Propagation.REQUIRED)
+public class PagoDaoImplAux implements PagoDaoAux {
+
+    @Autowired
+    CodigoPostalService codigoPostalService;
+    @Autowired
+    SexoService sexoService;
+    @Autowired
+    TipoTelefonoService tipoTelefonoService;
+    @Autowired
+    InstrumentoMonetarioService instrumentomonetarioService;
+    @Autowired
+    MonedaDivisaService monedaDivisaService;
+    @Autowired
+    TipoServicioService tipoServicioService;
+    @Autowired
+    GiroService giroService;
+    @Autowired
+    ActividadEconomicaService actividadEconomicaService;
+    @Autowired
+    TiposIdentidadService tipoIdentidadService;
+    @Autowired
+    EstatusIdentificacionService estatusIdentificacionService;
+    @Autowired
+    PersonaFisicaService personaFisicaService;
+    @Autowired
+    ClienteService clienteServiceClave;
+    @Autowired
+    ClienteService clienteService;
+    @Autowired
+    PersonaService personaService;
+    @Autowired
+    BeneficiarioService beneficiarioService;
+    @Autowired
+    TelefonoService telefonoService;
+    
+    /*
+     0clave 1nombre 2materno 3paterno 4curp 5sexo 6fechanac 7noiden
+     8tipo 9statusidentificacion 10actividdad 11email 12rfc 13calle
+     14colonia 15codigopostal 16telefono 17tipotele 18instrumento
+     19tiposervicio 20cveremesa 21datovacioollenodependiendosisecancela
+     22usodinero 23parentesco
+     */
+
+    @Override
+    public Cliente generaCliente(String[] datos) {
+        Cliente cliente = new Cliente();
+        Direccion direccionCliente = new Direccion();
+        Telefono telefonoCliente = new Telefono();
+        PersonaFisica personaF = new PersonaFisica();
+        Persona personaFisica = new Persona();
+        CodigoPostal cpCliente = null;
+        Sexo lSexo = null;
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
+        String strFecha;
+        String claveUsuario = "";
+        Date fechaNacimientoFisica = null;
+        ActividadEco actividad = null;
+        EstatusIdentificacion estatusIdentificacion = null;
+        TipoIdentidad tipoIdentidad = null;
+        TipoTelefono tipoTelefono = null;
+        Telefono telefono = null;
+        //Condicón que obtiene el código postal y sexo de un cliente física o moral    
+        //Código postal y sexo de la persona física
+        try {
+            
+            if (!datos[15].equals("")) {
+                cpCliente = codigoPostalService
+                        .buscaClave(Integer.parseInt(datos[15]));
+            }
+            if (!datos[5].equals("")) {
+                lSexo = sexoService.buscaClave(Integer.parseInt(datos[5]));
+            }
+            if (!datos[10].equals("")) {
+                actividad = actividadEconomicaService
+                        .buscaActividadEconomica(Integer.parseInt(datos[10]));
+            }
+            if (!datos[9].equals("")) {
+                estatusIdentificacion = estatusIdentificacionService
+                        .buscaEstatusIdentificacion(Integer.parseInt(datos[9]));
+            }
+            if (!datos[8].equals("")) {
+                tipoIdentidad = tipoIdentidadService
+                        .buscaTipoIdentidad(Integer.parseInt(datos[8]));
+            }
+            if (!datos[17].equals("")) {
+                tipoTelefono = tipoTelefonoService
+                        .buscaClave(Integer.parseInt(datos[17]));
+            }
+            if (!datos[16].equals("")) {
+                telefono = telefonoService.telefono(datos[16]);
+            }
+            claveUsuario = generaClave();
+            cliente.setClave(claveUsuario);
+            cliente.setCorreoelectronico(datos[11]);
+            cliente.setRfc(datos[12]);
+            direccionCliente.setCalle(datos[13]);
+            direccionCliente.setColonia(datos[14]);
+            direccionCliente.setCodigopostalid(cpCliente);
+            cliente.setDireccionid(direccionCliente);
+            telefonoCliente.setNumTelefono(datos[16]);
+            telefonoCliente.setTipoid(tipoTelefono);
+            cliente.setTelefonoId(telefonoCliente);
+            strFecha = datos[6];
+            try {
+                fechaNacimientoFisica = formatoFecha.parse(strFecha);
+            } catch (ParseException ex) {
+                Logger.getLogger(PagoDaoImplAux.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            //Datos de la persona física 
+            personaF.setIdentificacionoficial(datos[7]);
+            personaF.setFechanacimiento(fechaNacimientoFisica);
+            if (personaService.persona(datos[1].trim(), datos[3].trim(), datos[2].trim()) != null) {
+                personaF.setPersonaid(actualizaPersona(datos));
+            } else {
+                personaFisica.setNombre(datos[1]);
+                personaFisica.setApaterno(datos[3]);
+                personaFisica.setAmaterno(datos[2]);
+                personaFisica.setCurp(datos[4]);
+                personaFisica.setSexoid(lSexo);
+                personaF.setPersonaid(personaFisica);
+            }
+            personaF.setActividadid(actividad);
+            personaF.setEstatusidentificacionid(estatusIdentificacion);
+            personaF.setTipoidentidadid(tipoIdentidad);
+            personaF.setClienteid(cliente);
+            if (personaFisicaService.save(personaF)) {
+                return personaF.getClienteid();
+            }
+        } catch (NumberFormatException e) {
+            Logger.getLogger(PagoDaoImplAux.class.getName()).log(Level.SEVERE, null, e);
+            throw e;
+        }
+        return personaF.getClienteid();//SE RETORNA CUANDO NO SE GUARDO LA PERSONA CORRECTAMENTE
+    }
+
+    @Override
+    public String generaClave() {
+        String clave = "";
+        if (clienteServiceClave.clave() != null) {
+            clave = clienteServiceClave.clave().getClave();
+        }
+        String nuevaClave = "";
+        int numero;
+        if (clave.equals("")) {
+            nuevaClave = "DH-00001";
+        } else {
+            //Esta parte de la cadena se queda con DH-
+            String inicio = clave.substring(0, 3);
+            //Solo toma la parte de los números despues de el guión 
+            String fin = clave.substring(3, 8);
+            //Parseamos el número devuelto a entero para poder sumar una unidad
+            numero = Integer.parseInt(fin);
+            numero = numero + 1;
+            //se le aplica el formato Formatter para que se rellene de ceros a la
+            // izquierda hasta llegar a una cantidad de 5 unidades.
+            Formatter fmt = new Formatter();
+            fmt.format("%05d", numero);
+            nuevaClave = inicio + String.valueOf(fmt);
+        }
+
+        return nuevaClave;
+    }
+
+    @Override
+    public Cliente actualizaCliente(String[] datos) {
+        Cliente clienteExistente = null;
+        int clienteid = 0;
+        PersonaFisica personaFisica = null;
+        CodigoPostal cpCliente = null;
+        Sexo lSexo = null;
+        ActividadEco actividad = null;
+        EstatusIdentificacion estatusIdentificacion = null;
+        TipoIdentidad tipoIdentidad = null;
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
+        String strFecha = "";
+        Date fechaNacimientoFisica = null;
+        TipoTelefono tipoTelefono = null;
+        try {
+            if (!datos[0].equals("")) {//Busca al cliente por su clave DH-00000
+                clienteExistente = clienteService.buscaClave(datos[0]);
+                clienteid = clienteExistente.getClienteid();
+            }
+            if (!datos[6].equals("")) {
+                strFecha = datos[6];
+                try {
+                    fechaNacimientoFisica = formatoFecha.parse(strFecha);
+                } catch (ParseException ex) {
+                    Logger.getLogger(PagoDaoImplAux.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (personaFisicaService.buscaCliente(clienteid) != null) {
+                personaFisica = personaFisicaService.buscaCliente(clienteid);
+                cpCliente = codigoPostalService.buscaClave(Integer.parseInt(datos[15]));
+                lSexo = sexoService.buscaClave(Integer.parseInt(datos[5]));
+                actividad = actividadEconomicaService.buscaActividadEconomica(Integer.parseInt(datos[10]));
+                estatusIdentificacion = estatusIdentificacionService.buscaEstatusIdentificacion(Integer.parseInt(datos[9]));
+                tipoIdentidad = tipoIdentidadService.buscaTipoIdentidad(Integer.parseInt(datos[8]));
+                tipoTelefono = tipoTelefonoService.buscaClave(Integer.parseInt(datos[17]));
+                //Actualización de la persona física
+                
+                personaFisica.getClienteid().setCorreoelectronico(datos[11]);
+                personaFisica.getClienteid().setRfc(datos[12]);
+                personaFisica.getClienteid().getDireccionid().setCalle(datos[13]);
+                personaFisica.getClienteid().getDireccionid().setColonia(datos[14]);
+                personaFisica.getClienteid().getDireccionid().setCodigopostalid(cpCliente);
+                personaFisica.getClienteid().getTelefonoId().setNumTelefono(datos[16]);
+                personaFisica.getClienteid().getTelefonoId().setTipoid(tipoTelefono);
+                personaFisica.setIdentificacionoficial(datos[7]);
+                personaFisica.setFechanacimiento(fechaNacimientoFisica);
+                personaFisica.getPersonaid().setNombre(datos[1]);
+                personaFisica.getPersonaid().setApaterno(datos[3]);
+                personaFisica.getPersonaid().setAmaterno(datos[2]);
+                personaFisica.getPersonaid().setCurp(datos[4]);
+                personaFisica.getPersonaid().setSexoid(lSexo);
+                personaFisica.setActividadid(actividad);
+                personaFisica.setEstatusidentificacionid(estatusIdentificacion);
+                personaFisica.setTipoidentidadid(tipoIdentidad);
+            }
+            if (personaFisicaService.update(personaFisica)) {
+                return personaFisica.getClienteid();
+            }
+        } catch (NumberFormatException e) {
+            Logger.getLogger(PagoDaoImplAux.class.getName()).log(Level.SEVERE, null, e);
+            throw e;
+        }
+        return null;//RETORNA NULL CUANDO EL DATO NO FUE ACTUALIZADO
+    }
+
+    @Override
+    public Persona actualizaPersona(String[] datos) {
+        Persona idPersona = personaService.persona(datos[1].trim(), datos[3].trim(), datos[2].trim());
+        personaService.update(idPersona.getPersonaid(), datos[4]);
+        return idPersona;
+    }
+
+}

@@ -1,0 +1,69 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.model;
+
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+/**
+ *
+ * @author JUAN LUIS-SOMA
+ */
+@Entity
+@Table(name="direccion")
+public class Direccion implements Serializable{
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "direccionid")
+    private int direccionid;
+    
+    @Column(name="colonia")
+    private String colonia;
+    
+    @Column(name = "calle")
+    private String calle;
+    
+    @OneToOne
+    private CodigoPostal codigopostalid;
+
+    public int getDireccionid() {
+        return direccionid;
+    }
+
+    public void setDireccionid(int direccionid) {
+        this.direccionid = direccionid;
+    }
+
+    public String getColonia() {
+        return colonia;
+    }
+
+    public void setColonia(String colonia) {
+        this.colonia = colonia;
+    }
+
+    public String getCalle() {
+        return calle;
+    }
+
+    public void setCalle(String calle) {
+        this.calle = calle;
+    }
+
+    public void setCodigopostalid(CodigoPostal codigopostalid) {
+        this.codigopostalid = codigopostalid;
+    }
+
+    public CodigoPostal getCodigopostalid() {
+        return codigopostalid;
+    }
+    
+}

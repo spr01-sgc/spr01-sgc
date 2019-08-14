@@ -1,0 +1,1079 @@
+$(document).ready(function () {
+    informacionQuienEnvia();
+});
+
+function detectaCambioCombo(busqueda) {
+    var cp = $("#codigopostalfisica").val();
+    var ciudad = $("#ciudad").val();
+    var estado = $("#estado").val();
+    var datos;
+    var filtro;
+    if (busqueda == "cp") {
+        filtro = "codigoPostal";
+        datos = [cp, filtro];
+    } else if (busqueda == "ciudad") {
+        filtro = "ciudad";
+        datos = [ciudad, filtro];
+    } else if (busqueda == "estado") {
+        filtro = "estado";
+        datos = [estado, filtro];
+    }
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "envios/detectaCambioCombo",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (data) {
+            //var datosPersona = JSON.parse(data);
+
+        },
+    });
+}
+
+function listaBeneficiarios(idCliente) {
+    var datos;
+    datos = idCliente;
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "envios/listaBeneficiarios",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (data) {
+            var datosPersona = JSON.parse(data);
+             for (var i in datosPersona) {
+                $('#tablaBeneficiarios tbody').append('<tr></tr>');
+                var row = $('#tablaBeneficiarios tbody tr').last();
+                for (var j in datosPersona[i]) {
+                    var objeto = datosPersona[i][j];
+                    row.append('<td>' + objeto + '</td>');
+                }//forinterno
+            }
+
+        },
+    });
+}
+
+function buscaCliente() {
+    var valor = $("#tipoBuscaPersona").val();
+    var filtro;
+    if (valor == 1) {
+        filtro = "clavePersonaFisica";
+        detectaCambio(filtro);
+    } else if (valor == 2) {
+        filtro = "noidentificacion";
+        detectaCambio(filtro);
+    } else if (valor == 3) {
+        filtro = "curpfisica";
+        detectaCambio(filtro);
+    } else if (valor == 4) {
+        filtro = "rfcfisica";
+        detectaCambio(filtro);
+    }
+}
+
+function informacionQuienEnvia() {
+    var datos;
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    datos = 1;
+    $.ajax({
+        url: "envios/informacionQuienEnvia",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (data) {
+            var datosQuienEnvia = JSON.parse(data);
+            var date = new Date();
+            var mes = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+            document.getElementById('nombreSucursalEnvia').innerHTML = datosQuienEnvia[0];
+            document.getElementById('ciudadOrigen').innerHTML = datosQuienEnvia[1];
+            document.getElementById('estadoOrigen').innerHTML = datosQuienEnvia[2];
+            document.getElementById('paisOrigen').innerHTML = datosQuienEnvia[3];
+            document.getElementById('fecha').innerHTML = date.getDate() + '/' + mes[date.getMonth()] + '/' + date.getFullYear();
+
+        },
+    });
+}
+
+/**
+ * 
+ * @returns {undefined}
+ */
+function buscarOtroCliente() {
+    if ($('#personafisica').prop('checked')) {
+        limpiaCajaFisica();
+        $("#clavePersonaFisica").prop('disabled', false);
+        $("#buscaOtroClienteF").css("display", "none");
+
+    } else {
+        limpiaCajaMoral();
+        $("#noClienteMoral").prop('disabled', false);
+        $("#buscaOtroClienteM").css("display", "none");
+    }
+}
+
+/*
+ * Función que permite limpiar las cajas de texto de la persona física 
+ * @returns {undefined}
+ */
+function limpiaCajaFisica() {
+    $('#noidentificacion').val("");
+    document.getElementById('clavePersonaFisica').innerHTML = "";
+    $('#nombrepersonafisica').val("")
+    $('#apaternofisica').val("");
+    $('#amaternofisica').val("");
+    $('#curpfisica').val("");
+    $('#sexofisica').val(0);
+    $('#fechanacimiento').val("");
+    $('#tipoIdentificacion').val(0);
+    $('#statusIdentificacion').val(0);
+    $('#actividad').val(0);
+    $('#emailfisica').val("");
+    $('#rfcfisica').val("");
+    $('#callefisica').val("");
+    $('#coloniafisica').val("");
+    $('#codigopostalfisica').val(0);
+    $('#clavePersonaFisica').val("");
+}
+
+/*
+ * Función que permite limpiar las cajas de texto de una persona moral
+ * @returns {undefined}
+ */
+function limpiaCajaMoral() {
+    $('#noClienteMoral').val("");
+    $('#nombremoral').val("");
+    $('#apaternomoral').val("");
+    $('#amaternomoral').val("");
+    $('#curpmoral').val("");
+    $('#sexomoral').val(0);
+    $('#emailmoral').val("");
+    $('#rfcmoral').val("");
+    $('#callemoral').val("");
+    $('#coloniamoral').val("");
+    $('#cpmoral').val(0);
+    $('#razonsocial').val();
+    $('#fechaConstitucion').val("");
+    $('#nofirmaavanzada').val("");
+    $('#giroC').val(0);
+}
+
+function editarInformacion() {
+    $('#infoRemitente').css("display", "block");
+}
+
+/**
+ * Esta función me permite traer los datos de un cliente en caso de que este
+ * ya se encuentre registrado en el sistema, para ello recibe paramétros de 
+ * búsqueda como la clave/número de cuenta, CURP, Número de identificación
+ * oficial o RFC.
+ * @param {type} filtro
+ * @returns {undefined}
+ */
+function detectaCambio(filtro) {
+    var datos;
+    var mensajeModal;
+    if (filtro == 'clavePersonaFisica') {
+        var clavePersonaFisica;
+        if ($("#clavePersonaFisica").val() != "") {
+            clavePersonaFisica = $("#clavePersonaFisica").val();
+        } else {
+            clavePersonaFisica = $("#buscaPersona").val();
+        }
+        datos = [filtro, clavePersonaFisica];
+        mensajeModal = 'Verificando clave del cliente...';
+    } else if (filtro == 'curpfisica') {
+        var curpfisica;
+        if ($("#curpfisica").val() != "") {
+            curpfisica = $("#curpfisica").val();
+        } else {
+            curpfisica = $("#buscaPersona").val();
+        }
+        datos = [filtro, curpfisica];
+        mensajeModal = 'Verificando CURP...';
+    } else if (filtro == 'rfcfisica') {
+        var rfcfisica;
+        if ($("#rfcfisica").val() != "") {
+            rfcfisica = $("#rfcfisica").val();
+        } else {
+            rfcfisica = $("#buscaPersona").val();
+        }
+        datos = [filtro, rfcfisica];
+        mensajeModal = 'Verificando RFC...';
+    } else if (filtro == 'noidentificacion') {
+        var noidentificacion;
+        if ($("#noidentificacion").val() != "") {
+            noidentificacion = $("#noidentificacion").val();
+        } else {
+            noidentificacion = $("#buscaPersona").val();
+        }
+        datos = [filtro, noidentificacion];
+        mensajeModal = 'Verificando número de idenficiación';
+    }
+
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.blockUI({css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff'
+        }, message: mensajeModal});
+    $.ajax({
+        url: "envios/detectaCambio",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (data) {
+            var datosPersona = JSON.parse(data);
+            if (datosPersona[0] == "personaFisica") {
+                $('#mensajeBusqueda').css("display", "none");
+                if ($('#personafisica').prop('checked')) {
+                    // var opcion = confirm("Ya existe un usuario con esos datos, ¿Desea mostrar la informaci&oacuten?");
+                    // if (opcion == true) {
+                    $('#noidentificacion').val(datosPersona[16]);
+                    document.getElementById('clavePersonaFisica').innerHTML = datosPersona[15];
+                    $('#nombrepersonafisica').val(datosPersona[1])
+                    $('#apaternofisica').val(datosPersona[2]);
+                    $('#amaternofisica').val(datosPersona[3]);
+                    $('#curpfisica').val(datosPersona[4]);
+                    $('#sexofisica').val(parseInt(datosPersona[5]));
+                    $('#fechanacimiento').val(datosPersona[6]);
+                    $('#tipoIdentificacion').val(parseInt(datosPersona[7]));
+                    $('#statusIdentificacion').val(parseInt(datosPersona[8]));
+                    $('#actividad').val(parseInt(datosPersona[9]));
+                    $('#emailfisica').val(datosPersona[10]);
+                    $('#rfcfisica').val(datosPersona[11]);
+                    $('#callefisica').val(datosPersona[13]);
+                    $('#coloniafisica').val(datosPersona[14]);
+                    $('#codigopostalfisica').val(parseInt(datosPersona[12]));
+                    $('#clavePersonaFisica').val(datosPersona[15]);
+                    $('#emisora').val(datosPersona[17]);
+                    $("#clavePersonaFisica").prop('disabled', true);
+                    $("#buscaOtroClienteF").css("display", "block");
+                    $('#editarInformacion').css("display", "block");
+                    
+                    var nombreCompleto = datosPersona[1].concat(" ", datosPersona[2], " ", datosPersona[3]);
+                    document.getElementById('nombreFisica').innerHTML = nombreCompleto;
+                    document.getElementById('curpFis').innerHTML = datosPersona[4];
+                    document.getElementById('identificacionNo').innerHTML = datosPersona[16];
+                    
+                    setTimeout($.unblockUI, 500);
+                    listaBeneficiarios(datosPersona[15]);
+                    // } else { 
+                    //     setTimeout($.unblockUI, 100);
+                    // }
+                } else {
+                    setTimeout($.unblockUI, 100);
+                }
+            } else if (datosPersona[0] == "personaMoral") {
+                $('#mensajeBusqueda').css("display", "none");
+                if ($('#personamoral').prop('checked')) {
+                    $('#noClienteMoral').val(datosPersona[1]);
+                    $('#nombremoral').val(datosPersona[2]);
+                    $('#apaternomoral').val(datosPersona[3]);
+                    $('#amaternomoral').val(datosPersona[4]);
+                    $('#curpmoral').val(datosPersona[5]);
+                    $('#sexomoral').val(parseInt(datosPersona[6]));
+                    $('#emailmoral').val(datosPersona[7]);
+                    $('#rfcmoral').val(datosPersona[8]);
+                    $('#callemoral').val(datosPersona[9]);
+                    $('#coloniamoral').val(datosPersona[10]);
+                    $('#cpmoral').val(parseInt(datosPersona[11]));
+                    $('#razonsocial').val(datosPersona[12]);
+                    $('#fechaConstitucion').val(datosPersona[13]);
+                    $('#nofirmaavanzada').val(datosPersona[14]);
+                    $('#giroC').val(parseInt(datosPersona[15]));
+                    $('#emisora').val(datosPersona[16]);
+                    $("#noClienteMoral").prop('disabled', true);
+                    $("#buscaOtroClienteM").css("display", "block");
+                    setTimeout($.unblockUI, 500);
+                } else {
+                    setTimeout($.unblockUI, 100);
+                }
+            } else {
+                var mensaje = "NO EXISTE REGISTRO DEL REMITENTE CON LOS DATOS PROPORCIONADOS.<br/>\n\
+                                POR FAVOR VERIFIQUE, COMPLETE Y REGISTRE LOS DATOS DE LA PERSONA."
+                $('#mensajeBusqueda').css("display", "block");
+                document.getElementById('mensajeBusquedaInfo').innerHTML = mensaje;
+                $('#infoRemitente').css("display", "block");
+                setTimeout($.unblockUI, 100);
+            }
+        },
+    });
+}
+
+
+/**
+ * Función que me permite guardar un envió
+ * @returns {undefined}
+ */
+function registrarEnvio() {
+    var cantidadenviada = $("#cantidadenviada").val();
+    var tipomoneda = $("#tipomoneda").val();
+    // var valormoneda = $("#valormoneda").val();
+    var valormoneda = "17";
+    var instrumentomonetario = $("#instrumentomonetario").val();
+    var tiposervicio = $("#tiposervicio").val();
+    //Datos de Beneficiario
+    var nombrebene = $("#nombrebene").val();
+    var apaternobene = $("#apaternobene").val();
+    var amaternobene = $("#amaternobene").val();
+    var curpbene = $("#curpbene").val();
+    var sexobene = $("#sexobene").val();
+
+    var comisionPago = $("#comisionPago").val();
+    var destino = $("#destino").val();
+    var emisora = $("#emisora").val();
+
+    //Datos del tipo de persona que envía 
+    //Datos en caso de que la persona sea fisica
+    var clavePersonaFisica = $("#clavePersonaFisica").val();
+    var nombrepersonafisica = $("#nombrepersonafisica").val();
+    var apaternofisica = $("#apaternofisica").val();
+    var amaternofisica = $("#amaternofisica").val();
+    var curpfisica = $("#curpfisica").val();
+    var sexofisica = $("#sexofisica").val();
+    var fechanacimiento = $("#fechanacimiento").val();
+    var noidentificacion = $("#noidentificacion").val();
+    var tipoIdentificacion = $("#tipoIdentificacion").val();
+    var identificacionSt = $("#statusIdentificacion").val();
+    var actividad = $("#actividad").val();
+    var emailfisica = $("#emailfisica").val();
+    var rfcfisica = $("#rfcfisica").val();
+    var callefisica = $("#callefisica").val();
+    var coloniafisica = $("#coloniafisica").val();
+    var codigopostal = $("#codigopostalfisica").val();
+    var telefonofisica = $("#telefonofisica").val();
+    var tipoTelefonofisica = $("#tipoTelefonofisica").val();
+
+    //Datos de la persona moral
+    var noClienteMoral = $("#noClienteMoral").val();
+    var nombreMoral = $("#nombremoral").val();
+    var aPaternoMoral = $("#apaternomoral").val();
+    var aMaternoMoral = $("#amaternomoral").val();
+    var curpMoral = $("#curpmoral").val();
+    var sexoMoral = $("#sexomoral").val();
+    var emailMoral = $("#emailmoral").val();
+    var rfcMoral = $("#rfcmoral").val();
+    var calleMoral = $("#callemoral").val();
+    var coloniaMoral = $("#coloniamoral").val();
+    var cpMoral = $("#cpmoral").val();
+    var razonSocial = $("#razonsocial").val();
+    var fechaConstitucion = $("#fechaConstitucion").val();
+    var noFirmaAvanzada = $("#nofirmaavanzada").val();
+    var giroC = $("#giroC").val();
+    var telefonoPersonaMoral = $("#telefonopersonamoral").val();
+    var tipoTelefonoPersonaMoral = $("#tipotelefonopersonamoral").val();
+
+    var datos = [cantidadenviada, tipomoneda, valormoneda,
+        instrumentomonetario, tiposervicio, nombrebene,
+        apaternobene, amaternobene, curpbene,
+        sexobene, clavePersonaFisica, emailfisica,
+        rfcfisica, callefisica, coloniafisica,
+        codigopostal, noidentificacion, fechanacimiento,
+        nombrepersonafisica, apaternofisica, amaternofisica,
+        curpfisica, sexofisica, tipoIdentificacion,
+        identificacionSt, actividad, telefonofisica,
+        tipoTelefonofisica, noClienteMoral, nombreMoral,
+        aPaternoMoral, aMaternoMoral, curpMoral,
+        sexoMoral, emailMoral, rfcMoral, //36
+        calleMoral, coloniaMoral, cpMoral,
+        razonSocial, fechaConstitucion, noFirmaAvanzada,
+        giroC, telefonoPersonaMoral, tipoTelefonoPersonaMoral,
+        comisionPago];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "envios/registrarEnvio",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    $("#pantalla").load("envios");
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 0) {
+
+                alert('Not connect: Verify Network.');
+
+            } else if (jqXHR.status == 404) {
+
+                alert('Requested page not found [404]');
+
+            } else if (jqXHR.status == 500) {
+
+                alert('Internal Server Error [500].');
+
+            } else if (textStatus === 'parsererror') {
+
+                alert('Requested JSON parse failed.');
+
+            } else if (textStatus === 'timeout') {
+
+                alert('Time out error.');
+
+            } else if (textStatus === 'abort') {
+
+                alert('Ajax request aborted.');
+
+            } else {
+
+                alert('Uncaught Error: ' + jqXHR.responseText);
+
+            }
+        }
+
+    });
+}
+
+function datosPersona() {
+    $("#datosenvio").css("display", "none");
+    $("#verificaPersona").css("display", "block");
+    $("personamoral").prop("disabled", true);
+    if ($('#personafisica').prop('checked')) {
+        $("#divpersonafisica").css("display", "block");
+    }
+    if ($('#personamoral').prop('checked')) {
+        $("#divpersonamoral").css("display", "block");
+    }
+}
+
+function datosEnvio() {
+    $("#verificaPersona").css("display", "none");
+    $("#divpersonafisica").css("display", "none");
+    $("#divpersonamoral").css("display", "none");
+    $("#datosenvio").css("display", "block");
+}
+
+function datosAtrasPersona() {
+    $("#beneficiario").css("display", "none");
+    $("#verificaPersona").css("display", "block");
+    if ($('#personafisica').prop('checked')) {
+        $("#divpersonafisica").css("display", "block");
+    }
+    if ($('#personamoral').prop('checked')) {
+        $("#divpersonamoral").css("display", "block");
+    }
+}
+
+/**
+ * Función que me permite mostrar el formulario donde se insertan los datos del
+ * beneficiario
+ * @returns {undefined}
+ */
+function datosBeneficiario() {
+    $("#verificaPersona").css("display", "none");
+    $("#divpersonafisica").css("display", "none");
+    $("#divpersonamoral").css("display", "none");
+    $("#beneficiario").css("display", "block");
+}
+
+/**
+ * Función que me permite mostrar el formulario para una persona Fisica o Moral
+ * @param {type} valor
+ * @returns {undefined}
+ */
+function selectTipopersona(valor) {
+    if (valor == 1) {
+        $("#personafisica").removeAttr('checked');
+        $("#divpersonafisica").css("display", "none");
+        $("#divpersonamoral").css("display", "block");
+        buscarOtroCliente();
+    }
+    if (valor == 2) {
+        $("#personamoral").removeAttr('checked');
+        $("#divpersonamoral").css("display", "none");
+        $("#divpersonafisica").css("display", "block");
+        buscarOtroCliente();
+    }
+}
+/*
+ * Función que sirve para dar de alta una nueva Entidad Financiera
+ * @Author Juan Luis Mendiola 
+ */
+function agregarEntidad() {
+    var razonsocial = $("#razonsocial").val();
+    var nombrecorto = $("#nombrecorto").val();
+    var correoelectronico = $("#correoelectronico").val();
+    var rfc = $("#rfc").val();
+
+    //Datos de la dirección
+    var calle = $("#calle").val();
+    var colonia = $("#colonia").val();
+    var codigopostal = $("#codigopostal").val();
+
+    //Datos de la persona
+
+    var nombre = $("#nombre").val();
+    var apaterno = $("#apaterno").val();
+    var amaterno = $("#amaterno").val();
+    var curp = $("#curp").val();
+    var sexo = $("#sexo").val();
+    var telefono = $("#numtelefono").val();
+    var tipotelefono = $("#telefono").val();
+
+
+    //falta extraer los datos de los campos de direccion y persona
+
+
+    if (nombrecorto == '' || razonsocial == '' || correoelectronico == ''
+            || rfc == '' || calle == '' || colonia == '') {
+        alert("No dede de quedar un campo vacío");
+        return;
+    }
+
+    if (codigopostal == 0) {
+        alert("Debes de seleccionar un codigo postal")
+    }
+    var datos = [razonsocial,
+        nombrecorto,
+        correoelectronico,
+        rfc,
+        calle,
+        colonia,
+        codigopostal,
+        nombre,
+        apaterno,
+        amaterno,
+        curp,
+        sexo,
+        telefono,
+        tipotelefono];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "entidad/agregarEntidad",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    $("#pantalla").load("entidad");
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+
+    });
+}
+
+
+/*
+ * ´Función que sirve para actualizar una entidad
+ * @Author Juan Luis Mendiola Gutiérrez
+ */
+function actualizarEntidad() {
+    var razonsocialid = $("#razonsocialid").val();
+    var razonsocial = $("#razonsocial").val();
+    var nombrecorto = $("#nombrecorto").val();
+    var correoelectronico = $("#correoelectronico").val();
+    var rfc = $("#rfc").val();
+
+    //Datos de la dirección de la entidad
+    var calle = $("#calle").val();
+    var colonia = $("#colonia").val();
+    var codigopostal = $("#codigopostal").val();
+
+    //Datos de la persona
+    var nombre = $("#nombre").val();
+    var apaterno = $("#apaterno").val();
+    var amaterno = $("#amaterno").val();
+    var curp = $("#curp").val();
+    var sexo = $("#sexo").val();
+
+
+
+    if (nombrecorto == '' || razonsocial == '' || correoelectronico == ''
+            || rfc == '') {
+        alert("No dede de quedar un campo vacío");
+        return;
+    }
+
+    /*if (codigopostal == 0){
+     alert("Debes de seleccionar un codigo postal")
+     }*/
+    var datos = [razonsocial,
+        nombrecorto,
+        correoelectronico,
+        rfc,
+        calle,
+        colonia,
+        codigopostal,
+        nombre,
+        apaterno,
+        amaterno,
+        curp,
+        sexo,
+        razonsocialid];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+
+    $.ajax({
+        url: "entidad/actualizarEntidad",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    $("#pantalla").load("entidad");
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+
+    });
+}
+/*
+ * Función que sirve para eleiminar una Entidad Financiera 
+ * @returns 
+ */
+
+function eliminarEntidad(entidadid) {
+
+    var datos = [entidadid];
+
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+
+    $.ajax({
+        url: "entidad/eliminarEntidad",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    $("#pantalla").load("entidad");
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+
+    });
+
+}
+
+
+
+/*
+ * Método que llena las cajas de texto al momento de actualizar una entidad
+ */
+
+function completaInputsEntidad() {
+    $("#guardar").prop("disabled", true);
+    $("#actualizar").prop("disabled", false);
+    $("#tableEntidad tbody").on('click', 'tr', function () {
+        var razonsocialid = $('td', this).eq(0).text();
+        var razonsocial = $('td', this).eq(1).text();
+        var nombrecorto = $('td', this).eq(2).text();
+        var correoelectronico = $('td', this).eq(3).text();
+        var rfc = $('td', this).eq(4).text();
+        var calle = $('td', this).eq(5).text();
+        var colonia = $('td', this).eq(6).text();
+        var codigopostal = $('td', this).eq(7).text();
+        var nombre = $('td', this).eq(9).text();
+        var apaterno = $('td', this).eq(10).text();
+        var amaterno = $('td', this).eq(11).text();
+        var curp = $('td', this).eq(12).text();
+        var sexo = $('td', this).eq(13).text();
+
+
+        $("#razonsocialid").val(razonsocialid);
+        $("#razonsocial").val(razonsocial);
+        $("#nombrecorto").val(nombrecorto);
+        $("#correoelectronico").val(correoelectronico);
+        $("#rfc").val(rfc);
+        $("#calle").val(calle);
+        $("#colonia").val(colonia);
+        $("#codigopostal").val(codigopostal).text();
+        $("#nombre").val(nombre);
+        $("#apaterno").val(apaterno);
+        $("#amaterno").val(amaterno);
+        $("#curp").val(curp);
+        $("#sexo").val(sexo);
+    });
+}
+
+/**
+ * Función para limpiar las cajas de una entidad
+ * 
+ */
+function limpiarCajasEntidad() {
+    $("#nombre").val("");
+}
+
+
+/**
+ * Función para agregar una sucursal
+ */
+function agregarSucursal() {
+
+    var nombresucursal = $("#nombresucursal").val();
+    var nosucursal = $("#nosucursal").val();
+    var correoelectronico = $("#correoelectronico").val();
+
+    //Datos de la dirección
+    var calle = $("#calle").val();
+    var colonia = $("#colonia").val();
+    var codigopostal = $("#codigopostal").val();
+
+    //Datos de la persona
+
+    var nombre = $("#nombre").val();
+    var apaterno = $("#apaterno").val();
+    var amaterno = $("#amaterno").val();
+    var curp = $("#curp").val();
+    var sexo = $("#sexo").val();
+    var telefono = $("#numtelefono").val();
+    var tipotelefono = $("#telefono").val();
+
+    var entidad = $("#entidadF").val();
+
+    //Mensaje de al usuario
+    var mensaje = "Espere mientras se insertan los datos";
+    var mensajealerta = "Seguro que desea guardar los datos...";
+    var regreso = "entidad/agregarEntidad";
+
+    //falta extraer los datos de los campos de direccion y persona
+
+
+    if (nombresucursal == '' || nosucursal == '' || correoelectronico == ''
+            || calle == '' || colonia == '' || nombre == '' || apaterno == ''
+            || amaterno == '' || curp == '' || telefono == '') {
+        alert("No dede de quedar un campo vacío");
+        return;
+    }
+    if (codigopostal == 0) {
+        alert("Debes de seleccionar un código postal")
+    }
+    if (sexo == 0) {
+        alert("Debes de seleccionar el sexo de la persona")
+    }
+    if (tipotelefono == 0) {
+        alert("Debes de seleccionar el tipo de telefono")
+    }
+
+    var datos = [nombresucursal,
+        nosucursal,
+        correoelectronico,
+        calle,
+        colonia,
+        codigopostal,
+        nombre,
+        apaterno,
+        amaterno,
+        curp,
+        sexo,
+        telefono,
+        tipotelefono,
+        entidad];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "sucursal/agregarSucursal",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    $("#pantalla").load("sucursal");
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+
+    });
+}
+
+/*
+ * Función que sirve para actualizar una sucursal
+ * @param {type} sucursalid
+ * @returns {undefined}
+ */
+
+function actualizarSucursal() {
+    var sucursalid = $("#sucursalid").val();
+    var nombresucursal = $("#nombresucursal").val();
+    var nosucursal = $("#nosucursal").val();
+    var correoelectronico = $("#correoelectronico").val();
+
+    //Datos de la dirección
+    var calle = $("#calle").val();
+    var colonia = $("#colonia").val();
+    var codigopostal = $("#codigopostal").val();
+
+    //Datos de la persona
+
+    var nombre = $("#nombre").val();
+    var apaterno = $("#apaterno").val();
+    var amaterno = $("#amaterno").val();
+    var curp = $("#curp").val();
+    var sexo = $("#sexo").val();
+    var telefono = $("#numtelefono").val();
+    var tipotelefono = $("#telefono").val();
+
+    var entidad = $("#entidadF").val();
+
+    //Mensaje de al usuario
+    var mensaje = "Espere mientras se insertan los datos";
+    var mensajealerta = "Seguro que desea guardar los datos...";
+    var regreso = "entidad/agregarEntidad";
+
+    //falta extraer los datos de los campos de direccion y persona
+
+
+    if (nombresucursal == '' || nosucursal == '' || correoelectronico == ''
+            || calle == '' || colonia == '' || nombre == '' || apaterno == ''
+            || amaterno == '' || curp == '' || telefono == '') {
+        alert("No dede de quedar un campo vacío");
+        return;
+    }
+    if (codigopostal == 0) {
+        alert("Debes de seleccionar un código postal")
+    }
+    if (sexo == 0) {
+        alert("Debes de seleccionar el sexo de la persona")
+    }
+    if (tipotelefono == 0) {
+        alert("Debes de seleccionar el tipo de telefono")
+    }
+
+    var datos = [nombresucursal,
+        nosucursal,
+        correoelectronico,
+        calle,
+        colonia,
+        codigopostal,
+        nombre,
+        apaterno,
+        amaterno,
+        curp,
+        sexo,
+        telefono,
+        tipotelefono,
+        entidad,
+        sucursalid];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "sucursal/actualizarSucursal",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    $("#pantalla").load("sucursal");
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+
+    });
+}
+
+
+/**
+ * Función que sirve para eliminar una sucursal
+ */
+
+function eliminarSucursal(sucursalid) {
+
+    var datos = [sucursalid];
+    alert(sucursalid);
+
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+
+    $.ajax({
+        url: "sucursal/eliminarSucursal",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    $("#pantalla").load("sucursal");
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+
+
+
+    });
+
+}
+
+function completaInputsSucursal() {
+    $("#guardar").prop("disabled", true);
+    $("#actualizar").prop("disabled", false);
+
+    $("#tableSucursal tbody").on('click', 'tr', function () {
+        var sucursalid = $('td', this).eq(0).text();
+        var nombresucursal = $('td', this).eq(1).text();
+        var nosucursal = $('td', this).eq(2).text();
+        var correoelectronico = $('td', this).eq(3).text();
+        var calle = $('td', this).eq(4).text();
+        var colonia = $('td', this).eq(5).text();
+        var codigopostal = $('td', this).eq(6).text();
+        var nombre = $('td', this).eq(8).text();
+        var apaterno = $('td', this).eq(9).text();
+        var amaterno = $('td', this).eq(10).text();
+        var curp = $('td', this).eq(11).text();
+        var sexo = $('td', this).eq(12).text();
+        var entidad = $('td', this).eq(14).text();
+
+
+        $("#sucursalid").val(sucursalid);
+        $("#nombresucursal").val(nombresucursal);
+        $("#nosucursal").val(nosucursal);
+        $("#correoelectronico").val(correoelectronico);
+        $("#calle").val(calle);
+        $("#colonia").val(colonia);
+        $("#codigopostal").val(codigopostal).text();
+        $("#nombre").val(nombre);
+        $("#apaterno").val(apaterno);
+        $("#amaterno").val(amaterno);
+        $("#curp").val(curp);
+        $("#sexo").val(sexo);
+        $("#entidadF").val(entidad);
+    });
+}

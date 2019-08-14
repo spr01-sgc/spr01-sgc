@@ -1,0 +1,99 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.model;
+
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+/**
+ *
+ * @author JUAN LUIS-SOMA
+ */
+@Entity
+@Table(name="persona")
+public class Persona implements Serializable{
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "personaid")
+    private int personaid;
+    
+    @Column(name = "nombre")
+    private String nombre;
+    
+    @Column(name = "apaterno")
+    private String apaterno;
+    
+    @Column(name = "amaterno")
+    private String amaterno;
+    
+    @Column(name = "curp")
+    private String curp;
+    
+    @OneToOne
+    private Sexo sexoid;
+
+
+    public int getPersonaid() {
+        return personaid;
+    }
+
+    public void setPersonaid(int personaid) {
+        this.personaid = personaid;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApaterno() {
+        return apaterno;
+    }
+
+    public void setApaterno(String apaterno) {
+        this.apaterno = apaterno;
+    }
+
+    public String getAmaterno() {
+        return amaterno;
+    }
+
+    public void setAmaterno(String amaterno) {
+        this.amaterno = amaterno;
+    }
+
+    public String getCurp() {
+        return curp;
+    }
+
+    public void setCurp(String curp) {
+        this.curp = curp;
+    }
+
+    public Sexo getSexoid() {
+        return sexoid;
+    }
+
+    public void setSexoid(Sexo sexoid) {
+        this.sexoid = sexoid;
+    }
+
+    @Override
+    public String toString() {
+        return "Persona{" + "personaid=" + personaid + ", nombre=" + nombre + ", apaterno=" + apaterno + ", amaterno=" + amaterno + ", curp=" + curp + ", sexoid=" + sexoid + '}';
+    }
+
+   
+
+}

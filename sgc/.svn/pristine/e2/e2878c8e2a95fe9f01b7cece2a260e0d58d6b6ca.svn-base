@@ -1,0 +1,67 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.dao.PersonaMoralDao;
+import com.soma.transmisor.model.PersonaMoral;
+import java.util.List;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Repository("personaMoralDao")
+public class PersonaMoralDaoImpl extends HibernateDao<Integer, PersonaMoral> implements PersonaMoralDao{
+
+    @Override
+    public void update(PersonaMoral personaMoral) {
+        actualizar(personaMoral);
+        System.out.println("Se ha actualizado correctamente la persona moral"
+                + personaMoral.toString());
+    }
+
+    @Override
+    public void save(PersonaMoral personaMoral) {
+        guardar(personaMoral);
+        System.out.println("Se ha guardado correctamente la persona moral "
+                + personaMoral.toString());
+    }
+
+    @Override
+    public List<String> buscaPersonaMoral(String filtro, int parametro) {
+        SQLQuery query = getSession()
+                .createSQLQuery("SELECT cl.clave,per.nombre, per.apaterno, \n"
+                        + " per.amaterno, per.curp, per.sexoid_sexoid,\n"
+                        + " cl.correoelectronico, cl.rfc,d.calle, d.colonia,\n" 
+                        + " cp.codigopostalid,pem.razonsocial,\n" 
+                        + " TO_CHAR(fechaconstitucion, 'YYYY-MM-DD')as fecha,\n"
+                        + " pem.numerofirmaavanzada, pem.giroid_giroid\n" 
+                        + " FROM personamoral pem \n"
+                        + " INNER JOIN cliente cl\n"
+                        + " ON clienteid_clienteid = clienteid\n"
+                        + " INNER JOIN direccion d\n"
+                        + " ON direccionid_direccionid = direccionid\n"
+                        + " INNER JOIN ct_codigopostal cp\n"
+                        + " ON codigopostalid_codigopostalid = codigopostalid\n"
+                        + " INNER JOIN persona per\n"
+                        + " ON personaid_personaid = personaid\n"
+                        + " WHERE "+filtro+"="+parametro);
+        List<String> lPersona = query.list();
+       return lPersona;
+    }
+
+    @Override
+    public PersonaMoral buscaCliente(int clienteId) {
+        Query query = getSession().createQuery("FROM PersonaMoral as pm  \n"  
+                + "              where pm.clienteid =" + clienteId + "");
+       return (PersonaMoral) query.uniqueResult();
+    }
+    
+}

@@ -1,0 +1,94 @@
+<%-- 
+    Document   : catalogos
+    Created on : 20/10/2017, 10:21:48 AM
+    Empresa SOMA
+    Author     : Jasmin Santana
+--%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+
+<%@include file="index.jsp" %>
+<br />
+<br />
+<br />
+
+<div class="container">   
+    <div class="panel-group">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Delito</div>
+            <div id="contenidoPantalla" class="panel-body">  
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Adicion de delitos -->
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label></label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input id="delid" style="display:none" class="form-control">
+                                </div>
+                            </div>	
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>Delito</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input id="nombre"  class="form-control">
+                                </div>
+                            </div>													
+                            <br>
+                            <div class="row">
+                                <div class="btn btn-group">
+                                    <button id="guardar" class="btn btn-success"
+                                            onclick="agregarDelito();">Guardar</button>
+                                    <button id="actualizar" onclick="actualizarDelito();" class="btn btn-primary" >Actualizar</button>
+                                    <button id="limpiarD" onclick="limpiarCajas();" class="btn btn-default">Limpiar</button>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <input type="hidden" name="${_csrf.parameterName}"
+                               value="${_csrf.token}" />
+
+                        <!-- Listado de delitos -->
+                        <div  class="col-md-6">
+                            <div class="table-responsive">
+                                <table id="tableCatalogo" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Tipo de Delito</th>
+                                            <th>Editar</th>
+                                            <th>Eliminar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bodytabla">
+                                        <c:forEach items="${lDelito}" var="delito" varStatus="contador">
+                                            <tr>
+                                                <td id="iddelito">${delito.delitoid}</td>
+                                                <td>${delito.nombre}</td>
+                                                <td><button id="mostrarGD" onclick="mostrarGiDe();" class="btn btn-warning">
+                                                        <span class="glyphicon glyphicon-pencil"></span></button></td>
+                                                <td> <button id="eliminar" class="btn btn-danger" onclick="eliminarDelito();" > 
+                                                        <span class="glyphicon glyphicon-remove"></span></button></td>
+                                            </tr>
+
+                                        </c:forEach>
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div><!-- row-->
+            </div><!--class body -->
+        </div><!-- panel-primary-->
+    </div>  <!-- panel-group-->  
+</div><!--class container -->
+</body>
+</html>

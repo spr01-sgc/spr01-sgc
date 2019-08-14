@@ -1,0 +1,247 @@
+<%-- 
+    Document   : entidad
+    Created on : 21/10/2017, 01:18:29 PM
+    Author     : JUAN LUIS-SOMA
+--%>
+
+
+<%@include file="index.jsp" %>
+<br />
+<br />
+<br />
+<div id="contenidoPantalla" class="panel panel-default">
+    <div class="row">
+
+        <!-- Listado de Entidades -->
+        <div class="col-md-12">
+            <button id="agregar" class="btn btn-info" data-toggle="modal" data-target="#myModal"> 
+                <span class="glyphicon glyphicon-file"></span></span> agregar</button>
+            <div class="table-responsive">
+                <table id="tableEntidad" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <td>ID</td>
+                            <td>Razón Social</td>
+                            <td>Nombre corto</td>
+                            <td>Correo electronico</td>
+                            <td>RFC</td>
+                            <td>Calle</td>
+                            <td>Colonia</td>
+                            <td style="display:none">ID CP</td>
+                            <td>Código Postal</td>
+                            <td>Nombre</td>
+                            <td>Apellido Paterno</td>
+                            <td>Apelido Materno</td>
+                            <td>CURP</td>
+                            <td style="display:none">ID sexo</td>
+                            <td>Sexo</td>
+                            <td></td>
+                            <td></td>
+
+                        </tr>
+                    <thead>
+                    <tbody>
+                        <c:forEach items="${lEntidad}" var="entidad">
+                            <tr>
+                                <td>${entidad.entidadid}</td>
+                                <td>${entidad.razonsocial}</td>
+                                <td>${entidad.nombrecorto}</td>
+                                <td>${entidad.correoelectronico}</td>
+                                <td>${entidad.rfc}</td>
+                                <td>${entidad.direccionid.calle}</td>
+                                <td>${entidad.direccionid.colonia}</td>
+                                <td style="display:none">${entidad.direccionid.codigopostalid.codigopostalid}</td>
+                                <td>${entidad.direccionid.codigopostalid.clave}</td>
+                                <td>${entidad.personaid.nombre}</td>
+                                <td>${entidad.personaid.apaterno}</td>
+                                <td>${entidad.personaid.amaterno}</td>
+                                <td>${entidad.personaid.curp}</td>
+                                <td style="display:none">${entidad.personaid.sexoid.sexoid}</td> 
+                                <td>${entidad.personaid.sexoid.descripcion}</td>
+                                <td><button id="mostrar" onclick="mostrarNombre();" data-toggle="modal" data-target="#myModal" class="btn btn-warning">
+                                        <span class="glyphicon glyphicon-pencil"></span></button></td>
+                                <td><button id="eliminar" class="btn btn-danger" onclick="eliminarEntidad(${entidad.entidadid});">
+                                        <span class="glyphicon glyphicon-remove"></span></button></td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+
+                </table>
+            </div>
+            <input type="hidden" name="${_csrf.parameterName}"
+                   value="${_csrf.token}" />
+        </div>
+        <br />
+        <!-- Listado de Telefonos -->
+        <div class="col-md-2">
+            <div class="table-responsive">
+                <table id="tableEntidadTelefono" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <td style="display:none">ID Tipo Telefono</td>
+                            <td>Telefono</td>
+                            <td>TipoID</td>
+                            <td>Tipo</td>
+                        </tr>
+                    <thead>
+                    <tbody>
+                        <c:forEach items="${lTelefono}" var="telefono">
+                            <tr>
+                                <td style="display:none">${telefono.telefonoid}</td>
+                                <td>${telefono.numTelefono}</td>
+                                <td>${telefono.tipoid.tipoid}</td>
+                                <td>${telefono.tipoid.tipotelefono}</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>  Fomulario para agregar usuarios al sistema</h3>
+                        </div>
+                        <div class="modal-body">
+                            <!--Formilario para agregar usuario -->
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="razonsocial">Razón Social: </label>
+                                    <div class="col-md-6" style="display:none">
+                                        <input id="razonsocialid" class="form-control">
+                                    </div>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="razonsocial" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="nombrecorto">Nombre Corto: </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="nombrecorto" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="correoelectronico">Email: </label>
+                                    <div class="col-sm-10">
+                                        <input type="email" class="form-control" id="correoelectronico" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="ref">RFC: </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="rfc" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="calle">Calle y número: </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="calle" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="calle">Colonia </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="colonia" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label  class="control-label col-sm-2">Código Postal:</label>
+                                    <div class="col-sm-10">
+                                        <!-- consulta catalogo -->
+                                        <SELECT id="codigopostal" class="form-control">
+                                            <option value="0">Seleccionar...</option>
+                                            <c:forEach items="${lCodigoPostal}" var="cp">
+                                                <OPTION value="${cp.codigopostalid}">${cp.clave}</OPTION>
+                                                </c:forEach>
+                                        </SELECT>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="nombre">Nombre Encargada: </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="nombre" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="apaterno">Apellido Paterno: </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="apaterno" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="amaterno">Apellido Materno: </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="amaterno" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="curp">CURP: </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="curp" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label  class="control-label col-sm-2">Sexo</label>
+                                    <div class="col-sm-10">
+                                        <!-- consulta catalogo -->
+                                        <SELECT id="sexo" class="form-control">
+                                            <option value="0">Seleccionar...</option>
+                                            <c:forEach items="${lSexo}" var="sexo">
+                                                <OPTION value="${sexo.sexoid}">${sexo.descripcion}</OPTION>
+                                                </c:forEach>
+                                        </SELECT>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="numtelefono">Telefono </label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" id="numtelefono" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label  class="control-label col-sm-2">Tipo Telefono:</label>
+                                    <div class="col-sm-10">
+                                        <!-- consulta catalogo -->
+                                        <SELECT id="telefono" class="form-control">
+                                            <option value="0">Seleccionar...</option>
+                                            <c:forEach items="${lTipoTelefono}" var="tipo">
+                                                <OPTION value="${tipo.tipoid}">${tipo.tipotelefono}</OPTION>
+                                                </c:forEach>
+                                        </SELECT>
+                                    </div>
+                                </div>
+                            </form> 
+                        </div><!--modal body-->
+                        <div class="modal-footer">
+                            <div class="form-group">
+                                <button id="guardar" class="btn btn-success" onclick="agregarEntidad();">Guardar</button>
+                                <button id="actualizar" onclick="actualizarEntidad();" class="btn btn-primary" >Actualizar</button>
+                                <button id="limpiar" onclick="limpiarCajas();" class="btn btn-default">Limpiar</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div><!--modal footer-->
+                    </div><!--modal6-container-->
+                </div><!--modal dialog-->
+            </div><!--modalfade-->
+        </div><!--container-->
+
+    </div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.CiudadDao;
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.model.Ciudad;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Repository("ciudadDao")
+public class CiudadDaoImpl extends HibernateDao<Integer, Ciudad> implements CiudadDao{
+
+    @Override
+    public Ciudad buscaId(int ciudadId) {
+     System.out.println(CodigoPostalDaoImpl.class + "\nBuscando Ciudad por Id: " + ciudadId);
+         Criteria criteria = creaCriteria();        
+        criteria.add(Restrictions.eq("ciudadid", ciudadId));      
+        
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        
+        return (Ciudad) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<Ciudad> showCiudad() {
+     Criteria criteria = creaCriteria();
+        //indicar que no traiga datos repetidos
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        //lista los delitos sin repetir algun dato
+        List<Ciudad> lCiudad = criteria.list();
+        return lCiudad;}
+
+    @Override
+    public List<Ciudad> listaCiudadPorCodigo(int codigoPostal) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+}

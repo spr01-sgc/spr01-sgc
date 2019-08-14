@@ -1,0 +1,95 @@
+<%-- 
+    Document   : bitacoraPago
+    Created on : 22/12/2017, 03:04:22 PM
+    Author     : JASMIN-SOMA
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%@include file="index.jsp" %>
+<br />
+<br />
+<br />
+<div class="container">   
+    <div class="panel-group">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Bitacora del estado de Pagos</div>
+            <div id="contenidoPantalla" class="panel-body">        
+                <div class="row">
+                    <div class="form-group">
+                    <div class="btn btn-group">
+                        <button id="bitaU" class="btn btn-info" onclick="reportExcel('#divBitaPago');"> 
+                            <span class="glyphicon glyphicon-file"></span>Generar Reporte</button>
+                        </div> <input type="text" class="form-control pull-right" style="width:20%" 
+                               id="search" onkeyup="busquedaTbl('tblBitacoraPago');" placeholder="Busqueda">
+                    </div>
+                    <div id="divBitaPago">
+                    <!-- Listado de pba -->
+                    <div  class="col-md-12">
+                        <div class="table-responsive">
+                            <table id="tblBitacoraPago" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th style="display:none">id</th>
+                                        <th>Clave Pago</th>                              
+                                        <th>Usuario</th>  
+                                        <th>Cantidad Enviada</th>
+                                        <th>Cantidad Entregada</th>
+                                        <th>Fecha</th>   
+                                        <th style="display:none">CausaId</th>                                        
+                                        <th>Causa Rechazo</th>
+                                        <th style="display:none">EstatusIdPago</th>
+                                        <th>Estatus del Pago</th>
+                                        <th>Sucursal</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bodytabla">
+                                    <c:forEach items="${lBitaPago}" var="bitpago" varStatus="cont">
+                                        <tr>
+                                            <td>${cont.count}</td>
+                                            <td id="idbitPago" style="display:none">${bitpago.bitapagoid}</td>
+                                            <td>${bitpago.pagoid.clavepago}</td>
+                                            <td>${bitpago.usuarioid.personaid.nombre} ${bitpago.usuarioid.personaid.apaterno} ${bitpago.usuarioid.personaid.amaterno}</td>
+                                            <td>${bitpago.pagoid.cantidadenviada}</td>
+                                            <td>${bitpago.pagoid.cantidadentregada}</td>                                        
+                                            <td>${bitpago.fecha}</td>            
+                                            <c:set var = "descripcion" scope = "session" value = ""/>
+                                            <c:forEach items="${lCausa}" var="causa">                                                   
+                                                <c:choose> 
+                                                    <c:when test="${causa.bitapagoid.bitapagoid==bitpago.bitapagoid}"> 
+                                                        <td style="display: none"> ${descripcion = causa.descripcion}</td>
+                                                    </c:when> 
+                                                    <c:otherwise>
+                                                        <c:if test="${descripcion == ''}">
+                                                            <td style="display: none">  ${descripcion = "N/A"}</td>
+                                                    </c:if>
+                                                </c:otherwise>
+                                            </c:choose>                                        
+                                        </c:forEach>
+                                        <td><c:out value = "${descripcion}"/></td>
+                                        ${descripcion = ""}                                                                                 
+                                            <td style="display:none">${bitpago.estatusid.estatusid}</td> 
+                                            <td>${bitpago.estatusid.descripcion}</td>
+                                            <td>${bitpago.usuarioid.sucursalid.nombresucursal}</td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+
+                        </table>
+
+                    </div>     <!-- Table-->      
+
+                    <input type="hidden" name="${_csrf.parameterName}"
+                           value="${_csrf.token}" />
+                </div><!--col-m-12 -->
+                </div>
+            </div><!-- row-->
+        </div><!--class body -->
+    </div><!-- panel-primary-->
+</div>  <!-- panel-group-->  
+</div><!--class container -->
+
+</body>
+</html>
+

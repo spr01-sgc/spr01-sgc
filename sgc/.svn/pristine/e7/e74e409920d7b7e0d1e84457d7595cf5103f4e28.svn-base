@@ -1,0 +1,46 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.ClienteDao;
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.model.Cliente;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Repository("clienteDao")
+public class ClienteDaoImpl extends HibernateDao<Integer, Cliente> implements ClienteDao {
+
+    @Override 
+    public Cliente buscaCLave(String clave) {
+        Criteria criteria = creaCriteria();
+        criteria.add(Restrictions.eq("clave", clave));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return (Cliente) criteria.uniqueResult();
+    }
+
+    @Override
+    public Cliente clave() {
+        Query query = getSession().createQuery("FROM Cliente \n"
+                + " WHERE clave = (SELECT MAX(clave) from Cliente)");
+        return (Cliente) query.uniqueResult();
+    }
+
+    @Override
+    public Cliente buscaRFC(String rfc) {
+        Criteria criteria = creaCriteria();
+        criteria.add(Restrictions.eq("rfc", rfc));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return (Cliente) criteria.uniqueResult();
+    }
+
+}

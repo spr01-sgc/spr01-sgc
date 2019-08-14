@@ -1,0 +1,88 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.service.impl;
+
+import com.soma.transmisor.dao.PagoDao;
+import com.soma.transmisor.model.CausaRechazo;
+import com.soma.transmisor.model.Pago;
+import com.soma.transmisor.service.PagoService;
+import java.util.Date;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Repository("pagoService")
+@Transactional
+public class PagoServiceImpl implements PagoService {
+
+    @Autowired
+    PagoDao pagoDao;
+
+    private boolean estadoMetodo = false;
+
+    @Override
+    public boolean update(Pago pago) {
+        pagoDao.update(pago);
+        return estadoMetodo = true;
+    }
+
+    @Override
+    public boolean save(Pago pago) {
+        pagoDao.save(pago);
+        return estadoMetodo = true;
+    }
+
+    @Override
+    public Pago buscaId(int pagoid) {
+        return pagoDao.buscaId(pagoid);
+    }
+
+    @Override
+    public List<Pago> showPago() {
+        return pagoDao.showPago();
+    }
+
+    @Override
+    public List<Pago> showPagoRel(Date fechIn, Date fechTer,int dolar) {
+        return pagoDao.showPagoRel(fechIn, fechTer,dolar);
+    }
+
+    @Override
+    public List<Pago> consultarOperacion(Date fechIn, Date fechTer,int dolar) {
+        return pagoDao.consultarOperacion(fechIn, fechTer,dolar);
+    }
+
+    @Override
+    public List<Pago> notificacionRelevante(int dolar) {
+        return pagoDao.notificacionRelevante(dolar);
+    }
+
+    @Override
+    public List<Pago> showOperacionInusual() {
+
+        return pagoDao.showOperacionInusual();
+    }
+
+    @Override
+    public List<Pago> reporteOperacionIn(List<Integer> clienteId) {
+        return pagoDao.reporteOperacionIn(clienteId);
+    }
+
+    @Override
+    public List<Pago> notificacionInusual(int clienteid) {
+    return pagoDao.notificacionInusual(clienteid);
+    }
+
+    @Override
+    public List<CausaRechazo> showCausa() {
+    return pagoDao.showCausa();
+    }
+}

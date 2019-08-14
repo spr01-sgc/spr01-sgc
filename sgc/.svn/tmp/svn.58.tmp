@@ -1,0 +1,232 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.dao.PagoDao;
+import com.soma.transmisor.model.Pago;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Repository("pagoDao")
+public class PagoDaoImpl extends HibernateDao<Integer, Pago> implements PagoDao {
+
+    @Override
+    public void update(Pago pago) {
+        actualizar(pago);
+        System.out.println("Se ha actualizado correctamente el pago " + pago);
+    }
+
+    @Override
+    public void save(Pago pago) {
+        guardar(pago);
+        System.out.println("Se ha guardado correctamente el pago");
+    }
+
+    @Override
+    public Pago buscaId(int pagoid) {
+        Criteria criteria = creaCriteria();
+        criteria.add(Restrictions.eq("pagoid", pagoid));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return (Pago) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<Pago> showPago() {
+        Criteria criteria = creaCriteria();
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        List<Pago> lPago = criteria.list();
+        return lPago;
+    }
+
+    /**
+     * Muestra operaciones relevantes en un periodo de fechas
+     *
+     * @param fechIn indica el inicio del periodo de fechas
+     * @param fechTer indica la fecha final que se toma para generar reporte
+     * @return lista de operaciones Relevantes
+     */
+    @Override
+    public List<Pago> showPagoRel(Date fechIn, Date fechTer) {
+        SQLQuery query = getSession().createSQLQuery(" SELECT  cl.clave,\n"
+                + "sum(cantidadenviada) as Envio,  sum(cantidadentregada) as Retiro,\n"
+                + "(pe.nombre||' '||pe.apaterno||' '||pe.amaterno) as Remitente,\n"
+                + "(perBf.nombre||' '||perBf.apaterno||' '||perBf.amaterno) as Benefi\n"
+                + "from  bitapago b INNER JOIN ct_estatus_pago esP ON esP.estatusid=b.estatusid_estatusid\n"
+                + "INNER JOIN   pago pa  ON b.pagoid_pagoid = pa.pagoid \n"
+                + "INNER JOIN cliente cl   ON cl.clienteid = pa.clienteid_clienteid  \n"
+                + "INNER JOIN personafisica pf  ON pf.clienteid_clienteid=cl.clienteid \n"
+                + "INNER JOIN persona pe  ON pe.personaid = pf.personaid_personaid \n"
+                + "INNER JOIN beneficiario bf ON bf.beneficiarioid=pa.beneficiarioid_beneficiarioid\n"
+                + "INNER JOIN persona perBf on bf.personaid_personaid=perBf.personaid\n"
+                + "where b.fecha between '" + fechIn + "' and '" + fechTer + "'   \n"
+                + "and pa.fechahoraregistro between '" + fechIn + "' and '" + fechTer + "' \n"
+                + "and esP.descripcion='Pagado'   \n"
+                + "GROUP BY clienteid,Remitente,cl.clave,Benefi \n"
+                + "HAVING sum(cantidadenviada) >= 5000");
+        List<Pago> lSumP = query.list();
+        return lSumP;
+    }
+
+    /**
+     * *
+     * Metodo que busca las operaciones relevantes (mayores a 5000 dolares),
+     *
+     * @param fechIn establece el inicio del periodo en que se genera el reporte
+     * @param fechTer establece el final del periodo del reporte
+     * @return lista operaciones relevantes generacion de REPORTE
+     */
+    @Override
+    public List<Pago> consultarOperacion(Date fechIn, Date fechTer) {
+        Date hoy = new Date();
+        SQLQuery opRel = getSession().createSQLQuery("SELECT E.nombrecorto as NomEn,E.razonsocial,cdS.claveciudad as cdSu,cpS.clave as CP,\n"
+                + "tps.clave as servicio,ins.clave as instrumento,Max(pago.clavepago) as remesa,sum(pago.cantidadentregada) as Retiro,SUM(cantidadenviada),\n"
+                + "modiv.clave as moneda,Max(bp.fecha),dirben.calle,dirben.colonia,cpBen.clave,cdBen.claveciudad as cdBen,\n"
+                + "perBf.nombre as NomB,perBf.apaterno,perBf.amaterno,perBf.curp,E.nombrecorto as NombreE,E.rfc\n"
+                + "From entidad E inner join direccion dirEn\n"
+                + "ON E.direccionid_direccionid=dirEn.direccionid\n"
+                + "INNER JOIN sucursal s\n"
+                + "ON S.entidadid_entidadid=E.entidadid\n"
+                + "INNER JOIN direccion dirSu\n"
+                + "ON dirSu.direccionid=s.direccionid_direccionid\n"
+                + "INNER JOIN ct_codigopostal cpS\n"
+                + "On cpS.codigopostalid=dirSu.codigopostalid_codigopostalid\n"
+                + "INNER JOIN ct_ciudad cdS\n"
+                + "ON cdS.ciudadid=cpS.ciudad_ciudadid\n"
+                + "INNER JOIN usuario usu\n"
+                + "on usu.sucursalid_sucursalid=s.sucursalid\n"
+                + "INNER JOIN bitapago bp\n"
+                + "ON bp.usuarioid_usuarioid=usu.usuarioid\n"
+                + "INNER JOIN pago \n"
+                + "ON pago.pagoid=bp.pagoid_pagoid\n"
+                + "INNER JOIN ct_estatus_pago estpa\n"
+                + "ON estpa.estatusid=bp.estatusid_estatusid\n"
+                + "INNER JOIN beneficiario bf\n"
+                + "ON bf.beneficiarioid=pago.beneficiarioid_beneficiarioid\n"
+                + "INNER JOIN persona perBf\n"
+                + "ON perBf.personaid=bf.personaid_personaid\n"
+                + "inner join ct_instrumentomonetario ins \n"
+                + "ON ins.instmonetarioid=pago.instrumentomonetario_instmonetarioid\n"
+                + "INNER JOIN ct_monedadivisa modiv\n"
+                + "on modiv.monedadivisaid=pago.monedadivisaid_monedadivisaid\n"
+                + "INNER JOIN ct_tiposervicio tps\n"
+                + "ON tps.tiposervicioid=pago.tiposervicioid_tiposervicioid\n"
+                + "INNER JOIN direccion dirben\n"
+                + "on dirben.direccionid=bf.direccionid_direccionid\n"
+                + "INNER JOIN ct_codigopostal cpBen\n"
+                + "ON cpBen.codigopostalid=dirben.codigopostalid_codigopostalid\n"
+                + "INNER JOIN ct_ciudad cdBen\n"
+                + "ON cdBen.ciudadid=cpBen.ciudad_ciudadid\n"
+                + " WHERE  estpa.descripcion='Pagado' and "
+                + "bp.fecha between '" + fechIn + "' and '" + fechTer + "'    \n"
+                + "and pago.fechahoraregistro between '" + fechIn + "' and '" + fechTer + "'  \n"
+                + "or bp.fecha ='" + hoy + "' \n"
+                + "GROUP BY  beneficiarioid,E.nombrecorto,E.razonsocial,cdS.claveciudad,cpS.clave,\n"
+                + "tps.clave,ins.clave,modiv.clave,dirben.calle,dirben.colonia,cpBen.clave,cdBen.claveciudad,\n"
+                + "perBf.nombre,perBf.apaterno,perBf.amaterno,perBf.curp,E.nombrecorto,E.rfc "
+                + "HAVING sum(cantidadenviada)>= 5000 ");
+        List<Pago> pagos = opRel.list();
+        return pagos;
+    }
+
+    @Override
+    public List<Pago> notificacionRelevante() {
+        Date fecha = new Date();
+        SQLQuery opRel = getSession().createSQLQuery("SELECT cl.clave,"
+                + "persona.nombre||' '||persona.amaterno||' '||persona.apaterno as Beneficiario, \n"
+                + "sum(cantidadenviada) as Cant, sum(cantidadentregada)\n"
+                + "FROM bitapago b \n"
+                + "INNER JOIN pago pa\n"
+                + "ON b.pagoid_pagoid = pa.pagoid \n"
+                + "INNER JOIN ct_estatus_pago estPa\n"
+                + "On estPa.estatusid=b.estatusid_estatusid\n"
+                + "INNER JOIN beneficiario ben \n"
+                + "ON ben.beneficiarioid=pa.beneficiarioid_beneficiarioid\n"
+                + "INNER JOIN persona \n"
+                + "ON persona.personaid=ben.personaid_personaid\n"
+                + "INNER JOIN cliente cl\n"
+                + "ON cl.clienteid=pa.clienteid_clienteid\n"
+                + "WHERE estPa.descripcion='Pagado' and b.fecha='" + fecha + "'\n"
+                + "GROUP BY pagoid,beneficiario,cl.clave\n"
+                + "HAVING sum(cantidadenviada) >= 5000");
+        List<Pago> lRelevante = opRel.list();
+        return lRelevante;
+
+    }
+
+    @Override
+    public List<Pago> showOperacionInusual() {
+        SQLQuery perfiles = getSession().createSQLQuery("Select peben.apaterno||' "
+                + "'||peben.amaterno||' '||peben.nombre as NomCom,\n"
+                + "clavepago,cantidadenviada,cantidadentregada,bp.fecha\n"
+                + "From beneficiario bf \n"
+                + "inner join persona peben on bf.personaid_personaid=peben.personaid\n"
+                + "inner join pago on pago.beneficiarioid_beneficiarioid=bf.beneficiarioid\n"
+                + "inner join bitapago bp on bp.pagoid_pagoid=pago.pagoid\n"
+                + "inner join ct_estatus_pago estp on estp.estatusid=bp.estatusid_estatusid\n"
+                + " where estp.descripcion='Pagado' \n"
+                + "ORDER BY bp.fecha desc");
+        List<Pago> lPerfil = perfiles.list();
+        return lPerfil;
+    }
+
+    @Override
+    public List<Pago> showOperacionInusualSeg(int sucursalid) {
+        //Pagos y clientes en los primeros 6 meses
+
+        SQLQuery pagCl = getSession().createSQLQuery("Select clienteid,nombre||' '||apaterno||' '||amaterno as nomCom,\n"
+                + "(sum(cantidadentregada)*0.5)+sum(cantidadentregada)  as Limite,\n"
+                + "(sum(cantidadentregada)*0.5) as porcen,sum(cantidadentregada)\n"
+                + "From cliente cl \n"
+                + "inner join pago on pago.clienteid_clienteid=cl.clienteid\n"
+                + "inner join bitapago bp on bp.pagoid_pagoid=pago.pagoid\n"
+                + "inner join ct_estatus_pago estp on estp.estatusid=bp.estatusid_estatusid\n"
+                + "inner join personafisica pefi \n"
+                + "on cl.clienteid=pefi.clienteid_clienteid\n"
+                + "inner JOIN persona on pefi.personaid_personaid=persona.personaid\n"
+                + "inner join usuario on usuario.usuarioid=bp.usuarioid_usuarioid\n"
+                + "inner join sucursal on sucursal.sucursalid=usuario.sucursalid_sucursalid\n"
+                + "where \n"
+                + "Extract(MONTH FROM bp.fecha)>= Extract(MONTH FROM(current_date - interval '6 month')) or\n"
+                + "Extract(MONTH FROM bp.fecha)<= Extract(MONTH FROM current_date) \n"
+                + "AND estp.descripcion='Pagado'and sucursal.sucursalid=" + sucursalid + " and cl.clienteid=3\n"
+                + "GROUP BY clienteid,nomCom");
+        List<Pago> lPaCl = pagCl.list();
+        Iterator iterator = lPaCl.iterator();
+        while (iterator.hasNext()) {
+            Object[] tuple = (Object[]) iterator.next();
+            int clienteid = (int) tuple[1];
+            int pagoid = (int) tuple[2];
+            System.out.println("Tiene " + clienteid + pagoid);
+        }
+        //se recorre la lista 
+
+        SQLQuery calculos = getSession().createSQLQuery("Select beneficiarioid,peben.apaterno||' '||peben.amaterno||' '||peben.nombre as NomCom,\n"
+                + " sum(cantidadentregada)as XMes,count(pagoid),sum(cantidadentregada)/0.5 as Limite \n"
+                + "From beneficiario bf \n"
+                + "inner join persona peben on bf.personaid_personaid=peben.personaid\n"
+                + "inner join pago on pago.beneficiarioid_beneficiarioid=bf.beneficiarioid\n"
+                + "inner join bitapago bp on bp.pagoid_pagoid=pago.pagoid\n"
+                + "inner join ct_estatus_pago estp on estp.estatusid=bp.estatusid_estatusid\n"
+                + "inner join usuario on usuario.usuarioid=bp.usuarioid_usuarioid\n"
+                + "inner join sucursal on sucursal.sucursalid=usuario.sucursalid_sucursalid\n"
+                + "where estp.descripcion='Pagado'and sucursalid=" + sucursalid + "\n"
+                + "GROUP BY beneficiarioid,NomCom,EXTRACT(MONTH from bp.fecha)");
+        List<Pago> lTransacciones = calculos.list();
+        return lTransacciones;
+    }
+
+}

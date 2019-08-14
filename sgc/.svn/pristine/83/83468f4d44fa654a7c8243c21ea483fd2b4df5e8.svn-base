@@ -1,0 +1,124 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.model;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import org.hibernate.annotations.ForeignKey;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Entity
+@Table(name = "personafisica")
+public class PersonaFisica implements Serializable{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "personafisicaid")
+    private Integer personafisicaid;
+    
+    @Column(name="fechanacimiento")
+    @Temporal(TemporalType.DATE)
+    private Date fechanacimiento;
+    
+    @Column(name="identificacionoficial")
+    private String identificacionoficial;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private Persona personaid;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private TipoIdentidad tipoidentidadid;
+    
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    @ForeignKey(name = "clienteid")
+    private Cliente clienteid;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private ActividadEco actividadid;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private EstatusIdentificacion estatusidentificacionid;
+
+    public Integer getPersonafisicaid() {
+        return personafisicaid;
+    }
+
+    public void setPersonafisicaid(Integer personafisicaid) {
+        this.personafisicaid = personafisicaid;
+    }
+
+    public Date getFechanacimiento() {
+        return fechanacimiento;
+    }
+
+    public void setFechanacimiento(Date fechanacimiento) {
+        this.fechanacimiento = fechanacimiento;
+    }
+
+    
+
+    public String getIdentificacionoficial() {
+        return identificacionoficial;
+    }
+
+    public void setIdentificacionoficial(String identificacionoficial) {
+        this.identificacionoficial = identificacionoficial;
+    }
+
+    public Persona getPersonaid() {
+        return personaid;
+    }
+
+    public void setPersonaid(Persona personaid) {
+        this.personaid = personaid;
+    }
+
+    public TipoIdentidad getTipoidentidadid() {
+        return tipoidentidadid;
+    }
+
+    public void setTipoidentidadid(TipoIdentidad tipoidentidadid) {
+        this.tipoidentidadid = tipoidentidadid;
+    }
+
+    public Cliente getClienteid() {
+        return clienteid;
+    }
+
+    public void setClienteid(Cliente clienteid) {
+        this.clienteid = clienteid;
+    }
+
+    public ActividadEco getActividadid() {
+        return actividadid;
+    }
+
+    public void setActividadid(ActividadEco actividadid) {
+        this.actividadid = actividadid;
+    }
+
+    public EstatusIdentificacion getEstatusidentificacionid() {
+        return estatusidentificacionid;
+    }
+
+    public void setEstatusidentificacionid(EstatusIdentificacion estatusidentificacionid) {
+        this.estatusidentificacionid = estatusidentificacionid;
+    }
+      
+}

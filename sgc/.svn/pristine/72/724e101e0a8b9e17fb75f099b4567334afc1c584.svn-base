@@ -1,0 +1,54 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.BitacoraPagoDao;
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.model.BitacoraPago;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Repository("bitacoraPagoDao")
+public class BitacoraPagoDaoImpl extends HibernateDao<Integer, BitacoraPago> implements BitacoraPagoDao{
+
+    @Override
+    public void save(BitacoraPago bitacoraP) {
+         guardar(bitacoraP);
+   System.out.print(BitacoraPagoDaoImpl.class+"Se ha guardado correctamente la en bitacora Pago"+ bitacoraP.toString());
+   
+    }
+
+    @Override
+    public BitacoraPago buscaId(int bitapagoid) {
+    System.out.println(BitacoraPagoDaoImpl.class + "\nBuscando estatus por  bitacoraPid: " + bitapagoid);
+        BitacoraPago bitapago= getPorId(bitapagoid);
+        
+        return bitapago;
+    }
+
+    @Override
+    public List<BitacoraPago> showBitacoraP() {
+   //criterias consultas a la base de datso
+        Criteria criteria = creaCriteria();
+        //indicar que no traiga datos repetidos
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        //lista los bitacora de pago sin repetir algun dato
+        List<BitacoraPago> lBitaPago = criteria.list();
+        return lBitaPago;
+    }
+
+    @Override
+    public BitacoraPago buscarPorRemesa(int pagoId) {
+        BitacoraPago bitaPagoR=getPorId(pagoId);
+        return bitaPagoR;
+    }
+    
+}

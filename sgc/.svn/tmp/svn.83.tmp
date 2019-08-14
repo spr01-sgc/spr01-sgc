@@ -1,0 +1,292 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.dao.PagoDao;
+import com.soma.transmisor.model.CausaRechazo;
+import com.soma.transmisor.model.Pago;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Repository("pagoDao")
+public class PagoDaoImpl extends HibernateDao<Integer, Pago> implements PagoDao {
+
+    @Override
+    public void update(Pago pago) {
+        actualizar(pago);
+        System.out.println("Se ha actualizado correctamente el pago " + pago);
+    }
+
+    @Override
+    public void save(Pago pago) {
+        guardar(pago);
+        System.out.println("Se ha guardado correctamente el pago");
+    }
+
+    @Override
+    public Pago buscaId(int pagoid) {
+        Criteria criteria = creaCriteria();
+        criteria.add(Restrictions.eq("pagoid", pagoid));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return (Pago) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<Pago> showPago() {
+        Criteria criteria = creaCriteria();
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        List<Pago> lPago = criteria.list();
+        return lPago;
+    }
+
+    /**
+     * Muestra operaciones relevantes en un periodo de fechas
+     *
+     * @param fechIn indica el inicio del periodo de fechas
+     * @param fechTer indica la fecha final que se toma para generar reporte
+     * @param dolar
+     * @return lista de operaciones Relevantes
+     */
+    @Override
+    public List<Pago> showPagoRel(Date fechIn, Date fechTer,int dolar) {
+        SQLQuery query = getSession().createSQLQuery(" SELECT cl.clave,sum(cantidadenviada) as Envio,\n" +
+"sum(cantidadentregada) as Retiro,(pe.nombre||' '||pe.apaterno||' '||pe.amaterno) as cliente,\n" +
+"tps.descripcion\n" +
+"From bitapago b \n" +
+"INNER JOIN ct_estatus_pago esP \n" +
+"ON esP.estatusid=b.estatusid_estatusid \n" +
+"INNER JOIN pago pa  \n" +
+"ON b.pagoid_pagoid = pa.pagoid  \n" +
+"INNER JOIN cliente cl   \n" +
+"ON cl.clienteid = pa.clienteid_clienteid   \n" +
+"INNER JOIN personafisica pf  \n" +
+"ON pf.clienteid_clienteid=cl.clienteid  \n" +
+"INNER JOIN persona pe  \n" +
+"ON pe.personaid = pf.personaid_personaid   \n" +
+"INNER JOIN ct_tiposervicio tps \n" +
+"ON tps.tiposervicioid=pa.tiposervicioid_tiposervicioid \n" +
+"where b.fecha between '"+fechIn+"' and '"+fechTer+"'    \n" +
+"and pa.fechahoraregistro between '"+fechIn+"' and '"+fechTer+"'  \n" +
+"and esP.estatusid=1 \n" +
+"GROUP BY clienteid,cliente,cl.clave,tps.descripcion\n" +
+"HAVING sum(cantidadenviada)>="+dolar+"");
+        List<Pago> lSumP = query.list();
+        return lSumP;
+    }
+
+    /**
+     * *
+     * Metodo que busca las operaciones relevantes (mayores a 5000 dolares),
+     *
+     * @param fechIn establece el inicio del periodo en que se genera el reporte
+     * @param fechTer establece el final del periodo del reporte
+     * @param dolar catidad de dolares limite
+     * @return lista operaciones relevantes generacion de REPORTE
+     */
+    @Override
+    public List<Pago> consultarOperacion(Date fechIn, Date fechTer,int dolar) {
+        Date hoy = new Date();
+        SQLQuery opRel = getSession().createSQLQuery("SELECT E.claveorganosupervisor as ClOr,\n" +
+"E.claveentidad,cdS.claveciudad as cdSu,cpS.clave as CP,\n" +
+"tps.clave as servicio,ins.clave as instrumento,Max(pago.clavepago) as remesa,\n" +
+"sum(pago.cantidadentregada) as Retiro,SUM(cantidadenviada),modiv.clave as moneda,\n" +
+"Max(bp.fecha),dirPerF.calle,dirPerF.colonia,cpPerF.clave,\n" +
+"cdPerF.claveciudad as cdBen,actec.claveae,perfi.nombre as NomB,perfi.apaterno,\n" +
+"perfi.amaterno,perfi.curp,E.nombrecorto as NombreE,E.rfc \n" +
+"From entidad E inner join direccion dirEn \n" +
+"ON E.direccionid_direccionid=dirEn.direccionid \n" +
+"INNER JOIN sucursal s ON S.entidadid_entidadid=E.entidadid \n" +
+"INNER JOIN direccion dirSu ON dirSu.direccionid=s.direccionid_direccionid \n" +
+"INNER JOIN ct_codigopostal cpS  On cpS.codigopostalid=dirSu.codigopostalid_codigopostalid \n" +
+"INNER JOIN ct_ciudad cdS ON cdS.ciudadid=cpS.ciudad_ciudadid \n" +
+"INNER JOIN usuario usu on usu.sucursalid_sucursalid=s.sucursalid \n" +
+"INNER JOIN bitapago bp ON bp.usuarioid_usuarioid=usu.usuarioid \n" +
+"INNER JOIN pago ON pago.pagoid=bp.pagoid_pagoid \n" +
+"INNER JOIN ct_estatus_pago estpa ON estpa.estatusid=bp.estatusid_estatusid \n" +
+"INNER JOIN cliente cl  ON cl.clienteid=pago.clienteid_clienteid\n" +
+"INNER JOIN personafisica pf ON pf.clienteid_clienteid=cl.clienteid\n" +
+"INNER JOIN ct_actividadeco actec on actec.actividadid=pf.actividadid_actividadid\n"+
+"INNER JOIN persona perfi ON perfi.personaid=pf.personaid_personaid\n" +
+"inner join ct_instrumentomonetario ins ON ins.instmonetarioid=pago.instrumentomonetario_instmonetarioid \n" +
+"INNER JOIN ct_monedadivisa modiv on modiv.monedadivisaid=pago.monedadivisaid_monedadivisaid \n" +
+"INNER JOIN ct_tiposervicio tps ON tps.tiposervicioid=pago.tiposervicioid_tiposervicioid \n" +
+"INNER JOIN direccion dirPerF  on dirPerF.direccionid=cl.direccionid_direccionid \n" +
+"INNER JOIN ct_codigopostal cpPerF  ON cpPerF.codigopostalid=dirPerF.codigopostalid_codigopostalid \n" +
+"INNER JOIN ct_ciudad cdPerF ON cdPerF.ciudadid=cpPerF.ciudad_ciudadid  \n" +
+"WHERE estpa.estatusid=1 \n" +
+"and bp.fecha between '"+fechIn+"' and '"+fechTer+"'     \n" +
+"and pago.fechahoraregistro between '"+fechIn+"' and '"+fechTer+"'   \n" +
+"OR bp.fecha ='"+hoy+"'  \n" +
+"GROUP BY clienteid, E.claveorganosupervisor,E.claveentidad,\n" +
+"cdS.claveciudad,cpS.clave,tps.clave,ins.clave,\n" +
+"modiv.clave,dirPerF.calle,dirPerF.colonia,\n" +
+"cpPerF.clave,cdPerF.claveciudad,actec.claveae,perfi.nombre,\n" +
+"perfi.apaterno,perfi.amaterno, perfi.curp,E.nombrecorto,E.rfc \n" +
+"HAVING sum(cantidadenviada)>="+dolar+" ");
+        List<Pago> pagos = opRel.list();
+        return pagos;
+    }
+
+    @Override
+    public List<Pago> notificacionRelevante(int dolar) {
+        Date fecha = new Date();
+        SQLQuery opRel = getSession().createSQLQuery("SELECT cl.clave,"
+                + "persona.nombre||' '||persona.amaterno||' '||persona.apaterno as Beneficiario, \n"
+                + "sum(cantidadenviada) as Cant, sum(cantidadentregada)\n"
+                + "FROM bitapago b \n"
+                + "INNER JOIN pago pa\n"
+                + "ON b.pagoid_pagoid = pa.pagoid \n"
+                + "INNER JOIN ct_estatus_pago estPa\n"
+                + "On estPa.estatusid=b.estatusid_estatusid\n"
+                + "INNER JOIN beneficiario ben \n"
+                + "ON ben.beneficiarioid=pa.beneficiarioid_beneficiarioid\n"
+                + "INNER JOIN persona \n"
+                + "ON persona.personaid=ben.personaid_personaid\n"
+                + "INNER JOIN cliente cl\n"
+                + "ON cl.clienteid=pa.clienteid_clienteid\n"
+                + "WHERE estPa.estatusid=1 and b.fecha='" + fecha + "'\n"
+                + "GROUP BY pagoid,beneficiario,cl.clave\n"
+                + "HAVING sum(cantidadenviada) >="+dolar+"");
+        List<Pago> lRelevante = opRel.list();
+        return lRelevante;
+
+    }
+/***
+ * Compara el perfil transaccional con la sumatoria de las remesas
+ * si es mayor la sumatoria muestra a los clientes
+ * @return clientes con operaciones inusuales
+ */
+    @Override
+    public List<Pago> showOperacionInusual() {
+        SQLQuery clienteInusual = getSession().createSQLQuery("SELECT cl.clienteid,cl.clave,\n" +
+"        sum(cantidadenviada) as Envio,\n" +
+"        sum(cantidadentregada) as Retiro,\n" +
+"        (pe.nombre||' '||pe.apaterno||' '||pe.amaterno) as cliente,\n" +
+"        tps.descripcion \n" +
+"from pago \n" +
+"INNER JOIN bitapago bp \n" +
+"on bp.pagoid_pagoid=pago.pagoid\n" +
+"INNER JOIN cliente cl\n" +
+"on cl.clienteid=pago.clienteid_clienteid\n" +
+"inner join personafisica pf\n" +
+"on pf.clienteid_clienteid=cl.clienteid\n" +
+"INNER JOIn persona pe\n" +
+"on pe.personaid=pf.personaid_personaid\n" +
+"INNER JOIN ct_estatus_pago esP  \n" +
+"ON esP.estatusid=bp.estatusid_estatusid\n" +
+"INNER JOIN ct_tiposervicio tps  \n" +
+"ON tps.tiposervicioid=pago.tiposervicioid_tiposervicioid \n" +
+"where (SELECT sum(cantidadentregada)\n" +
+"FROM cliente cli inner JOIN pago\n" +
+"on cli.clienteid=pago.clienteid_clienteid\n" +
+"INNER JOIN bitapago bp \n" +
+"on pago.pagoid=bp.pagoid_pagoid\n" +
+"INNER JOIN ct_estatus_pago estp \n" +
+"on estp.estatusid=bp.estatusid_estatusid\n" +
+"WHERE  estatusid=1 and bp.estatus='t' and cli.clienteid=cl.clienteid\n" +
+"GROUP BY clienteid)>= \n" +
+"(SELECT limite From  perfil_cliente \n" +
+"    where cl.clienteid=perfil_cliente.clienteid_clienteid and fecha=(select max(fecha) \n" +
+"            from  perfil_cliente where cl.clienteid=perfil_cliente.clienteid_clienteid))\n" +
+"GROUP BY cl.clienteid,cl.clave,cliente,tps.descripcion");
+        List<Pago> lClienteIn = clienteInusual.list();
+        return lClienteIn;
+    }
+
+    @Override
+    public List<Pago> reporteOperacionIn(List<Integer> clienteId) {
+         List<Pago> lPaCl =new ArrayList<>();
+            Iterator iterar = clienteId.iterator();
+        while (iterar.hasNext()) {//id,descripcion
+           int clienteID = (int) iterar.next();
+        //Reporte de operaciones inuasuales recibe una lista de idcliente
+        SQLQuery pagCl = getSession().createSQLQuery(" SELECT E.claveorganosupervisor as ClOr,\n" +
+"E.claveentidad,cdS.claveciudad as cdSu,cpS.clave as CP,\n" +
+" tps.clave as servicio,ins.clave as instrumento,Max(pago.clavepago) as remesa,\n" +
+" sum(pago.cantidadentregada) as Retiro,SUM(cantidadenviada),\n" +
+" modiv.clave as moneda,Max(bp.fecha),dirPerF.calle,\n" +
+" dirPerF.colonia,cpPerF.clave,cdPerF.claveciudad as cdBen,actec.claveae,\n" +
+" perfi.nombre as NomB,perfi.apaterno,perfi.amaterno,\n" +
+" perfi.curp,E.nombrecorto as NombreE,E.rfc  \n" +
+"From entidad E inner join direccion dirEn  \n" +
+"ON E.direccionid_direccionid=dirEn.direccionid  \n" +
+"INNER JOIN sucursal s ON S.entidadid_entidadid=E.entidadid  \n" +
+"INNER JOIN direccion dirSu ON dirSu.direccionid=s.direccionid_direccionid  \n" +
+"INNER JOIN ct_codigopostal cpS On cpS.codigopostalid=dirSu.codigopostalid_codigopostalid  \n" +
+"INNER JOIN  ct_ciudad cdS ON cdS.ciudadid=cpS.ciudad_ciudadid  \n" +
+"INNER JOIN  usuario usu on usu.sucursalid_sucursalid=s.sucursalid  \n" +
+"INNER JOIN  bitapago bp ON bp.usuarioid_usuarioid=usu.usuarioid  \n" +
+"INNER JOIN pago ON pago.pagoid=bp.pagoid_pagoid  \n" +
+"INNER JOIN  ct_estatus_pago estpa ON estpa.estatusid=bp.estatusid_estatusid  \n" +
+"INNER JOIN cliente cl ON cl.clienteid=pago.clienteid_clienteid \n" +
+"INNER JOIN personafisica pf ON pf.clienteid_clienteid=cl.clienteid\n" +
+"INNER JOIN ct_actividadeco actec on actec.actividadid=pf.actividadid_actividadid\n"+
+"INNER JOIN persona perfi ON perfi.personaid=pf.personaid_personaid \n" +
+"INNER JOIN  ct_instrumentomonetario ins ON ins.instmonetarioid=pago.instrumentomonetario_instmonetarioid  \n" +
+"INNER JOIN ct_monedadivisa modiv on modiv.monedadivisaid=pago.monedadivisaid_monedadivisaid  \n" +
+"INNER JOIN ct_tiposervicio tps ON tps.tiposervicioid=pago.tiposervicioid_tiposervicioid  \n" +
+"INNER JOIN direccion dirPerF on dirPerF.direccionid=cl.direccionid_direccionid  \n" +
+"INNER JOIN ct_codigopostal cpPerF ON cpPerF.codigopostalid=dirPerF.codigopostalid_codigopostalid  \n" +
+"INNER JOIN ct_ciudad cdPerF ON cdPerF.ciudadid=cpPerF.ciudad_ciudadid   \n" +
+"WHERE estpa.estatusid=1 and clienteid="+clienteID+"  \n" +
+" GROUP BY clienteid,E.claveorganosupervisor,E.claveentidad,cdS.claveciudad,\n" +
+" cpS.clave,tps.clave,ins.clave,modiv.clave,dirPerF.calle,\n" +
+" dirPerF.colonia, cpPerF.clave,cdPerF.claveciudad,actec.claveae,perfi.nombre,\n" +
+" perfi.apaterno, perfi.amaterno,perfi.curp,E.nombrecorto,E.rfc");
+List<Pago> lpagos =  pagCl.list(); 
+            lPaCl.addAll(lpagos);
+        }  
+        return lPaCl;
+    }
+
+    @Override
+    public List<Pago> notificacionInusual(int clienteid) {
+        SQLQuery perfil=getSession().createSQLQuery("SELECT limite \n" +
+"From  perfil_cliente\n" +
+"where clienteid_clienteid="+clienteid+" and fecha=(select max(fecha)\n" +
+"from  perfil_cliente where clienteid_clienteid="+clienteid+");");
+     String valPerfil= perfil.list().iterator().next().toString();
+        SQLQuery total=getSession().createSQLQuery("\n" +
+"SELECT sum(cantidadentregada)\n" +
+"FROM cliente cli inner JOIN pago\n" +
+"on cli.clienteid=pago.clienteid_clienteid\n" +
+"INNER JOIN bitapago bp \n" +
+"on pago.pagoid=bp.pagoid_pagoid\n" +
+"INNER JOIN ct_estatus_pago estp\n" +
+"on estp.estatusid=bp.estatusid_estatusid\n" +
+"WHERE  estatusid=1  and cli.clienteid="+clienteid+"\n" +
+"GROUP BY clienteid");
+        String valTotal=total.list().iterator().next().toString();
+        int valorPerfil=Integer.parseInt(valPerfil);
+        int sumTotal=Integer.parseInt(valTotal);
+        if(sumTotal>valorPerfil){//ya hay una operacion
+            
+        }
+        
+
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<CausaRechazo> showCausa() {
+      Query query = getSession().createQuery("FROM CausaRechazo");
+        List<CausaRechazo> lCausa= query.list();
+        return lCausa;
+    }
+
+}

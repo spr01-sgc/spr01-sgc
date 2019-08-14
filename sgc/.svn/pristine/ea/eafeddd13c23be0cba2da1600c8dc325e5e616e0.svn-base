@@ -1,0 +1,106 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.model;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import org.hibernate.annotations.ForeignKey;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Entity
+@Table(name = "bitapago")
+public class BitacoraPago implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "bitapagoid")
+    private Integer bitapagoid;
+    @Column(name = "fecha")
+    @Temporal(TemporalType.DATE)
+    private Date fecha;
+    //un pago un usuario
+    @OneToOne(cascade = CascadeType.ALL)
+    @ForeignKey(name = "usuarioid_fk")
+    private Usuario usuarioid;
+    //un pago un  estatus 
+     @OneToOne(cascade = CascadeType.ALL)
+    @ForeignKey(name = "estatusid_fk")
+    private EstatusPago estatusid;
+     //relacion con pago
+    @OneToOne(cascade = CascadeType.ALL)
+    @ForeignKey(name = "pagoid_fk")
+     private Pago pagoid;
+    @Column(name = "estatus")
+    private Boolean estatus;
+     //getter and setter
+
+    public Integer getBitapagoid() {
+        return bitapagoid;
+    }
+
+    public void setBitapagoid(Integer bitapagoid) {
+        this.bitapagoid = bitapagoid;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public Usuario getUsuarioid() {
+        return usuarioid;
+    }
+
+    public void setUsuarioid(Usuario usuarioid) {
+        this.usuarioid = usuarioid;
+    }
+
+    public EstatusPago getEstatusid() {
+        return estatusid;
+    }
+
+    public void setEstatusid(EstatusPago estatusid) {
+        this.estatusid = estatusid;
+    }
+
+    public Pago getPagoid() {
+        return pagoid;
+    }
+
+    public void setPagoid(Pago pagoid) {
+        this.pagoid = pagoid;
+    }
+
+    public Boolean getEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(Boolean estatus) {
+        this.estatus = estatus;
+    }
+
+    @Override
+    public String toString() {
+        return "BitacoraPago{" + "bitapagoid=" + bitapagoid + ", fecha=" + fecha + ", usuarioid=" + usuarioid + ", estatusid=" + estatusid + ", pagoid=" + pagoid + ", estatus=" + estatus + '}';
+    }
+     
+}

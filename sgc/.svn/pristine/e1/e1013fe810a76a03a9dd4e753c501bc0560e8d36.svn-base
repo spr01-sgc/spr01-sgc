@@ -1,0 +1,174 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.model;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Entity
+@Table(name = "pago")
+public class Pago implements Serializable{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pagoid")
+    private Integer pagoid;
+    
+    @Column(name = "cantidadenviada")
+    private float cantidadenviada;
+    
+    @Column(name = "cantidadentregada")
+    private float cantidadentregada;
+    
+    @Column(name = "clavepago")
+    private String clavepago;
+    
+    @Column(name = "fechahoraregistro")
+    private Date fechahoraregistro;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private Cliente clienteid;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private Beneficiario beneficiarioid;
+    
+    /*@OneToOne(cascade = CascadeType.ALL)
+    private Sucursal sucursalid;*/
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private MonedaDivisa monedadivisaid;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private InstrumentoMonetario instrumentomonetario;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private TipoServicio tiposervicioid;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private ValorMoneda valormonedaid;
+    
+   /* @OneToOne(cascade = CascadeType.ALL)
+    private EmisoraOrdenante emisoraid;*/
+
+    public Integer getPagoid() {
+        return pagoid;
+    }
+
+    public void setPagoid(Integer pagoid) {
+        this.pagoid = pagoid;
+    }
+
+    public float getCantidadenviada() {
+        return cantidadenviada;
+    }
+
+    public void setCantidadenviada(float cantidadenviada) {
+        this.cantidadenviada = cantidadenviada;
+    }
+
+    public float getCantidadentregada() {
+        return cantidadentregada;
+    }
+
+    public void setCantidadentregada(float cantidadentregada) {
+        this.cantidadentregada = cantidadentregada;
+    }
+
+    public String getClavepago() {
+        return clavepago;
+    }
+
+    public void setClavepago(String clavepago) {
+        this.clavepago = clavepago;
+    }
+
+    public Date getFechahoraregistro() {
+        return fechahoraregistro;
+    }
+
+    public void setFechahoraregistro(Date fechahoraregistro) {
+        this.fechahoraregistro = fechahoraregistro;
+    }
+
+    public Cliente getClienteid() {
+        return clienteid;
+    }
+
+    public void setClienteid(Cliente clienteid) {
+        this.clienteid = clienteid;
+    }
+
+    public Beneficiario getBeneficiarioid() {
+        return beneficiarioid;
+    }
+
+    public void setBeneficiarioid(Beneficiario beneficiarioid) {
+        this.beneficiarioid = beneficiarioid;
+    }
+
+   
+
+ /*   public Sucursal getSucursalid() {
+        return sucursalid;
+    }
+
+    public void setSucursalid(Sucursal sucursalid) {
+        this.sucursalid = sucursalid;
+    }
+*/
+    public MonedaDivisa getMonedadivisaid() {
+        return monedadivisaid;
+    }
+
+    public void setMonedadivisaid(MonedaDivisa monedadivisaid) {
+        this.monedadivisaid = monedadivisaid;
+    }
+
+    public InstrumentoMonetario getInstrumentomonetario() {
+        return instrumentomonetario;
+    }
+
+    public void setInstrumentomonetario(InstrumentoMonetario instrumentomonetario) {
+        this.instrumentomonetario = instrumentomonetario;
+    }
+
+    public TipoServicio getTiposervicioid() {
+        return tiposervicioid;
+    }
+
+    public void setTiposervicioid(TipoServicio tiposervicioid) {
+        this.tiposervicioid = tiposervicioid;
+    }
+
+    public ValorMoneda getValormonedaid() {
+        return valormonedaid;
+    }
+
+    public void setValormonedaid(ValorMoneda valormonedaid) {
+        this.valormonedaid = valormonedaid;
+    }
+
+   /* public EmisoraOrdenante getEmisoraid() {
+        return emisoraid;
+    }
+
+    public void setEmisoraid(EmisoraOrdenante emisoraid) {
+        this.emisoraid = emisoraid;
+    }*/
+    
+    
+}

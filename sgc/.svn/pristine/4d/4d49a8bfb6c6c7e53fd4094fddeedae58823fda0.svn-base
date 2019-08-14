@@ -1,0 +1,37 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.service.impl;
+
+import com.soma.transmisor.dao.CiudadDao;
+import com.soma.transmisor.model.Ciudad;
+import com.soma.transmisor.service.CiudadService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Service("ciudadService")
+@Transactional
+public class CiudadServiceImpl implements CiudadService{
+    @Autowired
+    CiudadDao ciudadDao;
+
+    @Override
+    public Ciudad buscaId(int ciudadId) {
+   return ciudadDao.buscaId(ciudadId);
+    }
+
+    @Override
+    public List<Ciudad> showCiudad() {
+   
+    return ciudadDao.showCiudad();}
+    
+    
+}

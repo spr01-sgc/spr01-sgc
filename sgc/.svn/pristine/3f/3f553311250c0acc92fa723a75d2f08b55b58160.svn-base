@@ -1,0 +1,67 @@
+<%-- 
+    Document   : bitacoraUsuario
+    Created on : 28/10/2017, 10:19:41 AM
+    Author     : Jasmin Santana
+--%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%@include file="index.jsp" %>
+<br />
+<br />
+<br />
+
+<div class="container">   
+    <div class="panel-group">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Acciones de los usuarios</div>
+            <div id="contenidoPantalla" class="panel-body">  
+                <div class="row">
+                    <div class="form-group">
+                    <div class="btn btn-group">
+                        <button id="bitaU" class="btn btn-info" onclick="reportExcel('#divBitacora');"> 
+                            <span class="glyphicon glyphicon-file"></span>Generar Reporte</button>
+                        </div><input type="text" class="form-control pull-right" style="width:20%" 
+                               id="search" onkeyup="busquedaTbl('tableAcciones');" placeholder="Busqueda">
+                    </div>
+                    <!-- Listado de Acciones-->
+                    <div  class="col-md-12">
+                        <div id="divBitacora">
+                        <div class="table-responsive">
+                            <table id="tableAcciones" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                         <th>Nickname</th>
+                                        <th>Usuario</th>
+                                        <th>Fecha</th>
+                                        <th>Acción</th>
+                                        <th>Sucursal</th>
+                                    </tr>
+                                <thead>
+                                <tbody id="bodytabla">
+                                    <c:forEach items="${lBitaAcc}" var="bitacc" varStatus="contador">
+                                        <tr>
+                                            <td id="lBitaAcc">${bitacc.bitacoraid}</td>
+                                            <td>${bitacc.usuario.nickname}</td>
+                                              <td>${bitacc.usuario.personaid.nombre} ${bitacc.usuario.personaid.apaterno} ${bitacc.usuario.personaid.amaterno}</td>
+                                            <td>${bitacc.fechaHora}</td>
+                                            <td>${bitacc.accion.descripcion}</td>  
+                                            <td>${bitacc.usuario.sucursalid.nombresucursal}</td>
+                                        </tr>
+
+                                    </c:forEach>
+                                </tbody>
+
+                            </table></div>
+
+                        </div>
+
+                    </div>
+                </div><!-- row-->
+            </div><!--class body -->
+        </div><!-- panel-primary-->
+    </div>  <!-- panel-group-->  
+</div><!--class container -->
+</body>
+</html>

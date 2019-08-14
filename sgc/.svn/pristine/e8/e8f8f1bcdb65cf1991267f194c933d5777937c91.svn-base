@@ -1,0 +1,114 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.model;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+import org.hibernate.annotations.GeneratorType;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Entity
+@Table(name="personamoral")
+public class PersonaMoral implements Serializable{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "personamoralid")
+    private Integer personamoralid;
+    
+    @Column(name = "razonsocial")
+    private String razonsocial;
+    
+    @Column(name = "fechaconstitucion")
+    private Date fechaconstitucion;
+    
+    @Column(name = "numerofirmaavanzada")
+    private String numerofirmaavanzada;
+    
+    @OneToOne(cascade=CascadeType.ALL)
+    private Giro giroid;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private Cliente clienteid;
+    
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @PrimaryKeyJoinColumn
+    private List<Persona> personaid;
+
+    public List<Persona> getPersonaid() {
+        return personaid;
+    }
+
+    public void setPersonaid(List<Persona> personaid) {
+        this.personaid = personaid;
+    }  
+
+    public Integer getPersonamoralid() {
+        return personamoralid;
+    }
+
+    public void setPersonamoralid(Integer personamoralid) {
+        this.personamoralid = personamoralid;
+    }
+
+    public String getRazonsocial() {
+        return razonsocial;
+    }
+
+    public void setRazonsocial(String razonsocial) {
+        this.razonsocial = razonsocial;
+    }
+
+    public Date getFechaconstitucion() {
+        return fechaconstitucion;
+    }
+
+    public void setFechaconstitucion(Date fechaconstitucion) {
+        this.fechaconstitucion = fechaconstitucion;
+    }
+
+    public String getNumerofirmaavanzada() {
+        return numerofirmaavanzada;
+    }
+
+    public void setNumerofirmaavanzada(String numerofirmaavanzada) {
+        this.numerofirmaavanzada = numerofirmaavanzada;
+    }
+
+    public Giro getGiroid() {
+        return giroid;
+    }
+
+    public void setGiroid(Giro giroid) {
+        this.giroid = giroid;
+    }
+
+    public Cliente getClienteid() {
+        return clienteid;
+    }
+
+    public void setClienteid(Cliente clienteid) {
+        this.clienteid = clienteid;
+    }
+    
+    
+    
+    
+}

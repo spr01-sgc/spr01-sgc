@@ -1,0 +1,58 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.service.impl;
+
+import com.soma.transmisor.dao.PepDao;
+import com.soma.transmisor.model.Pba;
+import com.soma.transmisor.model.Pep;
+import com.soma.transmisor.service.PepService;
+import java.util.List;
+import javax.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Service("pepService")
+@Transactional
+public class PepServiceImpl implements PepService{
+    @Autowired
+    PepDao pepDao;
+     private boolean estadoMetodo = false;
+
+    @Override
+    public boolean save(Pep pep) {
+    pepDao.save(pep);
+    return estadoMetodo=true;
+    }
+
+    @Override
+    public boolean update(Pep pep) {
+   pepDao.update(pep);
+   return estadoMetodo=true;
+    }
+
+    @Override
+    public boolean delete(int pepid) {
+    pepDao.delete(pepid);
+    return estadoMetodo=true;
+    }
+
+    @Override
+    public List<Pep> showPep() {
+    return pepDao.showPba();
+    }
+
+    @Override
+    public Pep busquedaId(int pepid) {
+    return pepDao.busquedaId(pepid);
+    }
+
+ 
+   
+}

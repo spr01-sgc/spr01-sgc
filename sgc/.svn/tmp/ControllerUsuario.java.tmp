@@ -1,0 +1,394 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.controller;
+
+import com.soma.transmisor.model.Accion;
+import com.soma.transmisor.model.BitaAccionesUsuario;
+import com.soma.transmisor.model.EstatusUsuario;
+import com.soma.transmisor.model.Persona;
+import com.soma.transmisor.model.RolUsuario;
+import com.soma.transmisor.model.Sexo;
+import com.soma.transmisor.model.Sucursal;
+import com.soma.transmisor.model.Telefono;
+import com.soma.transmisor.model.TipoTelefono;
+import com.soma.transmisor.model.Usuario;
+import com.soma.transmisor.service.AccionService;
+import com.soma.transmisor.service.BitaAccionesUsuarioService;
+import com.soma.transmisor.service.EstatusUsuarioService;
+import com.soma.transmisor.service.RolService;
+import com.soma.transmisor.service.SexoService;
+import com.soma.transmisor.service.SucursalService;
+import com.soma.transmisor.service.TelefonoService;
+import com.soma.transmisor.service.TipoTelefonoService;
+import com.soma.transmisor.service.UsuarioService;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationTrustResolver;
+import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+/**
+ * Administra los accesos a los JSP
+ *
+ * @author Jasmin Santana
+ */
+@Controller
+@RequestMapping("/")
+public class ControllerUsuario {
+
+    //Bitacora bita = new Bitacora();
+    @Autowired
+    UsuarioService usuarioService;
+    @Autowired
+    BitaAccionesUsuarioService bitaAccionesUsuarioService;
+    @Autowired
+    AccionService accionService;
+    @Autowired
+    RolService rolService;
+    @Autowired
+    EstatusUsuarioService estatusUsuarioService;
+    @Autowired
+    SexoService sexoService;
+    @Autowired
+    TelefonoService telefonoService;
+    @Autowired
+    TipoTelefonoService tipoTelefonoService;
+    @Autowired
+    SucursalService sucursalService;
+
+    @RequestMapping(value = {"/", "init"}, method = RequestMethod.GET)
+    public String initSistema(ModelMap model) {
+        if (!estaUsuarioAnonimo()) {
+
+<<<<<<< .mine
+            //bitacoraAcciones("login");
+=======
+           // bitacoraAcciones("login");
+>>>>>>> .r14
+            return "index";
+        }
+
+        return login();
+    }
+
+    /**
+     * Este metodo configura el acceso a la vista principal
+     *
+     * @return
+     */
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login() {
+        //es anonimo no entra
+        if (estaUsuarioAnonimo()) {
+            return "login";
+        }
+
+        return "index";
+    }
+
+    /**
+     * Metodo para mostrar usuarios
+     *
+     * @param model
+     * @return el acceso a usuarios o bien deniega el acceso y retorna el login
+     */
+    @RequestMapping(value = {"/usuario"}, method = RequestMethod.GET)
+    public String usuario(ModelMap model) {
+        if (!estaUsuarioAnonimo()) {
+            /*Usuario sucid=usuarioService.busquedaNinckname(usuarioEnSesion());
+            sucid.getSucursalid();*/
+            //trae los datos de la tabla delito
+            List<Usuario> lUsuario = usuarioService.showUsuario();
+            // enviar los datos JSP
+            model.addAttribute("lUsuario", lUsuario);
+
+            List<RolUsuario> lRol = rolService.showRol();
+            model.addAttribute("lRol", lRol);
+            List<EstatusUsuario> lEstatus = estatusUsuarioService.showEstatus();
+            model.addAttribute("lEstatus", lEstatus);
+            List<Sexo> lSexo = sexoService.showSexo();
+            model.addAttribute("lSexo", lSexo);
+            List<Telefono> lTelefono = telefonoService.showTelefono();
+            model.addAttribute("lTelefono", lTelefono);
+            List<TipoTelefono> lTipoTelefono = tipoTelefonoService.showTipoTelefono();
+            model.addAttribute("lTipoTelefono", lTipoTelefono);
+
+            /*  List<Sucursal> lSucursal = sucursalService.showSucursal();
+            model.addAttribute("lSucursal", lSucursal);*/
+            return "usuario";
+        }
+        return "login";
+    }
+
+    /**
+     * Metodo para Agregar Usuarios
+     *
+     * @param datos
+     * @return usuario
+     */
+    @RequestMapping(value = "/usuario/agregarUsuario", method = RequestMethod.POST)
+    public @ResponseBody
+    String agregarUsuario(@RequestParam(value = "datos[]") String datos[]) {
+        if (!estaUsuarioAnonimo()) {
+            for (String dato : datos) {
+                if (dato.equals("")) {
+                    // si hay datos vacios
+                    return "errorDato";
+                }
+            }
+
+            RolUsuario lRolUsuario = rolService.buscarNombre(Integer.parseInt(datos[3]));
+            EstatusUsuario lEstatus = estatusUsuarioService.buscarId(Integer.parseInt(datos[4]));
+            Sexo lSexo = sexoService.buscaClave(Integer.parseInt(datos[9]));
+            TipoTelefono lTipoTelefono = tipoTelefonoService.buscaClave(Integer.parseInt(datos[10]));
+            // creacion de objeto telefono
+            Telefono telefono = new Telefono();
+            telefono.setTipoid(lTipoTelefono);
+            telefono.setNumTelefono(datos[11]);
+            // creacion de objeto usuario
+            Usuario usuario = new Usuario();
+            usuario.setNickname(datos[0]);
+            usuario.setPass(datos[1]);
+            usuario.setCorreoelectronico(datos[2]);
+            usuario.setRol(lRolUsuario);
+            usuario.setEstatusUsuario(lEstatus);
+            // creacion de objeto persona
+            Persona per = new Persona();
+            per.setNombre(datos[5]);
+            per.setApaterno(datos[6]);
+            per.setAmaterno(datos[7]);
+            per.setCurp(datos[8]);
+            per.setSexoid(lSexo);
+            usuario.setPersonaid(per);
+            //lista de telefono para asignar al usuario
+            List<Telefono> lTelefonos = new ArrayList();
+            lTelefonos.add(telefono);
+            //se pasan los numeros de telefono
+            usuario.setTelefono(lTelefonos);
+
+            if (usuarioService.save(usuario)) {
+                //bitacoraAcciones("agregar");
+                return "exito";
+
+            } else {
+                return "error";
+            }
+        }
+        return "errorAcceso";
+    }
+    //Metodo para actualizar Usuario
+
+    @RequestMapping(value = "/usuario/actualizarUsuario", method = RequestMethod.POST)
+    public @ResponseBody
+    String actualizarUsuario(@RequestParam(value = "datos[]") String datos[]) {
+        if (!estaUsuarioAnonimo()) {
+            for (String dato : datos) {
+                if (dato.equals("")) {
+                    // si hay datos vacios
+                    return "errorDato";
+                }
+            }//termina de recorrer el arreglo
+
+            List<Usuario> lUsuario = usuarioService.showUsuario();
+            if (!lUsuario.isEmpty()) {
+                for (Usuario usuario : lUsuario) {
+                    if (usuario.getUsuarioid() == Integer.parseInt(datos[5])) {
+                        usuario.setNickname(datos[0]);
+                        usuario.setPass(datos[1]);
+                        usuario.setCorreoelectronico(datos[2]);
+                        RolUsuario lRolUsuario = rolService.buscarNombre(Integer.parseInt(datos[3]));
+                        EstatusUsuario lEstatus = estatusUsuarioService.buscarId(Integer.parseInt(datos[4]));
+                        usuario.setRol(lRolUsuario);
+                        usuario.setEstatusUsuario(lEstatus);
+                        Sexo lSexo = sexoService.buscaClave(Integer.parseInt(datos[10]));
+                        TipoTelefono lTipoTelefono = tipoTelefonoService.buscaClave(Integer.parseInt(datos[11]));
+
+                        TipoTelefono lTipoTelefono2 = tipoTelefonoService.buscaClave(Integer.parseInt(datos[14]));
+                        // objeto persona
+                        usuario.getPersonaid().setNombre(datos[6]);
+                        usuario.getPersonaid().setApaterno(datos[7]);
+                        usuario.getPersonaid().setAmaterno(datos[8]);
+                        usuario.getPersonaid().setCurp(datos[9]);
+                        usuario.getPersonaid().setSexoid(lSexo);
+                        List<Telefono> lTelefono = telefonoService.showTelefono();
+                            Telefono telefonoid = telefonoService.buscaClave(Integer.parseInt(datos[12]));
+                            int idtelefeno = Integer.parseInt(datos[12]);
+                            if (telefonoid.getTelefonoid() == idtelefeno) {
+                                telefonoid.setNumTelefono(datos[13]);
+                                telefonoService.update(telefonoid);
+                            }
+                             Telefono telefonoid2 = telefonoService.buscaClave(Integer.parseInt(datos[15]));
+                            int idtelefono2 = Integer.parseInt(datos[15]);
+                            if (telefonoid2.getTelefonoid() == idtelefono2) {
+                                telefonoid2.setNumTelefono(datos[16]);
+                                telefonoService.update(telefonoid2);
+                            }
+   //lista de telefono para asignar al usuario
+            List<Telefono> lTelefonos = new ArrayList();
+            lTelefonos.add(telefonoid);
+            lTelefonos.add(telefonoid2);
+            //se pasan los numeros de telefono
+            usuario.setTelefono(lTelefonos);
+                        if (usuarioService.update(usuario)) {
+<<<<<<< .mine
+                            //bitacoraAcciones("actualizar");
+=======
+                           // bitacoraAcciones("actualizar");
+>>>>>>> .r14
+                            return "exito";
+                        } else {
+                            return "error";
+                        }
+                    }
+                }//end for
+            }//si no esta vacia la lista 
+        }//el usuario es anonimo
+
+        return "errorAcceso";
+
+    }
+//Metodo para eliminar un Usuario no puede ser eliminado por las acciones
+/*
+    @RequestMapping(value = "/usuario/eliminarUsuario", method = RequestMethod.POST)
+    public @ResponseBody
+    String eliminarUsuario(@RequestParam(value = "datos[]") String datos[]) {
+        if (!estaUsuarioAnonimo()) {
+            for (String dato : datos) {
+                if (dato.equals("")) {
+                    // si hay datos vacios
+                    return "errorDato";
+                }
+            }//termina de recorrer el arreglo
+
+            
+            
+            List<Usuario> lUsuario = usuarioService.showUsuario();
+            if (!lUsuario.isEmpty()) {
+                for (Usuario usuario : lUsuario) {
+                    //obtiene el id del delitoa a eliminar
+                    int usuarioid = Integer.parseInt(datos[0]);
+
+                    if (usuario.getUsuarioid() == usuarioid) {
+
+                        usuario.setUsuarioid(Integer.parseInt(datos[0]));
+                        usuario.setUsuarioid(usuarioid);
+                        if (usuarioService.delete(usuarioid)) {
+                            //bitacoraAcciones("eliminar");
+                            return "exito";
+                        } else {
+                            return "error";
+                        }
+                    }
+                }//end for
+            }//si no esta vacia la lista 
+        }//el usuario es anonimo
+
+        return "errorAcceso";
+
+    }*/
+
+    //para redireccionar a bitacora de acciones de usuario y verlas acciones
+    @RequestMapping(value = {"/bitacoraUsuario"}, method = RequestMethod.GET)
+    public String bitacoraUsuario(ModelMap model) {
+        if (!estaUsuarioAnonimo()) {
+            //trae los datos de la tabla 
+            List<BitaAccionesUsuario> lBitaAcc = bitaAccionesUsuarioService.showBitacora();
+            // enviar los datos JSP
+            model.addAttribute("lBitaAcc", lBitaAcc);
+
+            return "bitacoraUsuario";
+        }
+        return "login";
+    }
+
+    /**
+     * Este metodo traera de la sesion iniciada.
+     *
+     * @return
+     */
+    public String usuarioEnSesion() {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String nicknamePrincipal = null;
+
+        if (principal instanceof UserDetails) {
+            //Es igual al usuario que esta en sesion
+            return nicknamePrincipal = ((UserDetails) principal).getUsername();
+        } else {
+            //Es igual a usuario anonimo
+            return nicknamePrincipal = principal.toString();
+        }
+    }
+
+    /**
+     * Este metodo verificara que un usuario este autenticado correctamente
+     */
+    private boolean estaUsuarioAnonimo() {
+        final Authentication autenticacion = SecurityContextHolder.getContext().getAuthentication();
+
+        AuthenticationTrustResolver authenticationTrustResolver = new AuthenticationTrustResolverImpl();
+        return authenticationTrustResolver.isAnonymous(autenticacion);
+    }
+
+    /**
+     * Este metodo deniega el acceso al usuario mostrandole un error
+     *
+     * @return
+     */
+    @RequestMapping(value = "/error404", method = RequestMethod.GET)
+    public String accesoDenegado() {
+        return "errorSys";
+    }
+
+    /*metodo para insertar a Bitacora Usuario Acciones */
+    public String bitacoraAcciones(String metodo) {
+        if (!estaUsuarioAnonimo()) {
+            BitaAccionesUsuario bitaAcc = new BitaAccionesUsuario();
+            Date fechaHora = new Date();
+            //Trae el usuario que ha inciado sesion
+
+            Usuario usuarioid = usuarioService.busquedaNinckname(usuarioEnSesion());
+            //del usuario se trae el id
+
+            usuarioid.getUsuarioid();
+            int accionid = 0;
+
+            //dependiendo el metodo ejecutado se pasa el id de la accion realizada
+            if (metodo == "login") {
+                accionid = 1;
+            } else if (metodo == "agregar") {
+                accionid = 2;
+            } else if (metodo == "actualizar") {
+                accionid = 3;
+            } else if (metodo == "eliminar") {
+                accionid = 4;
+            }
+            //se hace el insert a la tabla bitacoraAccionesUsuario
+            Accion accion = accionService.buscaId(accionid);
+            accion.getAccionid();
+            bitaAcc.setUsuario(usuarioid);
+            bitaAcc.setFechaHora(fechaHora);
+            bitaAcc.setAccion(accion);
+            if (bitaAccionesUsuarioService.save(bitaAcc)) {
+                return "exito";
+            } else {
+                return "error";
+            }
+        }
+        return "login";
+    }
+}

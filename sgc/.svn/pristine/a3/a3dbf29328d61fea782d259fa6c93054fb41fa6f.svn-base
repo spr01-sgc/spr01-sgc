@@ -1,0 +1,117 @@
+<%-- 
+    Document   : denunopepreocupante
+    Created on : 9/02/2018, 09:15:36 AM
+    Author     : JASMIN-SOMA
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@include file="index.jsp" %>
+<br />
+<br />
+<br />
+<div class="container">   
+    <div class="panel-group">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Operaciones Internas Preocupantes</div>
+            <div id="contenidoPantalla" class="panel-body"> 
+                <div class="form-group">
+                        <input type="text" class="form-control pull-right" style="width:20%" 
+       id="search" onkeyup="busquedaTbl('tableUsuarios');" placeholder="Busqueda">
+                                 </div>
+                <h3>Selecciona el usuario a denunciar</h3>
+                                 
+                 <!-- Listado de Usuarios-->
+                        <div class="table-responsive">
+                            <table id="tableUsuarios" class="table table-hover" >
+                                <thead>
+                                    <tr>
+                                        <th style="display: none">id</th>
+                                        <th>No</th>
+                                        <th>Usuario</th>
+                                        <th>Correo</th>
+                                        <th>Nickname</th>
+                                        <th>Denuncciar</th>
+                                    </tr>
+                                <thead>
+                                <tbody>
+                                    <c:forEach items="${lUsuario}" var="usu" varStatus="contador">
+                                        <tr>
+                                            <td id="usuarioid" style="display: none">${usu.usuarioid}</td>
+                                            <td>${contador.count}</td>
+                                            <td>${usu.personaid.nombre} ${usu.personaid.apaterno} ${usu.personaid.amaterno}</td>
+                                            <td>${usu.correoelectronico}</td>
+                                            <td>${usu.nickname}</td>                                          
+                                          
+                                            <td><input type="radio" name="infractor" id="usuarioInfractor"/></td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                                <input type="hidden" name="${_csrf.parameterName}"
+                                   value="${_csrf.token}" />
+                            </table>
+                        </div>
+                
+                
+                <div class="row">
+                    <!--Formilario para Operaciones Internas preocupantes
+                     <div class="form-group">
+                            <label class="control-label col-sm-2" for="personal">Nombre completo:</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="infractorname" placeholder="Ingrese nombre" required>
+                            </div>
+                        </div>-->
+                    <form class="form-horizontal" id="frmPreocupantes">
+                       
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="">Descripción:</label>
+                            <div class="col-sm-4">
+                                <textarea type="text" class="form-control" id="descripcionOp" placeholder="Ingrese una descripcion"></textarea>
+                            </div>
+
+                            <label class="control-label col-sm-2" for="fecha">Fecha del suceso:</label>
+                            <div class="col-sm-3">
+                                <input type="date" class="form-control" id="fechSuceso" placeholder="Seleccione la fecha" min="1990-01-01">
+                            </div>
+                        </div>                      
+                        <div class="form-group">
+                            <div class="col-sm-2">                           
+                                <label>Denuncia anonima:</label>
+                            </div>
+
+                            <label class="checkbox-inline col-sm-2">Si: 
+                                <input type="checkbox" value="1" class="col-sm-4" id="chSi" onclick="selectDenunciaAnonima(1);"></label>
+
+                            <label class="checkbox-inline col-sm-2">No: <input type="checkbox" value="2" id="chNo"class="col-sm-4" onclick="selectDenunciaAnonima(2);"></label>
+
+                            <button type="button" id="enviarOpP" class="btn btn-success" onclick="denunciaPreocupante();">Enviar</button>             
+                            <input type="hidden" name="${_csrf.parameterName}"
+                                   value="${_csrf.token}" />
+                        </div>
+                        <div class="panel-footer"  style="display: none" id="divdenunciante">
+                            <h2>Información del usuario que hace la denuncia</h2><hr/>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="usuario">Nickname:</label>
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" id="nickuser" placeholder="Ingrese su nickname" required>
+                                </div> 
+                                <label class="control-label col-md-1" for="email">Correo:</label>
+                                <div class="col-md-2">
+                                    <input type="email" class="form-control" id="emailUser" placeholder="user@gmail.com" required>
+                                </div> 
+                                <div class="form-group">
+                                    <label class="control-label col-md-1" for="nombre">Nombre:</label>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control" id="nombreUser" placeholder="Nombre Completo" required>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+
+                    </form> 
+                </div><!-- row-->
+            </div><!--class body -->
+        </div><!-- panel-primary-->
+    </div>  <!-- panel-group-->  
+</div><!--class container -->
+    </body>
+</html>

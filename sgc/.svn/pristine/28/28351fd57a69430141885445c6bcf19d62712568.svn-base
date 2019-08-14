@@ -1,0 +1,91 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.dao.PersonaDao;
+import com.soma.transmisor.model.Persona;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Repository("personaDao")
+public class PersonaDaoImpl extends HibernateDao<Integer, Persona> implements PersonaDao {
+
+    @Override
+    public Persona buscaPersona(String curp) {
+        Criteria criteria = creaCriteria();
+        criteria.add(Restrictions.eq("curp", curp));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return (Persona) criteria.uniqueResult();
+    }
+
+    @Override
+    public Persona buscaPersonaID(int idPersona) {
+        Criteria criteria = creaCriteria();
+        criteria.add(Restrictions.eq("personaid", idPersona));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return (Persona) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<String> lBeneficiarios(String claveCliente) {
+        SQLQuery query = getSession()
+                .createSQLQuery("SELECT DISTINCT pe.personaid,\n"
+                        + "pe.nombre,pe.apaterno, pe.amaterno,tel.numtelefono\n"
+                        + "FROM\n"
+                        + "persona AS pe\n"
+                        + "INNER JOIN beneficiario AS bene \n"
+                        + "ON pe.personaid = bene.personaid_personaid\n"
+                        + "INNER JOIN pago AS pa \n"
+                        + "ON pa.beneficiarioid_beneficiarioid = bene.beneficiarioid\n"
+                        + "INNER JOIN cliente AS cl \n"
+                        + "ON cl.clienteid = pa.clienteid_clienteid\n"
+                        + "INNER JOIN telefono tel \n"
+                        + "ON bene.telefonoid_telefonoid = tel.telefonoid \n"
+                        + "WHERE cl.clave = '" + claveCliente + "'");
+        List<String> lBene = query.list();
+        return lBene;
+    }
+
+    @Override
+    public Persona idPersona(String nombre, String aPaterno, String aMaterno) {
+        SQLQuery query = getSession()
+                .createSQLQuery("SELECT personaid_personaid \n"
+                        + "FROM beneficiario INNER JOIN persona\n"
+                        + "ON personaid = personaid_personaid\n"
+                        + "WHERE nombre = '" + nombre + "'\n"
+                        + "AND apaterno = '" + aPaterno + "'\n"
+                        + "AND amaterno = '" + aMaterno + "'");
+        Persona persona = (Persona) query.uniqueResult();
+        return persona;
+    }
+
+    @Override
+    public Persona persona(String nombre, String aPaterno, String aMaterno) {
+        Criteria criteria = creaCriteria();
+        criteria.add(Restrictions.eq("nombre", nombre));
+        criteria.add(Restrictions.eq("apaterno", aPaterno));
+        criteria.add(Restrictions.eq("amaterno", aMaterno));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return (Persona) criteria.uniqueResult();
+    }
+
+    @Override
+    public void update(int idPersona, String curp) {
+         SQLQuery query = getSession().createSQLQuery("update persona set \n"
+                 + " curp = '"+curp+"' where personaid = " + idPersona);        
+         query.executeUpdate();
+    }
+
+}

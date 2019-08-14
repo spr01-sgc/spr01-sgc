@@ -1,0 +1,63 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.service;
+
+import com.soma.transmisor.model.CausaRechazo;
+import com.soma.transmisor.model.Pago;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+public interface PagoService {
+
+    boolean update(Pago pago);
+
+    boolean save(Pago pago);
+
+    Pago buscaId(int pagoid);
+
+    List<Pago> showPago();
+    List<CausaRechazo> showCausa();
+    List<Pago> showPagoRel(Date fechIn, Date fechTer,int dolar);
+
+<<<<<<< .mine
+    List<Pago> consultarOperacion(Date fechIn, Date fechTer,int dolar);
+=======
+    List<CausaRechazo> showCausa();
+
+    List<Pago> showPagoRel(Date fechIn, Date fechTer, int dolar);
+>>>>>>> .r45
+
+<<<<<<< .mine
+    List<Pago> notificacionRelevante(int dolar);
+=======
+    List<Pago> consultarOperacion(Date fechIn, Date fechTer, int dolar);
+
+    List<Pago> notificacionRelevante(int dolar);
+>>>>>>> .r45
+
+    List<Pago> showOperacionInusual();
+
+<<<<<<< .mine
+    List<Pago> reporteOperacionIn(List<Integer>clienteId);
+    List<Pago> notificacionInusual(int clienteid);
+=======
+    List<Pago> reporteOperacionIn(List<Integer> clienteId);
+
+    List<Pago> notificacionInusual(int clienteid);
+
+    Pago claveRemesa();
+
+    List<Object> buscarRemesa(String cveRemesa);
+
+    Pago remesa(String clave);
+>>>>>>> .r45
+
+}

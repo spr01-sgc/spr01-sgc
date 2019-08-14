@@ -1,0 +1,147 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.model;
+
+import java.io.Serializable;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+
+/**
+ *
+ * @author JUAN LUIS-SOMA
+ */
+@Entity
+@Table(name = "entidad")
+public class Entidad implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "entidadid")
+    private Integer entidadid;
+
+    @Column(name = "nombrecorto")
+    private String nombrecorto;
+
+    @Column(name = "razonsocial")
+    private String razonsocial;
+
+    @Column(name = "correoelectronico")
+    private String correoelectronico;
+
+    @Column(name = "rfc")
+    private String rfc;
+    @Column(name = "claveOrganoSupervisor")
+    private String claveOrganoSupervisor;
+    @Column(name = "claveEntidad")
+    private String claveEntidad;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Direccion direccionid;
+
+ 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @PrimaryKeyJoinColumn
+    private List<Telefono> telefonoid;
+    
+    
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Persona personaid;
+
+    public Integer getEntidadid() {
+        return entidadid;
+    }
+
+    public void setEntidadid(Integer entidadid) {
+        this.entidadid = entidadid;
+    }
+
+    public String getNombrecorto() {
+        return nombrecorto;
+    }
+
+    public void setNombrecorto(String nombrecorto) {
+        this.nombrecorto = nombrecorto;
+    }
+
+    public String getRazonsocial() {
+        return razonsocial;
+    }
+
+    public void setRazonsocial(String razonsocial) {
+        this.razonsocial = razonsocial;
+    }
+
+    public String getCorreoelectronico() {
+        return correoelectronico;
+    }
+
+    public void setCorreoelectronico(String correoelectronico) {
+        this.correoelectronico = correoelectronico;
+    }
+
+    public String getRfc() {
+        return rfc;
+    }
+
+    public void setRfc(String rfc) {
+        this.rfc = rfc;
+    }
+
+    public Direccion getDireccionid() {
+        return direccionid;
+    }
+
+    public void setDireccionid(Direccion direccionid) {
+        this.direccionid = direccionid;
+    }
+
+    public Persona getPersonaid() {
+        return personaid;
+    }
+
+    public void setPersonaid(Persona personaid) {
+        this.personaid = personaid;
+    }
+
+    public List<Telefono> getTelefonoid() {
+        return telefonoid;
+    }
+
+    public void setTelefonoid(List<Telefono> telefonoid) {
+        this.telefonoid = telefonoid;
+    }
+    public String getClaveOrganoSupervisor() {
+        return claveOrganoSupervisor;
+    }
+
+    public void setClaveOrganoSupervisor(String claveOrganoSupervisor) {
+        this.claveOrganoSupervisor = claveOrganoSupervisor;
+    }
+
+    public String getClaveEntidad() {
+        return claveEntidad;
+    }
+
+    public void setClaveEntidad(String claveEntidad) {
+        this.claveEntidad = claveEntidad;
+    }
+
+    @Override
+    public String toString() {
+        return "Entidad{" + "entidadid=" + entidadid + ", nombrecorto=" + nombrecorto + ", razonsocial=" + razonsocial + ", correoelectronico=" + correoelectronico + ", rfc=" + rfc + ", claveOrganoSupervisor=" + claveOrganoSupervisor + ", claveEntidad=" + claveEntidad + ", direccionid=" + direccionid + ", telefonoid=" + telefonoid + ", personaid=" + personaid + '}';
+    }  
+
+}

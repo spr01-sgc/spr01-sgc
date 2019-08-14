@@ -1,0 +1,337 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.controller;
+
+import com.soma.transmisor.dao.auxiliar.BitacoraDaoAux;
+import com.soma.transmisor.dao.auxiliar.PagoDaoAux;
+import com.soma.transmisor.model.ActividadEco;
+import com.soma.transmisor.model.BitacoraPago;
+import com.soma.transmisor.model.CausaRechazo;
+import com.soma.transmisor.model.Ciudad;
+import com.soma.transmisor.model.Cliente;
+import com.soma.transmisor.model.CodigoPostal;
+import com.soma.transmisor.model.Estado;
+import com.soma.transmisor.model.EstatusIdentificacion;
+import com.soma.transmisor.model.EstatusPago;
+import com.soma.transmisor.model.Giro;
+import com.soma.transmisor.model.InstrumentoMonetario;
+import com.soma.transmisor.model.MonedaDivisa;
+import com.soma.transmisor.model.Pago;
+import com.soma.transmisor.model.Persona;
+import com.soma.transmisor.model.PersonaFisica;
+import com.soma.transmisor.model.Sexo;
+import com.soma.transmisor.model.TipoIdentidad;
+import com.soma.transmisor.model.TipoServicio;
+import com.soma.transmisor.model.TipoTelefono;
+import com.soma.transmisor.model.Usuario;
+import com.soma.transmisor.service.ActividadEconomicaService;
+import com.soma.transmisor.service.BitacoraPagoService;
+import com.soma.transmisor.service.CiudadService;
+import com.soma.transmisor.service.ClienteService;
+import com.soma.transmisor.service.CodigoPostalService;
+import com.soma.transmisor.service.EstadoService;
+import com.soma.transmisor.service.EstatusIdentificacionService;
+import com.soma.transmisor.service.EstatusPagoService;
+import com.soma.transmisor.service.GiroService;
+import com.soma.transmisor.service.InstrumentoMonetarioService;
+import com.soma.transmisor.service.MonedaDivisaService;
+import com.soma.transmisor.service.PagoService;
+import com.soma.transmisor.service.PersonaFisicaService;
+import com.soma.transmisor.service.PersonaService;
+import com.soma.transmisor.service.SexoService;
+import com.soma.transmisor.service.TipoServicioService;
+import com.soma.transmisor.service.TipoTelefonoService;
+import com.soma.transmisor.service.TiposIdentidadService;
+import com.soma.transmisor.service.UsuarioService;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.mapping.Array;
+import org.jboss.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationTrustResolver;
+import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Controller
+@RequestMapping("/")
+public class ControllerPago {
+
+    @Autowired
+    UsuarioService usuarioService;
+    @Autowired
+    EstatusPagoService estatusPagoService;
+    @Autowired
+    BitacoraPagoService bitacoraPagoService;
+    @Autowired
+    PagoService pagoService;
+    @Autowired
+    CodigoPostalService codigoPostalService;
+    @Autowired
+    SexoService sexoService;
+    @Autowired
+    TipoTelefonoService tipoTelefonoService;
+    @Autowired
+    InstrumentoMonetarioService instrumentomonetarioService;
+    @Autowired
+    MonedaDivisaService monedaDivisaService;
+    @Autowired
+    TipoServicioService tipoServicioService;
+    @Autowired
+    GiroService giroService;
+    @Autowired
+    ActividadEconomicaService actividadEconomicaService;
+    @Autowired
+    TiposIdentidadService tipoIdentidadService;
+    @Autowired
+    EstatusIdentificacionService estatusIdentificacionService;
+    @Autowired
+    CiudadService ciudadService;
+    @Autowired
+    EstadoService estadoService;
+    @Autowired
+    InstrumentoMonetarioService instrumentoMonetarioService;
+    @Autowired
+    ClienteService clienteService;
+    @Autowired
+    PersonaFisicaService personaFisicaService;
+    @Autowired
+    PagoDaoAux pagoDaoAux;
+    @Autowired
+    BitacoraDaoAux bitacoraDaoAux;
+    @Autowired
+    PersonaService personaService;
+
+    @RequestMapping(value = {"/pago"}, method = RequestMethod.GET)
+    public String pago(ModelMap model) {
+        if (!estaUsuarioAnonimo()) {
+            List<ActividadEco> lActividadEconomica = actividadEconomicaService.showActividadEconomica();
+            List<TipoIdentidad> lTipoIdentidad = tipoIdentidadService.showTipoIdentidad();
+            List<EstatusIdentificacion> lEstatusIdentificacion = estatusIdentificacionService.showEstatusIdentficacion();
+            List<CodigoPostal> lCodigoPostal = codigoPostalService.showCodigoPostal();
+            List<Sexo> lSexo = sexoService.showSexo();
+            List<TipoTelefono> lTipoTelefono = tipoTelefonoService.showTipoTelefono();
+            List<Ciudad> lCiudad = ciudadService.showCiudad();
+            List<Estado> lEstado = estadoService.showEstado();
+            List<TipoServicio> lTipoServicio = tipoServicioService.showTipoServicio();
+            List<InstrumentoMonetario> lInstrumentoMonetario = instrumentoMonetarioService.showInstrumento();
+            // enviar los datos JSP
+            model.addAttribute("lCodigoPostal", lCodigoPostal);
+            model.addAttribute("lSexo", lSexo);
+            model.addAttribute("lTipoTelefono", lTipoTelefono);
+            model.addAttribute("lActividadEconomica", lActividadEconomica);
+            model.addAttribute("lTipoIdentidad", lTipoIdentidad);
+            model.addAttribute("lEstatusIdentificacion", lEstatusIdentificacion);
+            model.addAttribute("lEstado", lEstado);
+            model.addAttribute("lCiudad", lCiudad);
+            model.addAttribute("lInstumento", lInstrumentoMonetario);
+            model.addAttribute("lTipoServicio", lTipoServicio);
+
+            return "pago";
+        }
+        return "login";
+    }
+
+    @RequestMapping(value = "/pago/pagarRemesa", method = RequestMethod.POST)
+    public @ResponseBody
+    String[] pagarRemesa(@RequestParam(value = "datos[]") String datos[]) throws ParseException {
+        Pago pago = pagoService.remesa(datos[20]);
+        String[] datosRemesa = new String[20];
+        PersonaFisica personaFisica = null;
+        String filtro = "";
+        float cantidadEntregada = pago.getCantidadenviada();
+        int id = 0;
+        Cliente buscaCliente = null;
+        Cliente clienteid = null;
+        
+        if (datos[21].equals("")) {
+            buscaCliente = clienteService.buscaClave(datos[0]);
+            if (buscaCliente == null) {
+                clienteid = pagoDaoAux.generaCliente(datos);
+            } else {
+                clienteid = pagoDaoAux.actualizaCliente(datos);
+            }
+            InstrumentoMonetario instrumento
+                    = instrumentoMonetarioService.buscaClave(Integer.parseInt(datos[18]));
+            TipoServicio tipoServicio
+                    = tipoServicioService.buscaTipoServicio(Integer.parseInt(datos[19]));
+
+            pago.setInstrumentomonetario(instrumento);
+            pago.setTiposervicioid(tipoServicio);
+            pago.setCantidadentregada(cantidadEntregada);
+            pago.setBeneficiarioCliente(clienteid);
+
+            if (pagoService.update(pago)) {       
+                 Persona idPersona = personaService.persona(datos[1].trim(), datos[3].trim(), datos[2].trim());
+                 if(idPersona.getCurp() == null){
+                    pagoDaoAux.actualizaPersona(datos);
+                 }
+                bitacoraDaoAux.bitacoraPago("Pagado", pago.getPagoid().intValue(), usuarioEnSesion(), estaUsuarioAnonimo(), datos[21]);
+                datosRemesa[0] = pago.getClavepago();
+
+                buscaCliente = clienteService.buscaClave(pago.getBeneficiarioCliente().getClave());
+                personaFisica = personaFisicaService.buscaCliente(buscaCliente.getClienteid());
+                datosRemesa[1] = personaFisica.getPersonaid().getNombre();
+                datosRemesa[2] = personaFisica.getPersonaid().getApaterno();
+                datosRemesa[3] = personaFisica.getPersonaid().getAmaterno();
+                datosRemesa[4] = buscaCliente.getTelefonoId().getNumTelefono();
+
+                float monto = pago.getCantidadentregada();
+                String montoString = String.valueOf(monto);
+                datosRemesa[5] = montoString;
+
+                buscaCliente = clienteService.buscaClave(pago.getClienteid().getClave());
+                personaFisica = personaFisicaService.buscaCliente(buscaCliente.getClienteid());
+                datosRemesa[6] = personaFisica.getPersonaid().getNombre();
+                datosRemesa[7] = personaFisica.getPersonaid().getApaterno();
+                datosRemesa[8] = personaFisica.getPersonaid().getAmaterno();
+                datosRemesa[9] = buscaCliente.getTelefonoId().getNumTelefono();
+            }else{
+                datosRemesa[0] = "error";
+            }
+        } else {
+            bitacoraDaoAux.bitacoraPago("Cancelado", pago.getPagoid(), usuarioEnSesion(), estaUsuarioAnonimo(), datos[21]);
+            datosRemesa[0] = "Cancelado"; 
+        }
+        return datosRemesa;
+    }
+
+    @RequestMapping(value = "/pago/buscaRemesa", method = RequestMethod.POST)
+    public @ResponseBody
+    String[] buscaRemesa(@RequestParam(value = "datos") String datos
+    ) {
+        List<Object> pago = pagoService.buscarRemesa(datos);
+        String[] datosRemesa = new String[25];
+        Iterator iterator = pago.iterator();
+        while (iterator.hasNext()) {
+            Object[] tuple = (Object[]) iterator.next();
+            float monto = (float) tuple[1];
+            String montoC = Float.toString(monto);
+            datosRemesa[0] = (String) tuple[0];
+            datosRemesa[1] = montoC;
+            datosRemesa[2] = (String) tuple[2];
+            datosRemesa[3] = (String) tuple[3];
+            datosRemesa[4] = (String) tuple[4];
+            datosRemesa[5] = (String) tuple[5];
+            datosRemesa[6] = (String) tuple[6];
+            datosRemesa[7] = (String) tuple[7];
+            datosRemesa[8] = (String) tuple[8];
+            datosRemesa[9] = (String) tuple[9];
+            datosRemesa[10] = (String) tuple[10];
+            datosRemesa[11] = (String) tuple[11];
+            datosRemesa[12] = (String) tuple[12];
+            datosRemesa[13] = (String) tuple[13];//apellido beneficiario
+            datosRemesa[14] = (String) tuple[14];
+        }
+        return datosRemesa;
+    }
+
+    /**
+     * Este metodo traera de la sesion iniciada.
+     *
+     * @return
+     */
+    public String usuarioEnSesion() {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String nicknamePrincipal = null;
+
+        if (principal instanceof UserDetails) {
+            //Es igual al usuario que esta en sesion
+            return nicknamePrincipal = ((UserDetails) principal).getUsername();
+        } else {
+            //Es igual a usuario anonimo
+            return nicknamePrincipal = principal.toString();
+        }
+    }
+
+    /**
+     * Este metodo verificara que un usuario este autenticado correctamente
+     */
+    private boolean estaUsuarioAnonimo() {
+        final Authentication autenticacion = SecurityContextHolder.getContext().getAuthentication();
+
+        AuthenticationTrustResolver authenticationTrustResolver = new AuthenticationTrustResolverImpl();
+        return authenticationTrustResolver.isAnonymous(autenticacion);
+    }
+
+    //para redireccionar a bitacora de acciones de usuario y verlas acciones
+    @RequestMapping(value = {"/bitacoraPago"}, method = RequestMethod.GET)
+    public String bitacoraPago(ModelMap model) {
+        if (!estaUsuarioAnonimo()) {
+            //trae los datos de la tabla 
+            List<BitacoraPago> lBitaPago = bitacoraPagoService.showBitacoraP();
+            // enviar los datos JSP
+            model.addAttribute("lBitaPago", lBitaPago);
+
+            return "bitacoraPago";
+        }
+        return "login";
+    }
+
+    /*metodo para insertar a Bitacora de Pago */
+    public String bitacoraPagos(String metodo, Usuario usuario) {
+        if (!estaUsuarioAnonimo()) {
+            BitacoraPago bitaPago = new BitacoraPago();
+            Date fecha = new Date();
+            //Trae el usuario que ha inciado sesion
+            //Usuario usuarioid = usuarioService.busquedaNinckname(usuarioEnSesion());
+            //del usuario se trae el id
+            usuario.getUsuarioid();
+            int estatusPag = 0;
+            CausaRechazo causa = new CausaRechazo();
+            causa.setDescripcion("expiro el dia");
+            causa.setBitapagoid(bitaPago);
+            //dependiendo el metodo ejecutado se pasa el id de la accion realizada
+            switch (metodo) {
+                case "Registrado":
+                    estatusPag = 1;
+                    break;
+                case "Enviado":
+                    estatusPag = 2;
+                    break;
+                case "Cancelado":
+                    estatusPag = 3;
+                    break;
+                case "Rechazado":
+                    estatusPag = 4;
+                    break;
+                default:
+                    break;
+            }
+            //se hace el insert a la tabla bitacoraAccionesUsuario
+            EstatusPago estatus = estatusPagoService.buscaId(estatusPag);
+            estatus.getEstatusid();
+            bitaPago.setUsuarioid(usuario);
+            bitaPago.setFecha(fecha);
+            bitaPago.setEstatusid(estatus);
+            if (bitacoraPagoService.save(bitaPago)) {
+                return "exito";
+            } else {
+                return "error";
+            }
+        }
+        return "login";
+    }
+
+}

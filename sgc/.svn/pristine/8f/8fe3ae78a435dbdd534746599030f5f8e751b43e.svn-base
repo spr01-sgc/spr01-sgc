@@ -1,0 +1,36 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.service.impl;
+
+import com.soma.transmisor.dao.TipoServicioDao;
+import com.soma.transmisor.model.TipoServicio;
+import com.soma.transmisor.service.TipoServicioService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Service("tipoServicioService")
+@Transactional
+public class TipoServicioServiceImpl implements TipoServicioService{
+    @Autowired
+    TipoServicioDao tipoServicioDao;
+    
+    @Override
+    public TipoServicio buscaTipoServicio(int tiposervicioid) {
+        return tipoServicioDao.buscaTipoServicio(tiposervicioid);
+    }
+
+    @Override
+    public List<TipoServicio> showTipoServicio() {
+        return tipoServicioDao.showTipoServicio();
+    }
+    
+}

@@ -1,0 +1,32 @@
+<%-- 
+    Document   : tblRemesadorasPagadoras
+    Created on : 24/04/2018, 09:37:28 AM
+    Author     : LUIS-SOMA
+--%>
+
+<div id="tblRemesadorasPagadoras" style="display: none">
+            <div class="panel panel-primary">
+                <div class="panel-heading">REMESADORAS PAGADORAS</div>
+                <div id="contenidoPantalla" class="panel-body">
+                        <div  class="col-md-12">
+                            <div class="table-responsive">
+                                <table id="tablaRemesadorasPagadoras" class="table table-striped">
+                                    <thead>
+                                        <tr>  
+                                            <th>No.</th>
+                                            <th>Oficina</th>
+                                            <th>Calle</th>
+                                            <th>Colonia</th>  
+                                            <th>Ciudad</th>
+                                            <th>Correo</th> 
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyRemesadoras">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>     <!-- Table-->      
+                        </div><!--col-m-12 -->
+                </div><!--class body -->
+            </div><!-- panel-primary-->  
+</div>

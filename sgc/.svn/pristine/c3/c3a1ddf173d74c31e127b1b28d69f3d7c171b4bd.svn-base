@@ -1,0 +1,194 @@
+<%-- 
+    Document   : opeintpreocupante
+    Created on : 6/02/2018, 01:24:58 PM
+    Author     : JASMIN-SOMA
+--%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@include file="index.jsp" %>
+<br />
+<br />
+<br />
+<!--Ver Operaciones Preocupantes -->
+<div class="container">   
+    <div class="panel-group">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Operacion Internas Preocupantes</div>
+            <div id="contenidoPantalla" class="panel-body">  
+                <div class="row">
+                     <div class="form-group">
+                        <input type="text" class="form-control pull-right" style="width:20%" 
+       id="search" onkeyup="busquedaTbl('tablePreocupantes');" placeholder="Busqueda">
+</div>
+                    <!-- Listado de Acciones-->
+                    <div  class="col-md-12">
+                        <div class="table-responsive">
+                            <table id="tablePreocupantes" class="table table-hover" >
+                                <thead>
+                                    <tr>
+                                        <th style="display: none">id</th>
+                                        <th>No</th>
+                                        <th id="nomAcusado">Acusado</th>
+                                        <th>Fecha del Suceso</th>
+                                        <th>Descripción</th>
+                                        <th>Usuario Denunciante</th>
+                                        <th>Sucursal</th>
+                                        <th>Estatus</th>
+                                        <th>Sat</th>
+                                    </tr>
+                                <thead>
+                                <tbody>
+                                    <c:forEach items="${lOperacionPre}" var="oppreo" varStatus="contador">
+                                        <tr>
+                                            <td id="oppreocId" style="display: none">${oppreo.oppreocupanteid}</td>
+                                            <td>${contador.count}</td>
+                                            <td onclick="buscarUsuarioPre();" title="Mostrar más información"  data-toggle="modal" data-target="#myModalP">${oppreo.nombre}</td>
+                                            <td>${oppreo.fecha}</td>
+                                            <td>${oppreo.descripcion}</td>
+                                            <td>${oppreo.usuarioid.personaid.nombre}</td> 
+                                            <td>${oppreo.usuarioid.sucursalid.nombresucursal}</td>
+                                            <td>${oppreo.estatus}</td>
+                                            <td><input type="checkbox" id="denuncia"/></td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                                <input type="hidden" name="${_csrf.parameterName}"
+                                   value="${_csrf.token}" />
+                            </table>
+                        </div>
+                           <button type="button"id="generarReportecsv" onclick="reportPreocupante('csv');" class="btn btn-warning" title="Generar Reporte">
+                                    <span class="glyphicon glyphicon-file"></span> CSV </button>
+                                 <button type="button"id="generarReporteexcel" onclick="reportPreocupante('excel');" class="btn btn-warning" title="Generar Reporte">
+                                    <span class="glyphicon glyphicon-file"></span> Excel </button>   
+                        
+                    </div>
+                </div><!-- row-->
+            </div><!--class body -->
+        </div><!-- panel-primary-->
+    </div>  <!-- panel-group-->  
+</div><!--class container -->
+<div class="container">
+    <!-- Modal -->
+    <div class="modal fade" id="myModalP" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Información Adicional del usuario infractor</h3>
+                </div>
+                <div class="modal-body">
+                    <!--Formilario para ver usuario -->
+                    <form class="form-horizontal" id="frmUsuarioD">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="nickname">Nickname:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="nick" placeholder="Ingrese alias" required>
+                            </div>
+                            <label class="control-label col-sm-2" for="email">Correo:</label>
+                            <div class="col-sm-4">
+                                <input type="email" class="form-control" id="email" placeholder="Ingrese correo">
+                            </div>
+                        </div>
+                       <div class="form-group">
+                            <div class="col-sm-10">
+                                <input type="text"  style="display:none" class="form-control" id="idusuario" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="name">Nombre Completo:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="nameC" placeholder="Ingrese Nombre">
+                            </div>
+                            <label class="control-label col-sm-2" for="curp">CURP:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="curp" placeholder="Ingrese CURP"value="" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="control-label col-sm-2">Sexo:</label>
+                            <div class=" col-sm-2">
+                            <input type="text" class="form-control" id="sexo" placeholder="Ingrese Sexo"required>  
+                                 </div>
+                            <label  class="control-label col-md-1">Sucursal:</label>                            
+                             <div class="col-md-3">
+                            <input type="text" class="form-control" id="sucursalS" placeholder="Ingrese Sucursal"required>                                   
+                             </div>
+                            <label  class="control-label col-md-1">Teléfono:</label>                            
+                             <div class=" col-md-2">
+                            <input type="text" class="form-control" id="telefonoS" placeholder="Ingrese Telefono"required>                                   
+                             </div>
+                        </div>
+
+                    </form> 
+                </div><!--modal body-->
+                <div class="modal-footer">
+                    <div class="form-group">
+                       <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+                    </div>
+                </div><!--modal footer-->
+            </div><!--modal6-container-->
+        </div><!--modal dialog-->
+    </div><!--modalfade-->
+</div><!--container-->
+<!-- Tabla para el reporte style="display: none"-->
+
+<div id="tblOPreocupante" style="display: none">
+    <div class="container">
+        <div  class="col-md-12">
+            <div class="table-responsive">
+                <h2>Movimientos Preocupantes</h2>
+                <p>Clientes y sus movimientos relevantes:</p>            
+                <table id="tblOpPre" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Tipo de Reporte </th>
+                            <th>Periodo del reporte</th>
+                            <th>Folio</th>
+                            <th>Organo supervisor</th>
+                            <th>Clave del sujeto obligado</th>
+                            <th>Localidad</th>
+                            <th>Sucrsal</th>
+                            <th>Tipo de Operacion</th>
+                            <th>Instumento Monetario</th>
+                            <th>Numero de cuenta contrato u operacion</th>
+                            <th>Monto</th>
+                            <th>Moneda</th>
+                            <th>Fecha de la operacion</th>
+                            <th>Fecha detección de la operación</th>
+                            <th>Nacionalidad</th>
+                            <th>Tipo de Persona</th>
+                            <th>Razon social o denominacion</th>
+                            <th>Nombre</th>
+                            <th>Apellido Paterno</th>
+                            <th>Apellido Materno</th>
+                            <th>RFC</th>
+                            <th>CURP</th>
+                            <th>Fecha de nacimiento o constitución</th>
+                            <th>Domicilio</th>
+                            <th>Colonia</th>
+                            <th>Ciudad</th>
+                            <th>Telefono</th>
+                            <th>Actividad Economica</th>                            
+                            <th>Agente o Apoderado Nombre</th>
+                            <th>Apellido Paterno</th>
+                            <th>Apellido Materno</th>
+                            <th>RFC</th>
+                            <th>CURP</th>
+                            <th>Consecutivo de cuentas</th>                            
+                            <th>Número de cuenta</th>
+                            <th>Clave del sujeto obligado</th>
+                            <th>Nombre del titular de la cuenta</th>
+                            <th>Apellido Paterno</th>
+                            <th>Apellido Materno</th>
+                            <th>Descripción de la operación</th>
+                            <th>Razones por las que se consideraa Inu o Pre</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbPre">
+                    </tbody>
+                </table>
+            </div><!-- table responsive-->
+        </div><!-- col-12-->
+    </div> <!--contaniner-->
+</div>
+</body>
+</html>

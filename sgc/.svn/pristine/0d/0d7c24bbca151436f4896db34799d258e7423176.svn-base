@@ -1,0 +1,93 @@
+<%-- 
+    Document   : operelevante
+    Created on : 11/12/2017, 09:40:39 AM
+    Author     : JASMIN-SOMA
+--%>
+
+<%@include file="index.jsp" %>
+<br />
+<br />
+<br />
+<div class="container">   
+    <div class="panel-group">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Operaciones Relevantes</div>
+            <div id="contenidoPantalla" class="panel-body">        
+                <div class="row">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-1" for="sucursal">Sucursal: </label>
+                            <div class="col-sm-2">
+                                <!-- consulta catalogo T. Operacion -->
+                                <SELECT class="form-control">
+                                    <option value="0">Seleccionar </option>
+                                    <c:forEach items="${lSucursal}" var="sucursal">
+                                        <option value="${sucursal.sucursalid}">${sucursal.nombresucursal} </option>
+                                    </c:forEach>
+                                </SELECT>
+                            </div>
+
+                            <label  class="control-label col-sm-2" >Fecha inicio</label>
+                            <div class="col-sm-2">
+                                <input type="date" class="form-control" id="fechIni">
+                            </div>                                 
+
+                            <label  class="control-label col-sm-2">Fecha Termino:</label>
+                            <div class="col-sm-2">
+                                <input type="date" class="form-control" id="fechTer" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="control-label col-sm-1">Valor del dolar: </label>
+                            <div class="col-sm-2">
+                                <input type="number" class="form-control" id="valorDolarPld" placeholder="Valor Dolar">
+                            </div> 
+                            <label  class="control-label col-sm-2" id="dolares">Dolares: $10,000.00 </label>
+                            <label  class="control-label col-sm-2" id="pesos">Pesos MXN: $189.674.00 </label>  
+
+                        </div>
+
+                    </form>
+                    <div class="container">
+                        <div  class="col-md-12">
+                            <div class="table-responsive">
+                                <h2>Movimientos Relevantes</h2>
+                                <p>Clientes y sus movimientos relevantes:</p>            
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Numero de Cliente</th>
+                                            <th>Nombre Completo</th>
+                                            <th>Deposito</th>
+                                            <th>Retiro</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach items="${lPago}" var="pago" varStatus="contador">
+                                        <tr>
+                                            <td>${contador.count}</td>
+                                            <td id="idPago">${pago.clavepago}</td>
+                                            <td>${pago.personaenviaid.nombre} ${pago.personaenviaid.apaterno} ${pago.personaenviaid.amaterno}</td>
+                                            <td>${pago.cantidadenviada}</td>
+                                            <td>${pago.cantidadentregada}</td>
+                                            <td>Algo</td>
+                                            <td>${pago.tiposervicioid.descripcion}</td>
+                                        </tr>
+</c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- ROW-->
+            </div>
+        </div>
+    </div>
+</div>
+
+    <button id="genRepRel" class="btn btn-success" style="float: right;margin-right:60px;" >
+    Reporte Operaciones relevantes</button>
+</body>
+</html>

@@ -1,0 +1,173 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.model;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+/**
+ *
+ * @author Jasmin Santana
+ */
+@Entity
+@Table(name = "usuario")
+public class Usuario implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "usuarioid")
+    private Integer usuarioid;
+    
+    @Column(name = "nickname")
+    private String nickname;
+    
+    @Column(name = "pass")
+    private String pass;
+    
+    @Column(name = "correoelectronico")
+    private String correoelectronico;
+    
+    //Establece relacion con RolUsuario
+    @ManyToOne
+    @ForeignKey(name = "rolid_fk")
+    private RolUsuario rol;
+    
+    //Establece la relación con persona
+    @OneToOne(cascade = CascadeType.ALL)
+    @ForeignKey(name = "personaid_fk")
+    private Persona personaid;
+    
+    //Establece relacion con ct_estatususuario
+    @ManyToOne
+    @ForeignKey(name = "estatususuarioid_fk")
+    private EstatusUsuario estatusUsuario;
+    
+    //telefono se crea la relacion m-n TelefonoUsuario
+    @OneToMany(cascade = CascadeType.ALL)
+            //, fetch = FetchType.EAGER) 
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @PrimaryKeyJoinColumn(name = "telefonoid_fk")
+    private List<Telefono> telefono;
+    
+    //susucrsal se crea la relacion m-n SucursalUsuario
+    @OneToMany(cascade = CascadeType.ALL)
+    //, fetch = FetchType.EAGER)
+    //@Fetch(value = FetchMode.SUBSELECT)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @PrimaryKeyJoinColumn(name = "sucursalid_fk")
+    private List<Sucursal> sucursalid;
+
+    public Integer getUsuarioid() {
+        return usuarioid;
+    }
+
+    public void setUsuarioid(Integer usuarioid) {
+        this.usuarioid = usuarioid;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
+    public String getCorreoelectronico() {
+        return correoelectronico;
+    }
+
+    public void setCorreoelectronico(String correoelectronico) {
+        this.correoelectronico = correoelectronico;
+    }
+
+    public RolUsuario getRol() {
+        return rol;
+    }
+
+    public void setRol(RolUsuario rol) {
+        this.rol = rol;
+    }
+
+    public Persona getPersonaid() {
+        return personaid;
+    }
+
+    public void setPersonaid(Persona personaid) {
+        this.personaid = personaid;
+    }
+
+    public EstatusUsuario getEstatusUsuario() {
+        return estatusUsuario;
+    }
+
+    public void setEstatusUsuario(EstatusUsuario estatusUsuario) {
+        this.estatusUsuario = estatusUsuario;
+    }
+
+    public List<Telefono> getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(List<Telefono> telefono) {
+        this.telefono = telefono;
+    }
+
+
+
+    public List<Sucursal> getSucursalid() {
+        return sucursalid;
+    }
+
+    public void setSucursalid(List<Sucursal> sucursalid) {
+        this.sucursalid = sucursalid;
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "usuarioid=" + usuarioid + ", nickname=" + nickname + ", pass=" + pass + ", correoelectronico=" + correoelectronico + ", rol=" + rol + ", personaid=" + personaid + ", estatusUsuario=" + estatusUsuario + ", telefonoid=" + telefono + ", sucursalid=" + sucursalid + '}';
+    }
+
+    public Object getTelefonoid() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
+
+  
+
+
+ 
+
+   
+
+}

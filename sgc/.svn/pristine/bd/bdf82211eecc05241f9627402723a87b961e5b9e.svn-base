@@ -1,0 +1,41 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.dao.TipoIdentidadDao;
+import com.soma.transmisor.model.TipoIdentidad;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Repository("tipoIdentidadDao")
+public class TipoIdentidadDaoImpl extends HibernateDao<Integer, TipoIdentidad> implements TipoIdentidadDao{
+
+    @Override
+    public TipoIdentidad buscaTipoIdentidad(int identificacionid) {
+        Criteria criteria = creaCriteria();
+        criteria.add(Restrictions.eq("identificacionid", identificacionid));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        
+        return (TipoIdentidad) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<TipoIdentidad> showTipoIdentidad() {
+        Criteria criteria = creaCriteria();
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        List<TipoIdentidad> lTipoIdentidad = criteria.list();
+        
+        return lTipoIdentidad;
+    }
+    
+}

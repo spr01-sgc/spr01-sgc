@@ -1,0 +1,49 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.service.impl;
+
+import com.soma.transmisor.dao.InformacionAdicDao;
+import com.soma.transmisor.model.InformacionAdicional;
+import com.soma.transmisor.service.InformacionAdicService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Service("informacionAdicService")
+@Transactional
+public class InformacionAdicServiceImpl implements InformacionAdicService{
+@Autowired
+InformacionAdicDao informacionAdicDao;
+private boolean estadoMetodo=false;
+    
+    @Override
+    public boolean update(InformacionAdicional infoAd) {
+    informacionAdicDao.update(infoAd);
+    return estadoMetodo=true;
+    }
+
+    @Override
+    public boolean save(InformacionAdicional infoAd) {
+    informacionAdicDao.save(infoAd);
+    return estadoMetodo=true;
+    }
+
+    @Override
+    public InformacionAdicional buscaId(int infoAdId) {
+        return informacionAdicDao.buscaId(infoAdId);
+    }
+
+    @Override
+    public List<InformacionAdicional> showInfo() {
+   return informacionAdicDao.showInfo();
+    }
+    
+}

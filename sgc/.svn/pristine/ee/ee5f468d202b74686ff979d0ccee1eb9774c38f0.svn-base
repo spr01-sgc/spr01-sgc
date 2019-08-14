@@ -1,0 +1,242 @@
+<%-- 
+    Document   : frmPersonaFisica
+    Created on : 13/03/2018, 09:37:31 AM
+    Author     : LUIS-SOMA
+--%>
+
+<div id="divpersonafisica" style="display:none">
+    <div class="panel panel-group">
+        <div class="form-group div-azul">
+            <label class="control-label col-lg-1"></label>
+            <label class="control-label"> <h4>BUSCAR PERSONA POR:</h4></label>
+        </div>
+        <div id="divBuscaPersonaIdentificacion">
+            <label class="control-label col-lg-1"></label>
+            <label class="control-label col-lg-1"><h5>Clave:</h5></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="buscaPersona" onkeyup="mayuscula(this);"> 
+            </div>
+            <label class="control-label col-lg-1"><h5>Tipo:</h5></label>
+            <div class="col-sm-3">
+                <!-- consulta catalogo -->
+                <SELECT id="tipoBuscaPersona" class="form-control" onchange="buscarCliente();" >
+                    <option value="0">SELECCIONAR...</option>
+                    <option value="1">NO. CUENTA</option>
+                    <option value="2">IDENTIFICACIÓN OFICIAL</option>
+                    <option value="3">CURP</option>
+                    <option value="4">RFC</option>
+                </SELECT>
+            </div>
+            <input type="button" id ="btnCliente" disabled value="Buscar" class="estilobtn gris" onclick="buscaCliente();">
+            <label class="control-label col-lg-8"></label>
+            <div  id="buscaOtroClienteF" style="display:none">
+                <label  onclick="buscarOtroCliente();">
+                    <h6 class="cambiarColor">Buscar cliente</h6></label>
+                <label onclick="editarInformacion();" >
+                    <h6 class="cambiarColor" id="editInfo" style="display: block">Editar Información</h6></label>
+                <label  onclick="ocultarInformacion();">
+                    <h6 class="cambiarColor"  id="ocultaInfo" style="display: none">Ocultar Información</h6></label>
+            </div>
+            <label class="control-label col-lg-9"></label>
+            <div  id="editarInformacion" style="display:none">
+                <!--aquí se aloja un mensaje de error en caso de que no exista un cliente con los parametro de busqueda-->
+            </div>
+        </div>
+        <br />
+    </div>
+    <br />
+    <div id="infoEstaticaRemitente" style="display: none">
+        <div class="form-group div-azul">
+            <label class="control-label col-lg-1"></label>
+            <label class="control-label"> <h5>DATOS DEL REMITENTE</h5></label>
+        </div>
+        <label class="control-label col-lg-1"></label>
+        <div  class="col-md-9">
+            <div class="form-group">
+                <label class="control-label col-lg-1"> <h5>Nombre: </h5></label>
+                <label class="control-label col-lg-4" id="nombreFisica"></label>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-1"> <h5>CURP: </h5></label>
+                <label class="control-label col-lg-3" id="curpFis"></label>
+                <label class="control-label col-lg-3"> <h5>Idenficiación Oficial: </h5></label>
+                <label class="control-label col-lg-1" id="identificacionNo"></label>
+            </div>
+        </div><!-- panel-primary-->
+    </div>
+
+
+    <div id="mensajeBusqueda" style="display:none">
+        <label class="control-label col-lg-3"></label>
+        <label class="control-label div-rojo"> <h5 id="mensajeBusquedaError"></h5></label>
+    </div> 
+    <div class="form-group">
+        <label class="control-label col-lg-9" ></label> 
+    </div>
+    <div id="infoRemitente" style="display:none">
+        <div class="form-group">
+            <label class="control-label col-lg-1"></label>
+            <label class="control-label div-azul"> <h5>INFORMACIÓN DEL REMITENTE</h5></label>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>No. Cuenta:</h5></label>
+            <label class="control-label" id="clavePersonaFisica"></label>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>Nombre:</h5></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="nombrepersonafisica" onkeyup="mayuscula(this);"> 
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>Apellido Paterno:</h5></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="apaternofisica" onkeyup="mayuscula(this);">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>Apellido Materno:</h5></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="amaternofisica" onkeyup="mayuscula(this);">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>CURP:</h5></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="curpfisica" onchange="detectaCambio('curpfisica');" onkeyup="mayuscula(this);"> 
+            </div>
+            <label class="control-label col-lg-2"><h5>RFC:</h5></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="rfcfisica" onchange="detectaCambio('rfcfisica');" onkeyup="mayuscula(this);"> 
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>Sexo:</h5></label>
+            <div class="col-sm-3">
+                <!-- consulta catalogo -->
+                <SELECT id="sexofisica" class="form-control">
+                    <option value="0">SELECCIONAR...</option>
+                    <c:forEach items="${lSexo}" var="sexo">
+                        <OPTION value="${sexo.sexoid}">${sexo.descripcion}</OPTION>
+                    </c:forEach>
+                </SELECT>
+            </div>
+            <label class="control-label col-lg-2"><h5>Fecha nacimiento:</h5></label>
+            <div class="col-sm-3">
+                <input type="date" class="form-control" id="fechanacimiento" onkeyup="mayuscula(this);">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>No. identificación:</h5></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="noidentificacion" onchange="detectaCambio('noidentificacion');" > 
+            </div>
+            <label class="control-label col-lg-2"><h5>Tipo de Identificación:</h5></label>
+            <div class="col-sm-3">
+                <!-- consulta catalogo -->
+                <SELECT id="tipoIdentificacion" class="form-control">
+                    <option value="0">SELECCIONAR...</option>
+                    <c:forEach items="${lTipoIdentidad}" var="tipoiden">
+                        <OPTION value="${tipoiden.identificacionid}">${tipoiden.nombre}</OPTION>
+                    </c:forEach>
+                </SELECT>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>Estatus Identificación:</h5></label>
+            <div class="col-sm-3">
+                <!-- consulta catalogo -->
+                <SELECT id="statusIdentificacion" class="form-control">
+                    <option value="0">SELECCIONAR...</option>
+                    <c:forEach items="${lEstatusIdentificacion}" var="status">
+                        <OPTION value="${status.estatusidentid}">${status.nombre}</OPTION>
+                    </c:forEach>
+                </SELECT>
+            </div>
+            <label class="control-label col-lg-2"><h5>Actividad:</h5></label>
+            <div class="col-sm-3">
+                <!-- consulta catalogo -->
+                <SELECT id="actividad" class="form-control">
+                    <option value="0">SELECCIONAR...</option>
+                    <c:forEach items="${lActividadEconomica}" var="actividad">
+                        <OPTION value="${actividad.actividadid}">${actividad.nombre}</OPTION>
+                    </c:forEach>
+                </SELECT>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>Email:</h5></label>
+            <div class="col-sm-3">
+                <input type="email" class="form-control" id="emailfisica" onkeyup="mayuscula(this);"> 
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>Calle y Número:</h5></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="callefisica" onkeyup="mayuscula(this);"> 
+            </div>
+
+            <label class="control-label col-lg-2"><h5>Colonia:</h5></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="coloniafisica" onkeyup="mayuscula(this);"> 
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>C.P.</h5></label>
+            <div class="col-sm-3">
+                <!-- consulta catalogo -->
+                <SELECT id="codigopostalfisica" class="form-control" onchange="detectaCambioCombo('cp');">
+                    <option value="0">SELECCIONAR...</option>
+                    <c:forEach items="${lCodigoPostal}" var="cp">
+                        <OPTION value="${cp.codigopostalid}">${cp.clave}</OPTION>
+                    </c:forEach>
+                </SELECT>
+            </div>
+            <label class="control-label col-lg-2"><h5>Ciudad:</h5></label>
+            <div class="col-sm-3">
+                <!-- consulta catalogo -->
+                <SELECT id="ciudad" class="form-control">
+                    <option value="0">SELECCIONAR...</option>
+                    <c:forEach items="${lCiudad}" var="ciudad">
+                        <OPTION value="${ciudad.ciudadid}">${ciudad.nombre}</OPTION>
+                    </c:forEach>
+                </SELECT>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>Estado</h5></label>
+            <div class="col-sm-3">
+                <!-- consulta catalogo -->
+                <SELECT id="estado" class="form-control">
+                    <option value="0">SELECCIONAR...</option>
+                    <c:forEach items="${lEstado}" var="estado">
+                        <OPTION value="${estado.estadoid}">${estado.nombre}</OPTION>-->
+                    </c:forEach>
+                </SELECT>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-3"><h5>Télefono:</h5></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="telefonofisica"> 
+            </div>
+            <label class="control-label col-lg-2"><h5>Tipo:</h5></label>
+            <div class="col-sm-3">
+                <!-- consulta catalogo -->
+                <SELECT id="tipoTelefonofisica" class="form-control">
+                    <option value="0">SELECCIONAR...</option>
+                    <c:forEach items="${lTipoTelefono}" var="tipo">
+                        <OPTION value="${tipo.tipoid}">${tipo.tipotelefono}</OPTION>
+                    </c:forEach>
+                </SELECT>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-lg-9" ></label> 
+        <input type="button" value="Atras" class="estilobtn gris" onclick="datosEnvio();">
+        <input type="button" value="Siguiente" class="estilobtn gris" onclick="datosBeneficiario();">
+    </div>
+</div>

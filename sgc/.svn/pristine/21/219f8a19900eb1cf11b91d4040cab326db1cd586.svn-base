@@ -1,0 +1,621 @@
+<%-- 
+    Document   : envios
+    Created on : 24/11/2017, 09:29:50 AM
+    Author     : LUIS-SOMA
+--%>
+<%@include file="index.jsp" %>
+<br />
+<div class="padre">
+    <div class="hijo">
+        <div class="panel-group col-md-12">
+            <div class="panel">
+                <div class="panel-heading" id="encabezadoForm">
+                    <h4>Envios Confianza</h4>
+                </div>
+                <div id="contenidoPantalla" class="panel-body"> 
+                    <div class="row"> 
+
+                        <div class="modal-body">
+                            <!--Formilario para agregar un pago -->
+                            <form class="form-horizontal">
+                                <input type="hidden" name="${_csrf.parameterName}"
+                                       value="${_csrf.token}" />
+                                <div id="dinamico">
+
+                                </div>
+                                <div id="datosenvio" >
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-1"></label>
+                                        <label class="control-label div-azul"> <h4>DATOS DE LA REMESA</h4></label>
+                                    </div>
+                                    <div class="panel panel-primary">
+
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-10"> <h6>Fecha: </h6></label>
+                                            <label class="control-label col-lg-1" id="fecha"></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-2"> <h5>Enviado por: </h5></label>
+                                            <label class="control-label" id="nombreSucursalEnvia"></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-2"> <h6>Pais: </h6></label>
+                                            <label class="control-label col-lg-1" id="paisOrigen"></label>
+                                            <label class="control-label col-lg-2"> <h6>Estado:</h6></label>
+                                            <label class="control-label col-lg-1" id="estadoOrigen"></label>
+                                            <label class="control-label col-lg-2"> <h6>Ciudad:</h6></label>
+                                            <label class="control-label col-lg-3" id="ciudadOrigen"></label>
+                                        </div>
+                                    </div>
+                                    <br /><br /><br />
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2" for="cantidadenviada"><h5>Monto a enviar:</h5></label>
+                                        <div class="col-sm-3">
+                                            <input type="number" class="form-control" id="cantidadenviada">
+                                        </div>
+
+                                        <label class="control-label col-lg-3" for="tipomoneda"><h5>Tipo de moneda:</h5></label>
+                                        <div class="col-sm-3">
+                                            <!-- consulta catalogo -->
+                                            <SELECT id="tipomoneda" class="form-control">
+                                                <option value="0">Seleccionar...</option>
+                                                <c:forEach items="${lModendaDivisa}" var="tipo">
+                                                    <OPTION value="${tipo.monedadivisaid}">${tipo.nombremoneda}</OPTION>
+                                                    </c:forEach>
+                                            </SELECT>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">      
+                                        <div class="oculto">
+                                            <label for="instrumentomonetario" class="col-lg-2 control-label">Instrumento monetario</label>
+                                            <div class="col-lg-2">
+                                                <SELECT id="instrumentomonetario" class="form-control">
+                                                    <option value="0">Seleccionar...</option>
+                                                    <c:forEach items="${lInstrumentoMonetario}" var="instrumento">
+                                                        <OPTION value="${instrumento.instmonetarioid}">${instrumento.nombre}</OPTION>
+                                                        </c:forEach>
+                                                </SELECT>
+                                            </div>
+                                        </div>
+                                        <div class="oculto">
+                                            <label class="control-label col-lg-2" for="tiposervicio">Tipo servicio</label>
+                                            <div class="col-sm-2">
+                                                <SELECT id="tiposervicio" class="form-control">
+                                                    <option value="0">Seleccionar...</option>
+                                                    <c:forEach items="${lTipoServicio}" var="tipo">
+                                                        <OPTION value="${tipo.tiposervicioid}">${tipo.descripcion}</OPTION>
+                                                        </c:forEach>
+                                                </SELECT>
+                                            </div>
+                                        </div>
+                                        <label class="control-label col-lg-2" for="valormoneda"><h5>Valor moneda:</h5></label>
+                                        <div class="col-sm-3">
+                                            <input type="button" class="form-control" id="valormoneda" placeholder="" disabled="true" value="18.6196">
+                                        </div>
+                                        <label for="comisionporpago" class="col-lg-3 control-label"><h5>Comisión por pago:</h5></label>
+                                        <div class="col-sm-3">
+                                            <input type="number" class="form-control" id="comisionPago" placeholder="Comisión pago">
+                                        </div>
+                                    </div>  
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-10" ></label> 
+                                        <input type="button" value="Siguiente"  class="estilobtn gris" onclick="datosPersona();">
+                                    </div>
+                                </div>
+
+                                <div id="verificaPersona" style="display:none">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-lg-1"></label>
+                                        <label class="control-label div-azul"> <h4>TIPO DE PERSONA</h4></label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4" for="personamoral">Persona Moral</label>
+                                        <div class="checkbox col-sm-2">
+                                            <input type="checkbox" id="personamoral" onclick="selectTipopersona(1);" disabled="true">
+                                        </div>
+                                        <label class="control-label col-md-2" for="personafisica">Persona Física</label>
+                                        <div class="checkbox col-sm-2">
+                                            <input type="checkbox" id="personafisica" onclick="selectTipopersona(2);" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <br /><br /><br />
+                                <div id="divpersonafisica" style="display:none">
+                                    <div class="form-group div-azul">
+                                        <label class="control-label col-lg-1"></label>
+                                        <label class="control-label"> <h4>DATOS DEL REMITENTE</h4></label>
+                                    </div>
+                                    <div id="divBuscaPersonaIdentificacion">
+                                        <label class="control-label col-lg-3"><h5>No. Identificación:</h5></label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control mayuscula" id="buscaPersona" > 
+                                        </div>
+                                        <label class="control-label col-lg-1" for="tipoidentificacion"><h5>Tipo:</h5></label>
+                                        <div class="col-sm-3">
+                                            <!-- consulta catalogo -->
+                                            <SELECT id="tipoBuscaPersona" class="form-control">
+                                                <option value="0">SELECCIONAR...</option>
+                                                <option value="1">NO. CUENTA</option>
+                                                <option value="2">IDENTIFICACIÓN OFICIAL</option>
+                                                <option value="3">CURP</option>
+                                                <option value="4">RFC</option>
+                                            </SELECT>
+                                        </div>
+                                        <input type="button" value="Buscar" class="estilobtn gris" onclick="buscaCliente();">
+                                        <label class="control-label col-lg-9"></label>
+                                        <div  id="buscaOtroClienteF" style="display:none">
+                                            <label class="control-label" onclick="buscarOtroCliente();">
+                                                <h6 class="cambiarColor">Buscar cliente</h6></label>
+
+                                            <label class="control-label" onclick="editarInformacion();">
+                                                <h6 class="cambiarColor">Editar Información</h6></label>
+                                        </div>
+                                        <label class="control-label col-lg-9"></label>
+                                        <div  id="editarInformacion" style="display:none">
+
+                                        </div>
+                                    </div>
+                                    <br /><br />
+
+                                    <div id="infoEstaticaRemitente" style="display:block">
+                                        <label class="control-label col-lg-1"></label>
+                                        <div  class="col-md-9">
+                                            <div class="panel panel-primary">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2"> <h5>Nombre: </h5></label>
+                                                    <label class="control-label col-lg-4" id="nombreFisica"></label>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2"> <h5>CURP: </h5></label>
+                                                    <label class="control-label col-lg-2" id="curpFis"></label>
+                                                    <label class="control-label col-lg-3"> <h5>Idenficiación Oficial: </h5></label>
+                                                    <label class="control-label col-lg-1" id="identificacionNo"></label>
+                                                </div>
+                                            </div><!-- panel-primary-->
+
+                                        </div>
+                                    </div>
+
+
+                                    <div id="mensajeBusqueda" style="display:none">
+                                        <label class="control-label col-lg-3"></label>
+                                        <label class="control-label div-rojo"> <h5 id="mensajeBusquedaInfo"></h5></label>
+                                    </div> 
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-9" ></label> 
+                                    </div>
+                                    <div id="infoRemitente" style="display:none">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-1"></label>
+                                            <label class="control-label div-azul"> <h5>INFORMACIÓN DEL REMITENTE</h5></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>No. Cuenta:</h5></label>
+                                            <label class="control-label" id="clavePersonaFisica"></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>Nombre:</h5></label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control mayuscula" id="nombrepersonafisica"> 
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>Apellido Paterno:</h5></label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control mayuscula" id="apaternofisica">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>Apellido Materno:</h5></label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control mayuscula" id="amaternofisica">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>CURP:</h5></label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control mayuscula" id="curpfisica" onchange="detectaCambio('curpfisica');"> 
+                                            </div>
+                                            <label class="control-label col-lg-2"><h5>RFC:</h5></label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control mayuscula" id="rfcfisica" onchange="detectaCambio('rfcfisica');" > 
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>Sexo:</h5></label>
+                                            <div class="col-sm-3">
+                                                <!-- consulta catalogo -->
+                                                <SELECT id="sexofisica" class="form-control">
+                                                    <option value="0">SELECCIONAR...</option>
+                                                    <c:forEach items="${lSexo}" var="sexo">
+                                                        <OPTION value="${sexo.sexoid}">${sexo.descripcion}</OPTION>
+                                                        </c:forEach>
+                                                </SELECT>
+                                            </div>
+                                            <label class="control-label col-lg-2"><h5>Fecha nacimiento:</h5></label>
+                                            <div class="col-sm-3">
+                                                <input type="date" class="form-control mayuscula" id="fechanacimiento">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>No. identificación:</h5></label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" id="noidentificacion" onchange="detectaCambio('noidentificacion');" > 
+                                            </div>
+                                            <label class="control-label col-lg-2"><h5>Tipo de Identificación:</h5></label>
+                                            <div class="col-sm-3">
+                                                <!-- consulta catalogo -->
+                                                <SELECT id="tipoIdentificacion" class="form-control">
+                                                    <option value="0">SELECCIONAR...</option>
+                                                    <c:forEach items="${lTipoIdentidad}" var="tipoiden">
+                                                        <OPTION value="${tipoiden.identificacionid}">${tipoiden.nombre}</OPTION>
+                                                        </c:forEach>
+                                                </SELECT>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>Estatus Identificación:</h5></label>
+                                            <div class="col-sm-3">
+                                                <!-- consulta catalogo -->
+                                                <SELECT id="statusIdentificacion" class="form-control">
+                                                    <option value="0">SELECCIONAR...</option>
+                                                    <c:forEach items="${lEstatusIdentificacion}" var="status">
+                                                        <OPTION value="${status.estatusidentid}">${status.nombre}</OPTION>
+                                                        </c:forEach>
+                                                </SELECT>
+                                            </div>
+                                            <label class="control-label col-lg-2"><h5>Actividad:</h5></label>
+                                            <div class="col-sm-3">
+                                                <!-- consulta catalogo -->
+                                                <SELECT id="actividad" class="form-control">
+                                                    <option value="0">SELECCIONAR...</option>
+                                                    <c:forEach items="${lActividadEconomica}" var="actividad">
+                                                        <OPTION value="${actividad.actividadid}">${actividad.nombre}</OPTION>
+                                                        </c:forEach>
+                                                </SELECT>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>Email:</h5></label>
+                                            <div class="col-sm-3">
+                                                <input type="email" class="form-control mayuscula" id="emailfisica"> 
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>Calle y Número:</h5></label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control mayuscula" id="callefisica"> 
+                                            </div>
+
+                                            <label class="control-label col-lg-2"><h5>Colonia:</h5></label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control mayuscula" id="coloniafisica"> 
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>C.P.</h5></label>
+                                            <div class="col-sm-3">
+                                                <!-- consulta catalogo -->
+                                                <SELECT id="codigopostalfisica" class="form-control" onchange="detectaCambioCombo('cp');">
+                                                    <option value="0">SELECCIONAR...</option>
+                                                    <c:forEach items="${lCodigoPostal}" var="cp">
+                                                        <OPTION value="${cp.codigopostalid}">${cp.clave}</OPTION>
+                                                        </c:forEach>
+                                                </SELECT>
+                                            </div>
+                                            <label class="control-label col-lg-2"><h5>Ciudad:</h5></label>
+                                            <div class="col-sm-3">
+                                                <!-- consulta catalogo -->
+                                                <SELECT id="ciudad" class="form-control">
+                                                    <option value="0">SELECCIONAR...</option>
+                                                    <c:forEach items="${lCiudad}" var="ciudad">
+                                                        <OPTION value="${ciudad.ciudadid}">${ciudad.nombre}</OPTION>
+                                                        </c:forEach>
+                                                </SELECT>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>Estado</h5></label>
+                                            <div class="col-sm-3">
+                                                <!-- consulta catalogo -->
+                                                <SELECT id="estado" class="form-control">
+                                                    <option value="0">SELECCIONAR...</option>
+                                                    <c:forEach items="${lEstado}" var="estado">
+                                                        <OPTION value="${estado.estadoid}">${estado.nombre}</OPTION>-->
+                                                        </c:forEach>
+                                                </SELECT>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3"><h5>Télefono:</h5></label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" id="telefonofisica"> 
+                                            </div>
+                                            <label class="control-label col-lg-2"><h5>Tipo:</h5></label>
+                                            <div class="col-sm-3">
+                                                <!-- consulta catalogo -->
+                                                <SELECT id="tipoTelefonofisica" class="form-control">
+                                                    <option value="0">SELECCIONAR...</option>
+                                                    <c:forEach items="${lTipoTelefono}" var="tipo">
+                                                        <OPTION value="${tipo.tipoid}">${tipo.tipotelefono}</OPTION>
+                                                        </c:forEach>
+                                                </SELECT>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-9" ></label> 
+                                        <input type="button" value="Atras" class="estilobtn gris" onclick="datosEnvio();">
+                                        <input type="button" value="Siguiente" class="estilobtn gris" onclick="datosBeneficiario();">
+                                    </div>
+                                </div>
+                                <div id="divpersonamoral" style="display:none">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-7" for="datosPersona"><h4>Datos persona que envía</h4></label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-10" for="NoClienteMoral">No. Cliente</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="noClienteMoral" onchange="detectaCambio('noClienteMoral');" placeholder="No. Cliente">
+                                        </div>
+                                        <label class="control-label col-lg-10"></label>
+                                        <div  id="buscaOtroClienteM" style="display:none">
+                                            <label class="control-label col-lg-2" onclick="buscarOtroCliente();">
+                                                <h6 class="cambiarColor">Buscar otro cliente</h6></label>
+                                        </div>
+                                    </div> 
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2" for="nombremoral">Nombre</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="nombremoral" placeholder="Nombre">
+                                        </div>
+                                        <label class="control-label col-lg-2" for="apaternomoral">Apellido paterno</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="apaternomoral" placeholder="Paterno">
+                                        </div>
+                                        <label class="control-label col-lg-2" for="amaternomoral">Apellido materno</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="amaternomoral" placeholder="Materno">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2" for="curpmoral">CURP</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="curpmoral" placeholder="CURP">
+                                        </div>
+                                        <label class="control-label col-lg-2" for="sexomoral">Sexo</label>
+                                        <div class="col-sm-2">
+                                            <!-- consulta catalogo -->
+                                            <SELECT id="sexomoral" class="form-control">
+                                                <option value="0">Seleccionar...</option>
+                                                <c:forEach items="${lSexo}" var="sexo">
+                                                    <OPTION value="${sexo.sexoid}">${sexo.descripcion}</OPTION>
+                                                    </c:forEach>
+                                            </SELECT>
+                                        </div>
+                                        <label class="control-label col-lg-2" for="emailmoral">Email</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="emailmoral" placeholder="ejemplo123@gmail.com">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2" for="RFC">RFC</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="rfcmoral" placeholder="RFC">
+                                        </div>
+                                        <label class="control-label col-lg-2" for="calleMoral">Calle y número</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="callemoral" placeholder="calle">
+                                        </div>
+                                        <label class="control-label col-lg-2" for="coloniamoral">Colonia</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="coloniamoral" placeholder="Colonia">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2" for="cp">C.P.</label>
+                                        <div class="col-sm-2">
+                                            <!-- consulta catalogo -->
+                                            <SELECT id="cpmoral" class="form-control">
+                                                <option value="0">Seleccionar...</option>
+                                                <c:forEach items="${lCodigoPostal}" var="cp">
+                                                    <OPTION value="${cp.codigopostalid}">${cp.clave}</OPTION>
+                                                    </c:forEach>
+                                            </SELECT>
+                                        </div>
+                                        <label class="control-label col-lg-2" for="razonsocial">Razón social</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="razonsocial" placeholder="Razón Social">
+                                        </div>
+                                        <label class="control-label col-lg-2" for="fechaConstitucion">Fecha constitución</label>
+                                        <div class="col-sm-2">
+                                            <input type="date" class="form-control" id="fechaConstitucion" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2" for="NoFirmaAvanzada">No. Firma Avanzada</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="nofirmaavanzada" placeholder="Firma avanzada">
+                                        </div>
+                                        <label class="control-label col-lg-2" for="giro">Giro</label>
+                                        <div class="col-sm-2">
+                                            <SELECT id="giroC" class="form-control">
+                                                <option value="0">Seleccionar...</option>
+                                                <c:forEach items="${lGiro}" var="gir">
+                                                    <OPTION value="${gir.giroid}">${gir.nombre}</OPTION>
+                                                    </c:forEach>
+                                            </SELECT>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2" for="calle">Télefono</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="telefonopersonamoral" placeholder="Telefono"> 
+                                        </div>
+                                        <label class="control-label col-lg-2" for="tipotelefono">Tipo</label>
+                                        <div class="col-sm-2">
+                                            <!-- consulta catalogo -->
+                                            <SELECT id="tipotelefonopersonamoral" class="form-control">
+                                                <option value="0">Seleccionar...</option>
+                                                <c:forEach items="${lTipoTelefono}" var="tipo">
+                                                    <OPTION value="${tipo.tipoid}">${tipo.tipotelefono}</OPTION>
+                                                    </c:forEach>
+                                            </SELECT>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-10" ></label> 
+                                        <input type="button" value="Atras" onclick="datosEnvio();">
+                                        <input type="button" value="Siguiente" onclick="datosBeneficiario();">
+                                    </div>
+                                </div>
+                                <div id="beneficiario" style="display:none">                                    
+                                    <%@include file="tblBeneficiarios.jsp" %>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-7" for="datosPersona"><h4>Beneficiario</h4></label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-3"><h5>Nombre:</h5></label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control mayuscula" id="nombrebene"> 
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-3"><h5>Apellido Paterno:</h5></label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control mayuscula" id="apaternobene"> 
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-3"><h5>Apellido Materno:</h5></label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control mayuscula" id="amaternobene"> 
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-3"><h5>CURP:</h5></label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control mayuscula" id="curpbene"> 
+                                        </div>
+                                        <label class="control-label col-lg-2"><h5>Sexo:</h5></label>
+                                        <div class="col-sm-3">
+                                            <!-- consulta catalogo -->
+                                            <SELECT id="sexobene" class="form-control">
+                                                <option value="0">Seleccionar...</option>
+                                                <c:forEach items="${lSexo}" var="sexo">
+                                                    <OPTION value="${sexo.sexoid}">${sexo.descripcion}</OPTION>
+                                                    </c:forEach>
+                                            </SELECT>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-3"><h5>Teléfono:</h5></label>
+                                        <div class="col-sm-3">
+                                            <input type="number" class="form-control" id="telBeneficiario"> 
+                                        </div> 
+                                        <label class="control-label col-lg-2"><h5>Tipo:</h5></label>
+                                        <div class="col-sm-3">
+                                            <!-- consulta catalogo -->
+                                            <SELECT id="tipoTelBeneficiario" class="form-control">
+                                                <option value="0">Seleccionar...</option>
+                                                <c:forEach items="${lTipoTelefono}" var="tipo">
+                                                    <OPTION value="${tipo.tipoid}">${tipo.tipotelefono}</OPTION>
+                                                    </c:forEach>
+                                            </SELECT>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-3"><h5>Calle y Número:</h5></label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control mayuscula" id="calleBeneficiario"> 
+                                        </div>
+
+                                        <label class="control-label col-lg-2"><h5>Colonia:</h5></label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control mayuscula" id="coloniaBeneficiario"> 
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-3"><h5>C.P.</h5></label>
+                                        <div class="col-sm-3">
+                                            <!-- codigoPostal -->
+                                            <SELECT id="cpBeneficiario" class="form-control" onchange="detectaCambioCombo('cp');">
+                                                <option value="0">SELECCIONAR...</option>
+                                                <c:forEach items="${lCodigoPostal}" var="cp">
+                                                    <OPTION value="${cp.codigopostalid}">${cp.clave}</OPTION>
+                                                    </c:forEach>
+                                            </SELECT>
+                                        </div>
+                                        <label class="control-label col-lg-2"><h5>Ciudad:</h5></label>
+                                        <div class="col-sm-3">
+                                            <!-- consulta catalogo -->
+                                            <SELECT id="ciudadBeneficiario" class="form-control">
+                                                <option value="0">SELECCIONAR...</option>
+                                                <c:forEach items="${lCiudad}" var="ciudad">
+                                                    <OPTION value="${ciudad.ciudadid}">${ciudad.nombre}</OPTION>
+                                                    </c:forEach>
+                                            </SELECT>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-3"><h5>Estado</h5></label>
+                                        <div class="col-sm-3">
+                                            <!-- consulta catalogo -->
+                                            <SELECT id="estadoBeneficiario" class="form-control">
+                                                <option value="0">SELECCIONAR...</option>
+                                                <c:forEach items="${lEstado}" var="estado">
+                                                    <OPTION value="${estado.estadoid}">${estado.nombre}</OPTION>-->
+                                                    </c:forEach>
+                                            </SELECT>
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <br />
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4" for="destino">Destino</label>
+                                        <div class="col-sm-2">
+                                            <!-- consulta catalogo -->
+                                            <SELECT id="destino" class="form-control">
+                                                <option value="0">Seleccionar...</option>
+                                                <c:forEach items="${lCiudad}" var="ciudad">
+                                                    <OPTION value="${ciudad.ciudadid}">${ciudad.nombre}</OPTION>
+                                                    </c:forEach>
+                                            </SELECT>
+                                        </div>
+                                        <label class="control-label col-lg-2" for="emisora">Emisora</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="emisora" placeholder="Emisora" disabled="true"> 
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-9" ></label> 
+                                        <input type="button" value="Atras" class="estilobtn gris" onclick="datosAtrasPersona();">
+                                        <input type="button" value="Registrar Envió" class="estilobtn verde" onclick="registrarEnvio();">
+                                        <!-- <button id="envio" class="btn btn-success" onclick="registrarEnvio();">Registrar Envió</button>-->
+                                    </div>
+                                </div>
+
+
+                            </form> 
+                            <table id='result'>
+                            </table>
+                        </div><!--modal body-->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.EmisoraOrdenanteDao;
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.model.EmisoraOrdenante;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Repository("emirosaOrdenanteDao")
+public class EmisoraOrdenanteDaoImpl extends HibernateDao<Integer, EmisoraOrdenante> implements EmisoraOrdenanteDao {
+
+    @Override
+    public EmisoraOrdenante buscaEmisoraOrdenante(String noEmisora) {
+        Criteria criteria = creaCriteria();
+        criteria.add(Restrictions.eq("noemisora", noEmisora));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return (EmisoraOrdenante) criteria.uniqueResult();
+    }
+ 
+    @Override
+    public void save(EmisoraOrdenante emisoraOrdenante) { 
+        try {
+            guardar(emisoraOrdenante);
+            System.out.println(EmisoraOrdenanteDaoImpl.class + " Se ha guardado correctamente la Emisora Ordenante " + emisoraOrdenante);
+        } catch (HibernateException  he) {
+            throw he;         
+        }
+    }
+
+    @Override
+    public void update(EmisoraOrdenante emisoraOrdenante) {
+        try {
+            actualizar(emisoraOrdenante);
+            System.out.println(EmisoraOrdenante.class + " Se ha Actualizado correctamente la Emisora Ordenante " + emisoraOrdenante);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+}

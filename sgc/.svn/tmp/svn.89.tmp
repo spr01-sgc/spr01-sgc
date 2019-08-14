@@ -1,0 +1,28 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao;
+
+import com.soma.transmisor.model.Cliente;
+import java.util.List;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+public interface ClienteDao {
+
+    Cliente buscaCLave(String clave);
+
+    Cliente buscaRFC(String rfc);
+
+    Cliente clave();
+
+    List<Cliente> showCliente(int clienteId,int estatusPago);//perfiltransaccional
+
+    List<Float> perfilTransaccional(int clienteId, double porcentaje,int estatusPago);
+    
+    Cliente buscaCliente(int clienteId);
+}

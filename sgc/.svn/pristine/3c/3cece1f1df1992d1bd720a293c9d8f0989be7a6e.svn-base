@@ -1,0 +1,39 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.model.EstatusPba;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.springframework.stereotype.Repository;
+import com.soma.transmisor.dao.EstatusPbaDao;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Repository("estatusPbaDao")
+public class EstatusPbaDaoImpl extends HibernateDao<Integer, EstatusPba>implements EstatusPbaDao{
+
+    @Override
+    public EstatusPba buscarId(int estatuspbapepid) {
+    System.out.println(EstatusPbaDaoImpl.class + "\nBuscando Estatus PBA por estatuspbapepid: " + estatuspbapepid);
+     EstatusPba estatus=getPorId(estatuspbapepid);
+     return estatus;
+    }
+
+    @Override
+    public List<EstatusPba> showEstatus() {
+    Criteria criteria = creaCriteria();
+        //indicar que no traiga datos repetidos
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        //lista los roles sin repetir algun dato
+        List<EstatusPba> lEstPba = criteria.list();
+        return lEstPba;
+    }
+    
+}

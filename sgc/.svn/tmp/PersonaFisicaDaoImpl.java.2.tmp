@@ -1,0 +1,86 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.dao.PersonaFisicaDao;
+import com.soma.transmisor.model.PersonaFisica;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+<<<<<<< .mine
+import org.hibernate.SQLQuery;
+import org.hibernate.sql.JoinType;
+=======
+import org.hibernate.SQLQuery;
+>>>>>>> .r45
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Repository("personaFisicaDao")
+public class PersonaFisicaDaoImpl extends HibernateDao<Integer, PersonaFisica> implements PersonaFisicaDao {
+
+    @Override
+    public void update(PersonaFisica personaFisica) {
+        actualizar(personaFisica);
+        System.out.print(PersonaFisicaDaoImpl.class + "Se ha actualizado correctamente la persona Fisica" + personaFisica.toString());
+
+    }
+
+    @Override
+    public void save(PersonaFisica personaFisica) {
+        guardar(personaFisica);
+        System.out.print(PersonaFisicaDaoImpl.class + "Se ha guardado correctamente la persona Fisica" + personaFisica.toString());
+
+    }
+
+    @Override
+    public PersonaFisica buscaCliente(int clienteid) {
+        Query query = getSession().createQuery("FROM PersonaFisica as pf  \n"
+                + "              where pf.clienteid =" + clienteid + "");
+        return (PersonaFisica) query.uniqueResult();
+    }
+
+    @Override
+    public PersonaFisica buscaPersona(String filtro, int parametro) {
+        Query query = getSession().createQuery("FROM PersonaFisica as pf  \n"
+                + "              where pf." + filtro + "=" + parametro + "");
+        return (PersonaFisica) query.uniqueResult();
+    }
+
+    @Override
+    public PersonaFisica buscaNoidentificacion(String noIdentificacion) {
+        Query query = getSession().createQuery("FROM PersonaFisica as pf  \n"
+                + "              where pf.identificacionoficial = '" + noIdentificacion + "'");
+        return (PersonaFisica) query.uniqueResult();
+    }
+
+    @Override
+    public List<PersonaFisica> showFisica() {
+<<<<<<< .mine
+       Criteria criteria = getSession().createCriteria(PersonaFisica.class, "pf");
+        criteria.createAlias("pf.clienteid", "cliente");
+        criteria.createAlias("pf.personaid", "persona");
+        return criteria.list();
+    } 
+=======
+        SQLQuery query = getSession().createSQLQuery("SELECT DISTINCT(cl.clienteid),cl.clave,\n"
+                + "persona.apaterno||' '||persona.amaterno||' '||persona.nombre as nombre,\n"
+                + "persona.curp,cl.rfc,cl.correoelectronico,bitapago.estatusid_estatusid,estPago.descripcion\n"
+                + " FROM personafisica pf \n"
+                + "INNER JOIN cliente cl ON pf.clienteid_clienteid=cl.clienteid  \n"
+                + "INNER JOIN persona ON persona.personaid=pf.personaid_personaid\n"
+                + "INNER JOIN pago On pago.clienteid_clienteid=cl.clienteid\n"
+                + "INNER JOIN bitapago ON pago.pagoid=bitapago.pagoid_pagoid\n"
+                + "INNER JOIN ct_estatus_pago estPago On estPago.estatusid=bitapago.estatusid_estatusid");
+        List<PersonaFisica> lpersonaF = query.list();
+        return lpersonaF;
+    }
+>>>>>>> .r45
+}

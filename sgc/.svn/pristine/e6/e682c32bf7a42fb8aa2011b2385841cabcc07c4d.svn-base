@@ -1,0 +1,47 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.CodigoPostalDao;
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.model.CodigoPostal;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author JUAN LUIS-SOMA
+ */
+@Repository("codigopostalDao")
+public class CodigoPostalDaoImpl  extends HibernateDao<Integer, CodigoPostal> implements CodigoPostalDao {
+
+    @Override
+    public CodigoPostal buscaClave(int codigopostalid) {
+       System.out.println(CodigoPostalDaoImpl.class + "\nBuscando Código Postal por Id: " + codigopostalid);
+         Criteria criteria = creaCriteria();
+        
+        criteria.add(Restrictions.eq("codigopostalid", codigopostalid));
+        
+        
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        
+        return (CodigoPostal) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<CodigoPostal> showCodigoPostal() {
+         //criterias consultas a la base de datso
+        Criteria criteria = creaCriteria();
+        //indicar que no traiga datos repetidos
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        //lista los delitos sin repetir algun dato
+        List<CodigoPostal> lCodigoPostal = criteria.list();
+        return lCodigoPostal;
+    }
+    
+}

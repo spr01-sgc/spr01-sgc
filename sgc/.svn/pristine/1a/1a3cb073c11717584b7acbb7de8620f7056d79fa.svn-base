@@ -1,0 +1,53 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.service.impl;
+
+import com.soma.transmisor.dao.BeneficiarioDao;
+import com.soma.transmisor.model.Beneficiario;
+import com.soma.transmisor.service.BeneficiarioService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Repository("beneficiarioService")
+@Transactional
+public class BeneficiarioServiceImpl implements BeneficiarioService{
+    
+    @Autowired
+    BeneficiarioDao beneficiarioDao;
+    private boolean estadoMetodo = false;
+
+    @Override
+    public boolean update(Beneficiario idBeneficiario) {
+        beneficiarioDao.update(idBeneficiario);
+        return estadoMetodo = true;
+    }
+
+    @Override
+    public boolean save(Beneficiario idBeneficiario) {
+        beneficiarioDao.save(idBeneficiario);
+        return estadoMetodo = true;
+    }
+
+    @Override
+    public Beneficiario beneficiario(int idPersona) {
+       return beneficiarioDao.beneficiairio(idPersona); 
+    }
+
+    @Override
+    public Beneficiario clave(String clave) {
+        return beneficiarioDao.clave(clave);
+    }
+
+
+
+ 
+    
+}

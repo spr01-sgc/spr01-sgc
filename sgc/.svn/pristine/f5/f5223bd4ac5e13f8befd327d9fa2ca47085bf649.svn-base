@@ -1,0 +1,36 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.service.impl;
+
+import com.soma.transmisor.dao.EstatusPbaDao;
+import com.soma.transmisor.model.EstatusPba;
+import com.soma.transmisor.service.EstatusPbaService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Service("estatusPbaService")
+@Transactional
+public class EstatusPbaServiceImpl implements EstatusPbaService{
+    @Autowired
+    EstatusPbaDao estatusPbaDao;
+
+    @Override
+    public EstatusPba buscarId(int estatuspbapepid) {
+   return estatusPbaDao.buscarId(estatuspbapepid);
+    }
+
+    @Override
+    public List<EstatusPba> showEstatus() {
+   return  estatusPbaDao.showEstatus();
+    }
+    
+}

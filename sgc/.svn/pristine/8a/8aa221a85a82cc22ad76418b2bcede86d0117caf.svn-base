@@ -1,0 +1,141 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.controller;
+
+import com.soma.transmisor.model.ActividadEco;
+import com.soma.transmisor.model.Ciudad;
+import com.soma.transmisor.model.CodigoPostal;
+import com.soma.transmisor.model.EstatusIdentificacion;
+import com.soma.transmisor.model.Giro;
+import com.soma.transmisor.model.InstrumentoMonetario;
+import com.soma.transmisor.model.MonedaDivisa;
+import com.soma.transmisor.model.Sexo;
+import com.soma.transmisor.model.TipoIdentidad;
+import com.soma.transmisor.model.TipoServicio;
+import com.soma.transmisor.model.TipoTelefono;
+import com.soma.transmisor.service.ActividadEconomicaService;
+import com.soma.transmisor.service.CiudadService;
+import com.soma.transmisor.service.CodigoPostalService;
+import com.soma.transmisor.service.EstatusIdentificacionService;
+import com.soma.transmisor.service.GiroService;
+import com.soma.transmisor.service.InstrumentoMonetarioService;
+import com.soma.transmisor.service.MonedaDivisaService;
+import com.soma.transmisor.service.SexoService;
+import com.soma.transmisor.service.TipoServicioService;
+import com.soma.transmisor.service.TipoTelefonoService;
+import com.soma.transmisor.service.TiposIdentidadService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationTrustResolver;
+import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+/**
+ * Administra los accesos a los JSP
+ *
+ * @author Jasmin Santana
+ */
+@Controller
+@RequestMapping("/")
+public class ControllerEnvios {
+    
+    @Autowired
+    CodigoPostalService codigoPostalService;
+    @Autowired
+    SexoService sexoService;
+    @Autowired
+    TipoTelefonoService tipoTelefonoService;
+    @Autowired
+    InstrumentoMonetarioService instrumentomonetarioService;
+    @Autowired
+    MonedaDivisaService monedaDivisaService;
+    @Autowired
+    TipoServicioService tipoServicioService;
+    @Autowired
+    GiroService giroService;
+    @Autowired
+    ActividadEconomicaService actividadEconomicaService;
+    @Autowired
+    TiposIdentidadService tipoIdentidadService;
+    @Autowired
+    EstatusIdentificacionService estatusIdentificacionService;
+    @Autowired
+    CiudadService ciudadService; 
+
+
+    @RequestMapping(value = {"/envios"}, method = RequestMethod.GET)
+    public String envios(ModelMap model) {
+        if (!estaUsuarioAnonimo()) {
+            //trae los datos de la tabla entidad
+            List<InstrumentoMonetario> lInstrumentoMonetario= instrumentomonetarioService.showInstrumento();
+            List<MonedaDivisa> lMonedaDivisa = monedaDivisaService.showMonedaDivisa();
+            List<TipoServicio> lTipoServicio = tipoServicioService.showTipoServicio();
+            List<Giro> lGiro = giroService.showGiro();
+            List<ActividadEco> lActividadEconomica = actividadEconomicaService.showActividadEconomica();
+            List<TipoIdentidad> lTipoIdentidad = tipoIdentidadService.showTipoIdentidad();
+            List<EstatusIdentificacion> lEstatusIdentificacion = estatusIdentificacionService.showEstatusIdentficacion();
+            List<CodigoPostal> lCodigoPostal = codigoPostalService.showCodigoPostal();
+            List<Sexo> lSexo = sexoService.showSexo();
+            List<TipoTelefono> lTipoTelefono = tipoTelefonoService.showTipoTelefono();
+            List<Ciudad> lCiudad = ciudadService.showCiudad();
+            // enviar los datos JSP
+            model.addAttribute("lCodigoPostal", lCodigoPostal);
+            model.addAttribute("lSexo", lSexo);
+            model.addAttribute("lTipoTelefono", lTipoTelefono);
+            model.addAttribute("lCiudad",lCiudad);
+            model.addAttribute("lInstrumentoMonetario", lInstrumentoMonetario);
+            model.addAttribute("lModendaDivisa", lMonedaDivisa);
+            model.addAttribute("lTipoServicio", lTipoServicio);
+            model.addAttribute("lGiro", lGiro);
+            
+            model.addAttribute("lActividadEconomica", lActividadEconomica);
+            model.addAttribute("lTipoIdentidad", lTipoIdentidad);
+            model.addAttribute("lEstatusIdentificacion", lEstatusIdentificacion);
+
+            return "envios";
+        }
+        return "login";
+    }
+
+       
+     /**
+     * Este metodo traera de la sesion iniciada.
+     *
+     * @return
+     */
+    public String usuarioEnSesion() {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String nicknamePrincipal = null;
+
+        if (principal instanceof UserDetails) {
+            //Es igual al usuario que esta en sesion
+            return nicknamePrincipal = ((UserDetails) principal).getUsername();
+        } else {
+            //Es igual a usuario anonimo
+            return nicknamePrincipal = principal.toString();
+        }
+    }
+
+    /**
+     * Este metodo verificara que un usuario este autenticado correctamente
+     */
+    private boolean estaUsuarioAnonimo() {
+        final Authentication autenticacion = SecurityContextHolder.getContext().getAuthentication();
+
+        AuthenticationTrustResolver authenticationTrustResolver = new AuthenticationTrustResolverImpl();
+        return authenticationTrustResolver.isAnonymous(autenticacion);
+    }
+
+}
+

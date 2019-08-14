@@ -1,0 +1,246 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.controller;
+
+import com.soma.transmisor.model.Delito;
+import com.soma.transmisor.model.EstatusPba;
+import com.soma.transmisor.model.InformacionAdicional;
+import com.soma.transmisor.model.Organizacion;
+import com.soma.transmisor.model.Pais;
+import com.soma.transmisor.model.Pba;
+import com.soma.transmisor.model.Persona;
+import com.soma.transmisor.model.Sexo;
+import com.soma.transmisor.service.AccionService;
+import com.soma.transmisor.service.BitaAccionesUsuarioService;
+import com.soma.transmisor.service.DelitoService;
+import com.soma.transmisor.service.EstatusPbaService;
+import com.soma.transmisor.service.InformacionAdicService;
+import com.soma.transmisor.service.OrganizacionService;
+import com.soma.transmisor.service.PaisService;
+import com.soma.transmisor.service.PbaService;
+import com.soma.transmisor.service.SexoService;
+import com.soma.transmisor.service.UsuarioService;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationTrustResolver;
+import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Controller
+@RequestMapping("/")
+public class ControllerPba {
+
+    @Autowired
+    UsuarioService usuarioService;
+    @Autowired
+    AccionService accionService;
+    @Autowired
+    BitaAccionesUsuarioService bitaAccionesUsuarioService;
+    @Autowired
+    PbaService pbaServices;
+    @Autowired
+    SexoService sexoService;
+    @Autowired
+    DelitoService delitoService;
+    @Autowired
+    OrganizacionService organizacionService;
+    @Autowired
+    PaisService paisService;
+    @Autowired
+    InformacionAdicService informacionAdicService;
+    @Autowired
+    EstatusPbaService estatusPbaService;
+
+    @RequestMapping(value = {"/pba"}, method = RequestMethod.GET)
+    public String pba(ModelMap model) {
+        if (!estaUsuarioAnonimo()) {
+            //trae los datos de la tabla delito
+            List<Pba> lPba = pbaServices.showPba();
+            // enviar los datos JSP
+            model.addAttribute("lPba", lPba);
+            List<Sexo> lSexo = sexoService.showSexo();
+            model.addAttribute("lSexo", lSexo);
+            List<Delito> lDelito = delitoService.showDelito();
+            model.addAttribute("lDelito", lDelito);
+            List<Organizacion> lOrganizacion = organizacionService.showOrganizacion();
+            model.addAttribute("lOrganizacion", lOrganizacion);
+            List<Pais> lPais = paisService.showPais();
+            model.addAttribute("lPais", lPais);
+            List<InformacionAdicional> lInfAdc = informacionAdicService.showInfo();
+            model.addAttribute("lInfAdc", lInfAdc);
+             List<EstatusPba> lEstPba = estatusPbaService.showEstatus();
+            model.addAttribute("lEstPba", lEstPba);
+
+            return "pba";
+        }
+        return "login";
+    }
+
+    /*
+     * Metodo para agregar una PBA     * 
+     */
+    @RequestMapping(value = "/pba/agregarPba", method = RequestMethod.POST)
+    public @ResponseBody
+    String agregarPba(@RequestParam(value = "datos[]") String datos[]) throws ParseException {
+        if (!estaUsuarioAnonimo()) {
+            for (String dato : datos) {
+                if (dato.equals("")) {
+                    // si hay datos vacios
+                    return "errorDato";
+                }
+            }
+            // creacion de objeto
+            SimpleDateFormat formatoDelTexto = new SimpleDateFormat("yyyy-MM-dd");
+            Date fechaBusqueda = new Date();
+
+            fechaBusqueda = formatoDelTexto.parse(datos[1]);
+            Sexo lSexo = sexoService.buscaClave(Integer.parseInt(datos[6]));
+            Persona perPba = new Persona();
+            perPba.setNombre(datos[2]);
+            perPba.setApaterno(datos[3]);
+            perPba.setAmaterno(datos[4]);
+            perPba.setCurp(datos[5]);
+            perPba.setSexoid(lSexo);
+
+            Pba pba = new Pba();
+            pba.setNoexpediente(Integer.parseInt(datos[0]));
+            pba.setFechabusqueda(fechaBusqueda);
+            Delito delito = delitoService.buscaId(Integer.parseInt(datos[7]));
+            pba.setDelitoid(delito);
+            Organizacion organizacionid = organizacionService.buscaId(Integer.parseInt(datos[8]));
+            pba.setOrganizacionid(organizacionid);
+
+            InformacionAdicional infoAd = new InformacionAdicional();
+            infoAd.setNombre(datos[9]);
+            infoAd.setDescripcion(datos[10]);
+            infoAd.setPbaid(pba);
+            informacionAdicService.save(infoAd);
+
+            pba.setPersonaid(perPba);
+            Pais pais = paisService.buscaId(Integer.parseInt(datos[11]));
+            EstatusPba estatus=estatusPbaService.buscarId(Integer.parseInt(datos[12]));
+            pba.setEstatuspbapepid(estatus);
+            pba.setPaisid(pais);
+//guarda en arreglo datos
+            if (pbaServices.save(pba)) {
+                /*uso del metodo bitacoraAcciones de la clase Bitacora
+                Usuario usuarioid = usuarioService.busquedaNinckname(usuarioEnSesion());
+                usuarioid.getUsuarioid();*/
+
+                return "exito";
+
+            } else {
+                return "error";
+            }
+        }
+        return "errorAcceso";
+    }
+
+    //actualizar ciertos datos de una PBA
+    @RequestMapping(value = "/pba/actualizarPba", method = RequestMethod.POST)
+    public @ResponseBody
+    String actualizarPba(@RequestParam(value = "datos[]") String datos[]) throws ParseException {
+        if (!estaUsuarioAnonimo()) {
+            for (String dato : datos) {
+                if (dato.equals("")) {
+                    // si hay datos vacios
+                    return "errorDato";
+                }
+            }//termina de recorrer el arreglo
+
+            List<Pba> lPba = pbaServices.showPba();
+            if (!lPba.isEmpty()) {
+                for (Pba pba : lPba) {
+                    if (pba.getPbaid() == Integer.parseInt(datos[12])) {
+                        pba.setNoexpediente(Integer.parseInt(datos[0]));
+                        SimpleDateFormat formatoDelTexto = new SimpleDateFormat("yyyy-MM-dd");
+                        Date fechaBusqueda = new Date();
+                        fechaBusqueda = formatoDelTexto.parse(datos[1]);
+                        pba.setFechabusqueda(fechaBusqueda);
+
+                        Sexo lSexo = sexoService.buscaClave(Integer.parseInt(datos[6]));
+
+                        pba.getPersonaid().setNombre(datos[2]);
+                        pba.getPersonaid().setApaterno(datos[3]);
+                        pba.getPersonaid().setAmaterno(datos[4]);
+                        pba.getPersonaid().setCurp(datos[5]);
+                        pba.getPersonaid().setSexoid(lSexo);
+
+                        Delito delito = delitoService.buscaId(Integer.parseInt(datos[7]));
+                        pba.setDelitoid(delito);
+                        Organizacion organizacionid = organizacionService.buscaId(Integer.parseInt(datos[8]));
+                        pba.setOrganizacionid(organizacionid);                       
+                       InformacionAdicional infoAd = informacionAdicService.buscaId(Integer.parseInt(datos[13]));
+
+                       infoAd.setNombre(datos[9]);
+                        infoAd.setDescripcion(datos[10]);
+                        infoAd.setPbaid(pba);
+                        informacionAdicService.update(infoAd);
+
+                        Pais pais = paisService.buscaId(Integer.parseInt(datos[11]));
+                        pba.setPaisid(pais);
+                         EstatusPba estatus=estatusPbaService.buscarId(Integer.parseInt(datos[14]));
+            pba.setEstatuspbapepid(estatus);
+                        if (pbaServices.update(pba)) {
+                            //bitacoraAcciones("actualizar");
+                            return "exito";
+                        } else {
+                            return "error";
+                        }
+                    }
+                }//end for
+            }//si no esta vacia la lista 
+        }//el usuario es anonimo
+
+        return "errorAcceso";
+
+    }
+
+    /**
+     * Este metodo verificara que un usuario este autenticado correctamente
+     */
+    private boolean estaUsuarioAnonimo() {
+        final Authentication autenticacion = SecurityContextHolder.getContext().getAuthentication();
+
+        AuthenticationTrustResolver authenticationTrustResolver = new AuthenticationTrustResolverImpl();
+        return authenticationTrustResolver.isAnonymous(autenticacion);
+    }
+
+    /**
+     * Este metodo traera de la sesion iniciada.
+     *
+     * @return
+     */
+    public String usuarioEnSesion() {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String nicknamePrincipal = null;
+
+        if (principal instanceof UserDetails) {
+            //Es igual al usuario que esta en sesion
+            return nicknamePrincipal = ((UserDetails) principal).getUsername();
+        } else {
+            //Es igual a usuario anonimo
+            return nicknamePrincipal = principal.toString();
+        }
+    }
+}

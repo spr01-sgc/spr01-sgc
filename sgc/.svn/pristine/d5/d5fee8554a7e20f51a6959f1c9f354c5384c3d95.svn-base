@@ -1,0 +1,59 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.dao.PbaDao;
+import com.soma.transmisor.model.Pba;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Repository("pbaDao")
+public class PbaDaoImpl extends HibernateDao<Integer, Pba> implements PbaDao{
+
+    @Override
+    public void save(Pba pba) {
+    guardar(pba);
+     System.out.print(PbaDaoImpl.class + "Se ha guardado correctamente la pba" + pba.toString());
+    }
+
+    @Override
+    public void update(Pba pba) {
+        actualizar(pba);
+         System.out.print(PbaDaoImpl.class + "Se ha actualizado correctamente la pba" + pba.toString());
+    }
+
+    @Override
+    public void delete(int pbaid) {
+         Criteria crit = creaCriteria();
+        crit.add(Restrictions.eq("pbaid", pbaid));
+        Pba pba = (Pba) crit.uniqueResult();
+        eliminar(pba);
+        System.out.print(GiroDaoImpl.class + "Se ha eliminado correctamente la PBA " + pbaid);
+    
+    }
+
+    @Override
+    public List<Pba> showPba() {
+        Criteria criteria = creaCriteria();
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        List<Pba> lPba = criteria.list();       
+        return lPba;
+    }
+
+    @Override
+    public Pba busquedaId(int pbaid) {
+     Pba pba=getPorId(pbaid);
+        return pba;
+    }
+    
+}

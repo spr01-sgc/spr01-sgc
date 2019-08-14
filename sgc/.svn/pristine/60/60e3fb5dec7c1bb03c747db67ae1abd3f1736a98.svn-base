@@ -1,0 +1,44 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+
+import com.soma.transmisor.dao.CargoPoliticoDao;
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.model.CargoPolitico;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Repository("cargoPoliticoDao")
+public class CargoPoliticoDaoImpl extends HibernateDao<Integer, CargoPolitico> implements CargoPoliticoDao{
+
+    @Override
+    public CargoPolitico buscaId(int cargoid) {
+     System.out.println(CargoPoliticoDaoImpl.class + "\nBuscando Ciudad por Id: " + cargoid);
+     Criteria criteria = creaCriteria();        
+        criteria.add(Restrictions.eq("cargoid", cargoid));      
+        
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        
+        return (CargoPolitico) criteria.uniqueResult();}
+
+    @Override
+    public List<CargoPolitico> showCargoP() {
+     Criteria criteria = creaCriteria();
+        //indicar que no traiga datos repetidos
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        //lista los delitos sin repetir algun dato
+        List<CargoPolitico> lCargoPolitico = criteria.list();
+        return lCargoPolitico;
+    }
+    
+}

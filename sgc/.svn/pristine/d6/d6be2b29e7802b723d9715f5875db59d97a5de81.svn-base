@@ -1,0 +1,26 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao;
+
+import com.soma.transmisor.model.Familiar;
+import com.soma.transmisor.model.Pep;
+import java.util.List;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+public interface FamiliarDao {
+     void save(Familiar familiar);
+    void update(Familiar familiar);
+    void delete(int familiarid);
+
+    List<Familiar> showFamiliar();
+     List<Familiar> showFamiliarPep(Pep pepid);
+
+    Familiar busquedaId(int familiarid);
+
+}

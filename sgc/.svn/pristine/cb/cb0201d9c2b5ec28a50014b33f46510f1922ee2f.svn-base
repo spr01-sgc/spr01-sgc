@@ -1,0 +1,57 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.dao.InformacionAdicDao;
+import com.soma.transmisor.model.InformacionAdicional;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Repository("informacionAdicDao")
+public class InformacionAdicDaoImpl extends HibernateDao<Integer, InformacionAdicional> implements InformacionAdicDao {
+
+    @Override
+    public void update(InformacionAdicional infoAd) {
+        actualizar(infoAd);
+        System.out.print(InformacionAdicDaoImpl.class + "Se ha actualizado correctamente el la informacion" + infoAd.toString());
+    }
+
+    @Override
+    public void save(InformacionAdicional infoAd) {
+        guardar(infoAd);
+        System.out.print(InformacionAdicDaoImpl.class + "Se ha guardado correctamente el la informacion" + infoAd.toString());
+
+    }
+
+    @Override
+    public InformacionAdicional buscaId(int infoAdId) {
+        System.out.print(InformacionAdicDaoImpl.class + "Se ha buscado correctamente el la informacion: " + infoAdId);
+       InformacionAdicional infoAd = getPorId(infoAdId);       
+        
+        return infoAd;
+    }
+
+    @Override
+    public List<InformacionAdicional> showInfo() {
+        //criterias consultas a la base de datso
+        Criteria criteria = creaCriteria();
+        //indicar que no traiga datos repetidos       
+        
+        //criteria.add(Restrictions.eq("pbaid", pbaid));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        //lista los giro sin repetir algun dato
+        List<InformacionAdicional> lInfAdc = criteria.list();
+        return lInfAdc;
+    }
+
+}

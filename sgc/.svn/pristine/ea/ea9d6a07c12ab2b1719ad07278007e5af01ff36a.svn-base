@@ -1,0 +1,22 @@
+<%-- 
+    Document   : imprimirTicket
+    Created on : 21/04/2018, 12:17:12 PM
+    Author     : LUIS-SOMA
+--%>
+
+<div class="div-container">
+    <div class="form-group">
+        <div class="div-imagen-imprimir">
+            <label class="control-label col-lg-5"></label>
+            <img src="<%= request.getContextPath()%>/assets/img/impresion.png" onclick="imprimirTicket();" ><br />
+            <label class="control-label col-lg-6"><h6>Imprimir Ticket</h6></label>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="div-right">
+        <label class="control-label col-lg-6"></label>
+        <input type="button" id="volverInicio" value="Regresar a p&aacute;gina principal" class="estilobtn azul" onclick="cancelaBuscaRemesa();">
+    </div>
+<br /><br />
+</div><br />

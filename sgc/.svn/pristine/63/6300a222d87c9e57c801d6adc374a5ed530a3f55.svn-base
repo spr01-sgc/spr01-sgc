@@ -1,0 +1,45 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.service.impl;
+
+import com.soma.transmisor.dao.EmisoraOrdenanteDao;
+import com.soma.transmisor.model.EmisoraOrdenante;
+import com.soma.transmisor.service.EmisoraOrdenanteService;
+import javax.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+@Service("emisoraOrdenanteService")
+@Transactional
+public class EmisoraOrdenanteServiceImpl implements EmisoraOrdenanteService{
+
+    @Autowired
+    EmisoraOrdenanteDao emisoraOrdenanteDao;
+    
+    private boolean estadoMetodo;
+    
+    @Override
+    public EmisoraOrdenante buscaEmisoraOrdenante(String noEmisora) {
+        return emisoraOrdenanteDao.buscaEmisoraOrdenante(noEmisora);
+    }
+
+    @Override
+    public boolean save(EmisoraOrdenante emisoraOrdenante) {
+        emisoraOrdenanteDao.save(emisoraOrdenante);
+        return estadoMetodo = true;
+    }
+
+    @Override
+    public boolean update(EmisoraOrdenante emisoraOrdenante) {
+        emisoraOrdenanteDao.update(emisoraOrdenante);
+        return estadoMetodo = true;
+    }
+    
+}

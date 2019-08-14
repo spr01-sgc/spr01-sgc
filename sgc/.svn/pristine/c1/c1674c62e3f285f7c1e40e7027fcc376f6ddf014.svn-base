@@ -1,0 +1,2640 @@
+$.noConflict();//trabaja diferentes versiones jquery
+$(document).ready(function () {
+    //notificacionRelevant();
+    tipoServicio();
+    actividadEconommica();
+    instrumentoMonetario();
+    monedaDivisa();
+    //delito
+    $("#guardarD").prop("disabled", false);
+    $("#actualizarD").prop("disabled", true);
+    //ocultar o mostrar BOTONES giro 
+    $("#guardarG").prop("disabled", false);
+    $("#actualizarG").prop("disabled", true);
+    //habilitar y desabilitar botones agregar familliar
+    $("#AgregarF").click(function () {
+        $("#GuardarF").css("display", "inline");
+        $("#ActualizarF").prop("disabled", true);
+    });
+    //habilitar y desabilitar botones agregar pep
+    $("#agregarPep").click(function () {
+        $("#guardarPep").css("display", "inline");
+        $("#actualizarPep").prop("disabled", true);
+    });
+    //mostrar pba
+    $("#agregarPba").click(function () {
+        $("#guardarPba").css("display", "inline");
+        $("#actualizarPba").prop("disabled", true);
+    });
+    //pasar los datos de PLD
+    $('#pasar').click(function () {
+        return !$('#tramiteClientes option:selected').remove().appendTo('#tramiteClientesSeleccionados');
+    });
+    $('#quitar').click(function () {
+        return !$('#tramiteClientesSeleccionados option:selected').remove().appendTo('#tramiteClientes');
+    });
+    $('#pasarTodo').click(function () {
+        return !$('#tramiteClientes option').remove().appendTo('#tramiteClientesSeleccionados');
+    });
+    $('#quitarTodo').click(function () {
+        return !$('#tramiteClientesSeleccionados option').remove().appendTo('#tramiteClientes');
+    });
+
+});//ready
+
+function conversion() {
+    var dolares = $("#dolaresPld").val();
+    var valor = $("#valorDolarPld").val();
+    var conversion = parseFloat(valor) * parseFloat(dolares);
+//cambia el  valor de la etiqueta Relevantes
+    document.getElementById('pesosPld').innerHTML = conversion + "MXN.";
+}
+function btnUsuario() {
+    //agregar usuario se deshabilita el boton actualizar
+    $("#guardarU").css("display", "inline");
+    $("#actualizarU").prop("disabled", true);
+}
+function verTablaF() {
+    //ocultar o mostrar pantalla familiar
+    $("#familiar").css("display", "block");
+    $("#mostrarFamiliar").css("display", "none");
+    $("#pep1").css("display", "none");
+}
+function verTablaP() {
+    //ver PEP   
+    $("#pep1").css("display", "inline");
+    $("#familiar").css("display", "none");
+    $("#mostrarFamiliar").css("display", "block");
+}
+function limpiarCajas() {
+    $("#nombreD").val("");
+    $("#nombreG").val("");
+    $("#claveD").val("");
+    $("#claveG").val("");
+}
+function busquedaTbl(tabla) {
+    var tableReg = document.getElementById(tabla);
+    var searchText = document.getElementById('search').value.toLowerCase();
+    console.log(searchText);
+    for (var i = 1; i < tableReg.rows.length; i++) {
+        var cellsOfRow = tableReg.rows[i].getElementsByTagName('td');
+        var found = false;
+        for (var j = 0; j < cellsOfRow.length && !found; j++) {
+            var compareWith = cellsOfRow[j].innerHTML.toLowerCase();
+            if (searchText.length === 0 || (compareWith.indexOf(searchText) > -1)) {
+                found = true;
+            }
+        }
+        if (found) {
+            tableReg.rows[i].style.display = '';
+        } else {
+            tableReg.rows[i].style.display = 'none';
+        }
+    }
+}
+function busquedaTblF(tabla, id) {
+    var tableReg = document.getElementById(tabla);
+    var searchText = document.getElementById(id).value.toLowerCase();
+    for (var i = 1; i < tableReg.rows.length; i++) {
+        var cellsOfRow = tableReg.rows[i].getElementsByTagName('td');
+        var found = false;
+        for (var j = 0; j < cellsOfRow.length && !found; j++) {
+            var compareWith = cellsOfRow[j].innerHTML.toLowerCase();
+            if (searchText.length === 0 || (compareWith.indexOf(searchText) > -1)) {
+                found = true;
+            }
+        }
+        if (found) {
+            tableReg.rows[i].style.display = '';
+        } else {
+            tableReg.rows[i].style.display = 'none';
+        }
+    }
+}
+function mostratFam() {
+    $("#GuardarF").css("display", "none");
+    $("#ActualizarF").prop("disabled", false);
+    $("#tableFamilia tbody").on('click', 'tr', function () {
+        var IdFamiliarT = $('td', this).eq(0).text().trim();
+        $("#idfam").val(IdFamiliarT);
+        var IdPepT = $('td', this).eq(2).text().trim();
+        $("#idPep").val(IdPepT);
+        var nomFamT = $('td', this).eq(4).text().trim();
+        $("#nomFam").val(nomFamT);
+        var apPatFamT = $('td', this).eq(5).text().trim();
+        $("#apPatFam").val(apPatFamT);
+        var apMatFamT = $('td', this).eq(6).text().trim();
+        $("#apMatFam").val(apMatFamT);
+        var curpFamT = $('td', this).eq(7).text().trim();
+        $("#curpFam").val(curpFamT);
+        var sexoFamT = $('td', this).eq(8).text().trim();
+        $("#sexoFam").val(sexoFamT);
+        var parentFamT = $('td', this).eq(10).text().trim();
+        $("#parentescoFam").val(parentFamT);
+    });
+}
+function mostrarGiDe() {
+    $("#guardarD").prop("disabled", true);//deshabilita boton Guardar
+    $("#actualizarD").prop("disabled", false);//habilita el btn Actualizar
+    $("#guardarG").prop("disabled", true);
+    $("#actualizarG").prop("disabled", false);
+    $("#tableCatalogo tbody").on('click', 'tr', function () {
+        var idT = $('td', this).eq(0).text();
+        $("#delid").val(idT);
+        var claveDT = $('td', this).eq(2).text();
+        $("#claveD").val(claveDT);
+        var nombreT = $('td', this).eq(3).text();
+        $("#nombreD").val(nombreT);
+//Giro
+        var idgiT = $('td', this).eq(0).text();
+        $("#idgiro").val(idgiT);
+        var nombreGT = $('td', this).eq(3).text();
+        $("#nombreG").val(nombreGT);
+        var claveGT = $('td', this).eq(2).text();
+        $("#claveG").val(claveGT);
+    });
+}
+function mostrarPBA() {
+    $("#guardarPba").css("display", "none");
+    $("#actualizarPba").prop("disabled", false);
+    //muestra los datos de un pba
+    $("#tablePba tbody").on('click', 'tr', function () {
+        //id de pba
+        var idpbaT = $('td', this).eq(0).text();
+        $("#idpba").val(idpbaT);
+        var numExpT = $('td', this).eq(2).text();
+        $("#noEx").val(numExpT);
+        var fechBusT = $('td', this).eq(3).text().trim();
+        $("#fechBus").val(fechBusT);
+        var nomPbaT = $('td', this).eq(4).text();
+        $("#nomPba").val(nomPbaT);
+        var apPbaT = $('td', this).eq(5).text();
+        $("#apPat").val(apPbaT);
+        var amPbaT = $('td', this).eq(6).text();
+        $("#apMat").val(amPbaT);
+        var curpT = $('td', this).eq(7).text();
+        $("#curpPba").val(curpT);
+        var sexPbaT = $('td', this).eq(8).text().trim();
+        $("#sexoPba").val(sexPbaT);
+        var delitoPbaT = $('td', this).eq(10).text().trim();
+        $("#delitoPba").val(delitoPbaT);
+        var organizacionPbaT = $('td', this).eq(12).text().trim();
+        $("#organizaciónPba").val(organizacionPbaT);
+        var infoIdPbaT = $('td', this).eq(14).text().trim();
+        $("#inforId").val(infoIdPbaT);
+        var informacionPbaT = $('td', this).eq(15).text();
+        $("#tituloPba").val(informacionPbaT);
+        var infoDescrPbaT = $('td', this).eq(16).text();
+        $("#descripPba").val(infoDescrPbaT);
+        var paisT = $('td', this).eq(17).text().trim();
+        $("#paisPba").val(paisT);
+        var estaPbaT = $('td', this).eq(19).text().trim();
+        $("#estatusPba").val(estaPbaT);
+    });
+}
+/*Funcion que muestra la informacion de la tabla usuario en el formulario*/
+function mostrarUsuario() {
+    $("#guardarU").css("display", "none");//oculta el boton guardar
+    $("#actualizarU").prop("disabled", false);//habilita el boton actualizar
+    //al dar clic lo que tiene en el renglo lo pase a la caja de texto
+    $("#tableUsuario tbody").on('click', 'tr', function () {
+//id de usuario a actualizar
+        var idusuariT = $('td', this).eq(20).text();
+        $("#idusuario").val(idusuariT);
+//informacion del usuario
+        var nickuserT = $('td', this).eq(1).text();
+        $("#nick").val(nickuserT);
+        var passuserT = $('td', this).eq(2).text();
+        $("#pass").val(passuserT);
+        var emailuserT = $('td', this).eq(3).text();
+        $("#email").val(emailuserT);
+        var roluserT = $('td', this).eq(4).text();
+        $("#roluser").val(roluserT);
+        var estatusT = $('td', this).eq(6).text();
+        $("#estatususer").val(estatusT);
+        var nombreT = $('td', this).eq(8).text();
+        $("#name").val(nombreT);
+        var apaternoT = $('td', this).eq(9).text();
+        $("#apaterno").val(apaternoT);
+        var amaternoT = $('td', this).eq(10).text();
+        $("#amaterno").val(amaternoT);
+        var curpT = $('td', this).eq(11).text();
+        $("#curp").val(curpT);
+        var sexoT = $('td', this).eq(12).text().trim();
+        $("#sexuser").val(sexoT);
+        var tiptelT = $('td', this).eq(14).text();
+        $("#tipTelU").val(tiptelT);
+        var idtelT = $('td', this).eq(16).text();
+        $("#idtel").val(idtelT);
+        var numtelT = $('td', this).eq(17).text();
+        $("#numtel").val(numtelT);
+        var sucursal = $('td', this).eq(18).text();
+        $("#sucursalUs").val(sucursal);
+    });
+}
+function mostrarPEP() {
+    $("#guardarPep").css("display", "none");
+    $("#actualizarPep").prop("disabled", false);
+    $("#tablePEP tbody").on('click', 'tr', function () {
+        //idpep
+        var idpepT = $('td', this).eq(0).text();
+        $("#idpep").val(idpepT);
+//PEP
+        var fechaVigenteT = $('td', this).eq(2).text().trim();
+        $("#fechPep").val(fechaVigenteT);
+        var cargoT = $('td', this).eq(3).text().trim();
+        $("#cargoPep").val(cargoT);
+        var ciudadT = $('td', this).eq(5).text().trim();
+        $("#ciudadPep").val(ciudadT);
+        var nomT = $('td', this).eq(7).text().trim();
+        $("#nomPep").val(nomT);
+        var apPepT = $('td', this).eq(8).text().trim();
+        $("#apPatPep").val(apPepT);
+        var amPepT = $('td', this).eq(9).text().trim();
+        $("#apMatPep").val(amPepT);
+        var curpPepT = $('td', this).eq(10).text().trim();
+        $("#curpPep").val(curpPepT);
+        var sexPepT = $('td', this).eq(11).text().trim();
+        $("#sexoPep").val(sexPepT);
+        var estatPepT = $('td', this).eq(13).text().trim();
+        $("#estatusPep").val(estatPepT);
+    });
+}
+//Limpia las cajas de texto del formulario
+function limpiarForm(frm) {
+    document.getElementById(frm).reset();
+}
+function agregarDelito() {
+    var nombre = $("#nombreD").val();
+    var clave = $("#claveD").val();
+    if (nombre === '' || clave === '') {
+        error("El delito no puede ir vacío");
+        return false;
+    }
+    if (clave.length < 2 || clave.length > 10) {
+        error("La longitud de la clave es de m&iacutenimo 2 caracteres, m&acuteximo 10");
+        return false;
+    }
+    var datos = [nombre, clave];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "delito/agregarDelito",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    ok("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "delito";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });//ajax
+}
+function actualizarDelito() {
+    var id = $("#delid").val();
+    var nombre = $("#nombreD").val();
+    var claveD = $("#claveD").val();
+    if (nombre === '' || id === '') {
+        error("Hay campos vacios");
+        return false;
+    }
+    if (claveD.length < 2 || claveD.length > 10) {
+        error("La longitud de la clave es de m&iacutenimo 2 caracteres,m&aacuteximo 10.");
+        return false;
+    }
+    var datos = [id, nombre, claveD];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "delito/actualizarDelito",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    ok("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "delito";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+
+    });
+
+}
+function eliminarDelito() {
+    $("#tableCatalogo tbody").on('click', 'tr', function () {
+        var idT = $('td', this).eq(0).text();
+        $("#iddelito").val(idT);
+        var id = $("#iddelito").val();
+        if (id === '') {
+            error("NO se ha seleccionado una opci&oacuten");
+            return false;
+        }
+        var datos = [id];
+        $(document).ajaxSend(function (e, xhr, options) {
+            var token = $("input[name='_csrf']").val();
+            var cabecera = "X-CSRF-TOKEN";
+            xhr.setRequestHeader(cabecera, token);
+        });
+
+        $.ajax({
+            url: "delito/eliminarDelito",
+            data: {datos: datos},
+            dataType: 'html',
+            type: 'POST',
+            success: function (retorno) {
+                //alert(retorno);
+                switch (retorno) {
+                    case 'errorDato':
+                        alert("Los datos no se procesaron correctamente");
+                        break;
+                    case 'error':
+                        alert("Se ha producido un error en el servidor");
+                        break;
+                    case 'exito':
+                        //carga lo que se indica en id DIV
+                        ok("Los datos se procesarón CORRECTAMENTE!");
+                        setTimeout(function () {
+                            location.href = "delito";
+                        }, 1000);
+                        break;
+                    case 'errorAcceso':
+                        alert("No ha iniciado sesion");
+                        break;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Se ha producido un error en el servidor");
+            }
+        });
+    });
+}
+function agregarGiro() {
+    var nombre = $("#nombreG").val();
+    var clave = $("#claveG").val();
+    if (nombre === '' || clave === '') {
+        error("Hay campos vacios");
+        return false;
+    }
+    if (clave.length < 2 || clave.length > 10) {
+        error("La longitud de la clave es de m&iacutenimo 2 caracteres, m&aacuteximo 10");
+        return false;
+    }
+    var datos = [nombre, clave];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "giro/agregarGiro",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV cambiar
+                    ok("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "giro";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status === 0) {
+                alert('Not connect: Verify Network.');
+            } else if (jqXHR.status === 404) {
+                alert('Requested page not found [404]');
+            } else if (jqXHR.status === 500) {
+                alert('Internal Server Error [500].');
+            } else if (textStatus === 'parsererror') {
+                alert('Requested JSON parse failed.');
+            } else if (textStatus === 'timeout') {
+                alert('Time out error.');
+            } else if (textStatus === 'abort') {
+                alert('Ajax request aborted.');
+            } else {
+                alert('Uncaught Error: ' + jqXHR.responseText);
+            }
+            //alert("Se ha producido un error en el servidor red");
+        }
+    });
+}
+function actualizarGiro() {
+    var id = $("#idgiro").val();
+    var nombre = $("#nombreG").val();
+    var clave = $("#claveG").val();
+    if (nombre === '' || clave === '') {
+        $("#nombreG").focus();
+        error("No se admiten campos vacios");
+        return false;
+    }
+    if (clave.length < 2 && clave.length > 10) {
+        error("La longitud de la clave es de m&iacutenimo 2 caracteres, m&aacuteximo 10");
+        return false;
+    }
+    var datos = [id, nombre, clave];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "giro/actualizarGiro",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    ok("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "giro";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });
+}
+function eliminarGiro() {
+    $("#tableCatalogo tbody").on('click', 'tr', function () {
+        var idT = $('td', this).eq(0).text();
+        $("#idgiro").val(idT);
+        var id = $("#idgiro").val();
+        if (id === '') {
+            error("NO se ha seleccionado alguna opción");
+            return false;
+        }
+        var datos = [id];
+        $(document).ajaxSend(function (e, xhr, options) {
+            var token = $("input[name='_csrf']").val();
+            var cabecera = "X-CSRF-TOKEN";
+            xhr.setRequestHeader(cabecera, token);
+        });
+        $.ajax({
+            url: "giro/eliminarGiro",
+            data: {datos: datos},
+            dataType: 'html',
+            type: 'POST',
+            success: function (retorno) {
+                //alert(retorno);
+                switch (retorno) {
+                    case 'errorDato':
+                        alert("Los datos no se procesaron correctamente");
+                        break;
+                    case 'error':
+                        alert("Se ha producido un error en el servidor");
+                        break;
+                    case 'exito':
+                        //carga lo que se indica en id DIV
+                        ok("Los datos se procesarón CORRECTAMENTE!");
+                        setTimeout(function () {
+                            location.href = "giro";
+                        }, 1000);
+                        break;
+                    case 'errorAcceso':
+                        alert("No ha iniciado sesion");
+                        break;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Se ha producido un error en el servidor");
+            }
+        });
+
+    });
+}
+//Permite conocer si esta disponible el nickname
+function verificarUsuario() {
+    var nick = [$("#nick").val().trim()];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "usuario/verificarUsuario",
+        data: {datos: nick},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            if (retorno.length !== 0) {
+                $("#nick").focus();
+                error("El usuario con nickname " + nick + " ya existe");
+            } else {
+                ok("El nickname " + nick + " esta disponible");
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });
+}
+/*Funcion que permite Agregar un nuevo usuario*/
+function agregarUsuario() {
+    var nick = $("#nick").val().trim();
+    var pass = $("#pass").val().trim();
+    var email = $("#email").val().trim();
+    var rol = $("#roluser").val();
+    var estatus = $("#estatususer").val().trim();
+    var nombre = $("#name").val().trim();
+    var apaterno = $("#apaterno").val().trim();
+    var amaterno = $("#amaterno").val().trim();
+    var curp = $("#curp").val().trim();
+    var sexo = $("#sexuser").val();
+    var tipTel = $("#tipTelU").val();
+    var tel = $("#numtel").val().trim();
+    var suc = $("#sucursalUs").val();
+    if (nick === '' || pass === '' || email === '' || nombre === '' ||
+            apaterno === '' || amaterno === '' || curp === '' || tel === '') {
+        error("Hay campos vacios");
+        return false;
+    }
+    if (rol === '0' || estatus === '0' || sexo === '0' || tipTel === '0' || suc === '0') {
+        error("No ha seleccionado una opción");
+        return false;
+    }
+    if (validarNickname(nick) === false) {
+        return false;
+    }
+    if (validarPassword(pass) === false) {
+        return false;
+    }
+    if (validarEmail(email) === false) {
+        return false;
+    }
+    if (validarNombre(nombre) === false) {
+        return false;
+    }
+    if (validarNombre(apaterno) === false) {
+        return  false;
+    }
+    if (validarNombre(amaterno) === false) {
+        return false;
+    }
+    if (validarCURP(curp) === false) {
+        return false;
+    }
+    if (validarTelefono("#numtel", tel) === false) {
+        return false;
+    }
+    var datos = [nick, pass, email, rol, estatus, nombre, apaterno,
+        amaterno, curp, sexo, tipTel, tel, suc];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "usuario/agregarUsuario",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    ok("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "usuario";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+
+    });
+}
+function actualizarUsuario() {
+    var nick = $("#nick").val();
+    var pass = $("#pass").val();
+    var email = $("#email").val();
+    var rol = $("#roluser").val();
+    var estatus = $("#estatususer").val();
+    var nombre = $("#name").val();
+    var apaterno = $("#apaterno").val();
+    var amaterno = $("#amaterno").val();
+    var curp = $("#curp").val();
+    var sexo = $("#sexuser").val();
+    var tipTel = $("#tipTelU").val();
+    var IDtel = $("#idtel").val();
+    var tel = $("#numtel").val();
+    var suc = $("#sucursalUs").val();
+    var id = $("#idusuario").val();
+    if (nick === '' || pass === '' || email === '' || nombre === '' ||
+            apaterno === '' || amaterno === '' || curp === '' || tel === '') {
+        error("Hay campos vacios");
+        return false;
+    }
+    if (rol === '0' || estatus === '0' || sexo === '0' || tipTel === '0' || suc === '0') {
+        error("No ha seleccionado una opción");
+        return false;
+    }
+    if (validarPassword(pass) === false) {
+        return false;
+    }
+    if (validarEmail(email) === false) {
+        return false;
+    }
+    if (validarNombre(nombre) === false) {
+        return false;
+    }
+    if (validarNombre(apaterno) === false) {
+        return  false;
+    }
+    if (validarNombre(amaterno) === false) {
+        return false;
+    }
+    if (validarCURP(curp) === false) {
+        return false;
+    }
+    if (validarTelefono("#numtel", tel) === false) {
+        return false;
+    }
+    var datos = [nick, pass, email, rol, estatus, id, nombre, apaterno, amaterno, curp, sexo, tipTel, IDtel, tel, suc];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "usuario/actualizarUsuario",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        async: true,
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    ok("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "usuario";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });
+}
+function eliminarUsuario() {
+    $("#tableUsuario tbody").on('click', 'tr', function () {
+        var idT = $('td', this).eq(20).text();
+        $("#iduser").val(idT);
+        var id = $("#iduser").val();
+        if (id === '') {
+            error("NO se ha seleccioando el usuario");
+            return false;
+        }
+        var datos = [id];
+        $(document).ajaxSend(function (e, xhr, options) {
+            var token = $("input[name='_csrf']").val();
+            var cabecera = "X-CSRF-TOKEN";
+            xhr.setRequestHeader(cabecera, token);
+        });
+        $.ajax({
+            url: "usuario/eliminarUsuario",
+            data: {datos: datos},
+            dataType: 'html',
+            type: 'POST',
+            success: function (retorno) {
+                //alert(retorno);
+                switch (retorno) {
+                    case 'errorDato':
+                        alert("Los datos no se procesaron correctamente");
+                        break;
+                    case 'error':
+                        alert("Se ha producido un error en el servidor");
+                        break;
+                    case 'exito':
+                        ok("Los datos se procesarón CORRECTAMENTE!");
+                        setTimeout(function () {
+                            location.href = "usuario";
+                        }, 1000);
+                        break;
+                    case 'errorAcceso':
+                        alert("No ha iniciado sesion");
+                        break;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Se ha producido un error en el servidor");
+            }
+        });
+    });
+}
+function agregarPba() {
+    var noEx = $("#noEx").val();
+    var fechBus = $("#fechBus").val();
+    var nomPba = $("#nomPba").val().trim();
+    var apPba = $("#apPat").val().trim();
+    var amPba = $("#apMat").val().trim();
+    var curp = $("#curpPba").val().trim();
+    var sexoPba = $("#sexoPba").val();
+    var delitoPba = $("#delitoPba").val();
+    var organizacionPba = $("#organizaciónPba").val();
+    var tituloPba = $("#tituloPba").val().trim();
+    var descripcionPba = $("#descripPba").val().trim();
+    var pais = $("#paisPba").val();
+    var estatusPba = $("#estatusPba").val();
+    if (noEx.isEmpty || fechBus.isEmpty || nomPba.isEmpty || apPba.isEmpty ||
+            amPba.isEmpty || curp.isEmpty || organizacionPba.isEmpty) {
+        error("Hay datos vac&iacuteos");
+        return false;
+    }
+    if (sexoPba === '0' || delitoPba === '0' || organizacionPba === '0' || pais === '0' || estatusPba === '0') {
+        error("No se ha seleccionado una opci&oacuten");
+        return false;
+    }
+    if (noEx.length < 2 || noEx.length > 10) {
+        error("La longitud m&iacutenima es de 2 caracteres y m&aacute de 10");
+        return false;
+    }
+    if (validarNombre(nomPba) === false) {
+        $("#nomPba").focus();
+        return false;
+    }
+    if (validarNombr(apPba) === false) {
+        $("#apPat").focus();
+        return false;
+    }
+    if (validarNombr(amPba) === false) {
+        $("#apMat").focus();
+        return false;
+    }
+    if (validarCURP(curp)) {
+        $("#curpPba").focus();
+        return false;
+    }
+    var datos = [noEx, fechBus, nomPba, apPba, amPba, curp, sexoPba, delitoPba, organizacionPba, tituloPba, descripcionPba, pais, estatusPba];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "pba/agregarPba",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        async: false,
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV $("#pantalla").load('pba');
+                    ok("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "pba";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });
+}
+//actualizar PBA
+function actualizarPba() {
+    var idPba = $("#idpba").val();
+    var noEx = $("#noEx").val().trim();
+    var fechBus = $("#fechBus").val();
+    var nomPba = $("#nomPba").val().trim();
+    var apPba = $("#apPat").val().trim();
+    var amPba = $("#apMat").val().trim();
+    var curp = $("#curpPba").val().trim();
+    var sexoPba = $("#sexoPba").val();
+    var delitoPba = $("#delitoPba").val();
+    var organizacionPba = $("#organizaciónPba").val();
+    var infoIdPba = $("#infId").val().trim();
+    var tituloPba = $("#tituloPba").val().trim();
+    var descripcionPba = $("#descripPba").val();
+    var pais = $("#paisPba").val();
+    var estatusPba = $("#estatusPba").val();
+    if (noEx.isEmpty || fechBus.isEmpty || nomPba.isEmpty || apPba.isEmpty ||
+            amPba.isEmpty || curp.isEmpty || organizacionPba.isEmpty) {
+        error("Hay datos vac&iacuteos");
+        return false;
+    }
+    if (sexoPba === '0' || delitoPba === '0' || organizacionPba === '0' || pais === '0' || estatusPba === '0') {
+        error("No se ha seleccionado una opci&oacuten");
+        return false;
+    }
+    if (noEx.length < 2 || noEx.length > 10) {
+        error("La longitud m&iacutenima es de 2 caracteres y m&aacute de 10");
+        return false;
+    }
+    if (validarNombre(nomPba) === false) {
+        $("#nomPba").focus();
+        return false;
+    }
+    if (validarNombr(apPba) === false) {
+        $("#apPat").focus();
+        return false;
+    }
+    if (validarNombr(amPba) === false) {
+        $("#apMat").focus();
+        return false;
+    }
+    if (validarCURP(curp)) {
+        $("#curpPba").focus();
+        return false;
+    }
+    var datos = [noEx, fechBus, nomPba, apPba, amPba, curp, sexoPba, delitoPba,
+        organizacionPba, tituloPba, descripcionPba, pais, idPba, infoIdPba, estatusPba];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "pba/actualizarPba",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        async: false,
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV$("#pantalla").load('pba');         
+                    ok("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "pba";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });
+}
+function agregarPep() {
+    var fechaVigenteT = $("#fechPep").val();
+    var cargoT = $("#cargoPep").val();
+    var ciudadT = $("#ciudadPep").val();
+    var nomT = $("#nomPep").val();
+    var apPepT = $("#apPatPep").val();
+    var amPepT = $("#apMatPep").val();
+    var curpPepT = $("#curpPep").val();
+    var sexPepT = $("#sexoPep").val();
+    var estatPepT = $("#estatusPep").val();
+    if (fechaVigenteT === '') {
+        error("No se ha seleccionada la fecha");
+        return false;
+    }
+    if (cargoT === '0') {
+        error("No se ha seleccionado el cargo");
+        return false;
+    }
+    if (ciudadT === '0') {
+        error("No se ha seleccionado la ciudad");
+        return false;
+    }
+    if (sexPepT === '0') {
+        error("No se ha seleccionado el sexo");
+        return false;
+    }
+    if (estatPepT === '0') {
+        error("No se ha seleccionado el estatus");
+        return false;
+    }
+    if (nomT === '') {
+        error("El nombre esta vac&iacuteo");
+        return false;
+    }
+    if (apPepT === '' || amPepT === '') {
+        error("El apellido esta vac&iacuteo");
+        return false;
+    }
+    if (validarNombre(nomT) === false) {
+        return false;
+    }
+    if (validarNombre(apPepT) === false) {
+        return false;
+    }
+    if (validarNombre(amPepT) === false) {
+        return false;
+    }
+    if (validarCURP(curpPepT) === false) {
+        return false;
+    }
+
+    var datos = [fechaVigenteT, cargoT, ciudadT, nomT, apPepT, amPepT, curpPepT, sexPepT, estatPepT];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "pep/agregarPep",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV$("#pantalla").load("pep");
+                    ok("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "pep";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });
+}
+function actualizarPep() {
+    var IDpep = $("#idpep").val();
+    var fechaVigenteT = $("#fechPep").val();
+    var cargoT = $("#cargoPep").val();
+    var ciudadT = $("#ciudadPep").val();
+    var nomT = $("#nomPep").val();
+    var apPepT = $("#apPatPep").val();
+    var amPepT = $("#apMatPep").val();
+    var curpPepT = $("#curpPep").val();
+    var sexPepT = $("#sexoPep").val();
+    var estatPepT = $("#estatusPep").val();
+    if (fechaVigenteT === '') {
+        error("No se ha seleccionada la fecha");
+        return false;
+    }
+    if (cargoT === '0') {
+        error("No se ha seleccionado el cargo");
+        return false;
+    }
+    if (ciudadT === '0') {
+        error("No se ha seleccionado la ciudad");
+        return false;
+    }
+    if (sexPepT === '0') {
+        error("No se ha seleccionado el sexo");
+        return false;
+    }
+    if (estatPepT === '0') {
+        error("No se ha seleccionado el estatus");
+        return false;
+    }
+    if (nomT === '') {
+        error("El nombre esta vac&iacuteo");
+        return false;
+    }
+    if (apPepT === '' || amPepT === '') {
+        error("El apellido esta vac&iacuteo");
+        return false;
+    }
+    if (validarNombre(nomT) === false) {
+        return false;
+    }
+    if (validarNombre(apPepT) === false) {
+        return false;
+    }
+    if (validarNombre(amPepT) === false) {
+        return false;
+    }
+    if (validarCURP(curpPepT) === false) {
+        return false;
+    }
+    var datos = [fechaVigenteT, cargoT, ciudadT, nomT, apPepT, amPepT, curpPepT, sexPepT, estatPepT, IDpep];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "pep/actualizarPep",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV $("#pantalla").load("pep");
+                    ok("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "pep";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });
+}
+function agregarFamiliar() {
+    var IdPep = $("#idPep").val();
+    var nomFam = $("#nomFam").val();
+    var apPatFam = $("#apPatFam").val();
+    var apMatFam = $("#apMatFam").val();
+    var curpFam = $("#curpFam").val();
+    var sexoFam = $("#sexoFam").val();
+    var parentFam = $("#parentescoFam").val();
+    if (IdPep === '0') {
+        error("No se ha seleccionado la Persona Politicamente Expuesta");
+        return false;
+    }
+    if (nomFam === '') {
+        error("El nombre esta vacío");
+        return false;
+    }
+    if (apPatFam === '' || apMatFam === '') {
+        error("El apellido esta vacío");
+        return false;
+    }
+    if (validarNombre(nomFam) === false) {
+        return false;
+    }
+    if (validarNombre(apPatFam) === false) {
+        return false;
+    }
+    if (validarNombre(apMatFam) === false) {
+        return false;
+    }
+    if (curpFam === '') {
+        error("La CURP esta vacía");
+        return false;
+    }
+    if (validarCURP(curpFam) === false) {
+        return false;
+    }
+    if (sexoFam === '0') {
+        error("No se ha seleccionado el sexo");
+        return false;
+    }
+    if (parentFam === '0') {
+        error("No se ha seleccionado el parentesco");
+        return false;
+    }
+    var datos = [IdPep, nomFam, apPatFam, apMatFam, curpFam, sexoFam, parentFam];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "pep/agregarFamiliar",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    ok("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "pep";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });
+}
+function actualizarFamiliar() {
+    var IdFamiliar = $("#idfam").val();
+    var IdPep = $("#idPep").val();
+    var nomFam = $("#nomFam").val();
+    var apPatFam = $("#apPatFam").val();
+    var apMatFam = $("#apMatFam").val();
+    var curpFam = $("#curpFam").val();
+    var sexoFam = $("#sexoFam").val();
+    var parentFam = $("#parentescoFam").val();
+    if (IdPep === '0') {
+        error("No se ha seleccionado la Persona Politicamente Expuesta");
+        return false;
+    }
+    if (nomFam === '') {
+        error("El nombre esta vacío");
+        return false;
+    }
+    if (apPatFam === '' || apMatFam === '') {
+        error("El apellido esta vacío");
+        return false;
+    }
+    if (validarNombre(nomFam) === false) {
+        return false;
+    }
+    if (validarNombre(apPatFam) === false) {
+        return false;
+    }
+    if (validarNombre(apMatFam) === false) {
+        return false;
+    }
+    if (curpFam === '') {
+        error("La CURP esta vacía");
+        return false;
+    }
+    if (validarCURP(curpFam) === false) {
+        return false;
+    }
+    if (sexoFam === '0') {
+        error("No se ha seleccionado el sexo");
+        return false;
+    }
+    if (parentFam === '0') {
+        error("No se ha seleccionado el parentesco");
+        return false;
+    }
+    var datos = [IdPep, nomFam, apPatFam, apMatFam, curpFam, sexoFam, parentFam, IdFamiliar];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "pep/actualizarFamiliar",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alert("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alert("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    ok("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "pep";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alert("No ha iniciado sesion");
+                    break;
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });
+}
+function eliminarFamiliar() {
+    $("#tableFamilia tbody").on('click', 'tr', function () {
+        var idT = $('td', this).eq(0).text();
+        $("#idfam").val(idT);
+        var id = $("#idfam").val();
+        if (id === '') {
+            error("El user no puede ir vació");
+            return;
+        }
+        var datos = [id];
+        $(document).ajaxSend(function (e, xhr, options) {
+            var token = $("input[name='_csrf']").val();
+            var cabecera = "X-CSRF-TOKEN";
+            xhr.setRequestHeader(cabecera, token);
+        });
+        $.ajax({
+            url: "pep/eliminarFamiliar",
+            data: {datos: datos},
+            dataType: 'html',
+            type: 'POST',
+            success: function (retorno) {
+                //alert(retorno);
+                switch (retorno) {
+                    case 'errorDato':
+                        alert("Los datos no se procesaron correctamente");
+                        break;
+                    case 'error':
+                        alert("Se ha producido un error en el servidor");
+                        break;
+                    case 'exito':
+                        //carga lo que se indica en id DIV
+                        ok("Los datos se procesarón CORRECTAMENTE!");
+                        setTimeout(function () {
+                            location.href = "pep";
+                        }, 1000);
+                        break;
+                    case 'errorAcceso':
+                        alert("No ha iniciado sesion");
+                        break;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Se ha producido un error en el servidor");
+            }
+        });
+    });
+}
+function generarReportePLD() {
+    $("#tramiteClientesSeleccionados option").each(function () {
+        var datos = [];
+        datos[$(this).attr('value')] = $(this).text();
+        document.getElementById('nombrePLD').innerHTML = datos;
+        alert('opcion: ' + datos);
+    });
+}
+/**
+ * Operaciones relevantes
+ * @returns {cantidad de operaciones relevantes}
+ * las notificaciones se haran cada vez q haya un pago
+ * se manda llamar la funcion
+ */
+//var intevalo = setInterval('notificacionRelevant()', 40000);
+function notificacionRelevant() {
+    var datos = [];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "operelevante/notOpRel",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'GET',
+        success: function (retorno) {
+            var c = 1;
+            var clientes = JSON.parse(retorno);
+            for (var i in clientes) {
+                document.getElementById('report').innerHTML = c;
+                document.getElementById('relevante').innerHTML = c;
+                $("#report").attr("title", "Tienes notificaciones");
+                c++;
+            }//for
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });
+}
+//muestra los clientes que cuentan con operaciones relevanes
+function movimientosRelevantes() {
+    document.getElementById('tbRele').innerHTML = '';
+    var dolares = document.getElementById("dolaresPld").value;
+    var fechIn = document.getElementById("fechIni").value;
+    var fechTe = document.getElementById("fechTer").value;
+    var valDolar = document.getElementById("valorDolarPld").value;
+    if (fechIn === "" || fechTe === "") {
+        error("NO se ha establecido un rango de fechas");
+        return false;
+    }
+    var datos = [fechIn, fechTe, dolares, valDolar];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "operelevante/tblRelevant",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            // alert(retorno);  
+            $('#tblNotifR').css("display", "none");
+            var pagoSQL = JSON.parse(retorno);
+            ok("Los datos se procesarón correctamente");
+            var cont = 1;
+            for (var i in pagoSQL) {
+                $('#tblConRel tbody').append('<tr></tr>');
+                var row = $('#tblConRel tbody tr').last();
+                row.append('<td>' + cont + '</td>');//no.
+                row.append('<td>' + pagoSQL[i][0] + '</td>');//claveClien
+                row.append('<td>' + pagoSQL[i][3] + '</td>');//noombre
+                row.append('<td>' + "$" + pagoSQL[i][1] + '</td>');//deposito
+                row.append('<td>' + "$" + pagoSQL[i][2] + '</td>');//retiro
+                row.append('<td>' + pagoSQL[i][4] + '</td>');//tipo de operacion                
+                cont++;
+            }//for
+
+            $("#tblRelevantes").css("display", "block");
+            conversion();
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });
+}
+function reporteRelevantes(boton) {
+    var fechIn = document.getElementById("fechIni").value;
+    var fechTe = document.getElementById("fechTer").value;
+    var dolares = document.getElementById("dolaresPld").value;
+    var valDolar = document.getElementById("valorDolarPld").value;
+    if (fechIn === "" && fechTe === "") {
+        error("NO se ha establecido un rango de fechas");
+        return false;
+    }
+    var datos = [fechIn, fechTe, dolares, valDolar];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "operelevante/reporteRelevantes",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            ok("Los datos se procesaron <b>correctamente</b>");
+            // alert(retorno);      
+            var pagoSQL = JSON.parse(retorno);
+            var fecha = new Date();
+            var mes = (fecha.getMonth()) + 1;
+            var aniomes;
+            if (mes < 10) {
+                aniomes = fecha.getFullYear() + "0" + (fecha.getMonth()) + 1;
+            } else {
+                aniomes = fecha.getFullYear() + (fecha.getMonth()) + 1;
+            }
+            var cont = 1;
+            for (var i in pagoSQL) {
+                var folio = 0;
+                if (cont < 10) {
+                    folio = "00000" + cont;
+                }
+                if (cont > 10 && cont < 100) {
+                    folio = "0000" + cont;
+                }
+                if (cont > 100 & cont < 1000) {
+                    folio = "000" + cont;
+                }
+                var tr = document.createElement("tr");
+                var td = document.createElement("td");
+                var txt = document.createTextNode(1);//tipo de reporte
+                var td1 = document.createElement("td");
+                var txt1 = document.createTextNode(aniomes);//periodoREporte
+                var td2 = document.createElement("td");
+                var txt2 = document.createTextNode(folio);//folio
+                var td3 = document.createElement("td");
+                var clOrg = pagoSQL[i][0].replace(/-/g, "");
+                var txt3 = document.createTextNode("00" + clOrg);//OrganosSuperentidadfinanciera 001002
+                var td4 = document.createElement("td");
+                var clEnt = pagoSQL[i][1].replace(/-/g, "");
+                var txt4 = document.createTextNode("088" + clEnt);//clave entidad 08821945
+                var td5 = document.createElement("td");
+                var txt5 = document.createTextNode(pagoSQL[i][2]);//localidad ciudad
+                var td6 = document.createElement("td");
+                var txt6 = document.createTextNode(pagoSQL[i][3]);//Sucursal CP
+                var td7 = document.createElement("td");
+                var txt7 = document.createTextNode(pagoSQL[i][4]);//ct_tipOperacion
+                var td8 = document.createElement("td");
+                var txt8 = document.createTextNode(pagoSQL[i][5]);//instMon
+                var td9 = document.createElement("td");
+                var txt9 = document.createTextNode(pagoSQL[i][6]);//CLAVE Remesa Oficalcumplimineto
+                var td10 = document.createElement("td");
+                var txt10 = document.createTextNode(pagoSQL[i][7]);//monto
+                var td11 = document.createElement("td");
+                var txt11 = document.createTextNode(pagoSQL[i][9]);//moneda
+                var td12 = document.createElement("td");
+                var fechaR = pagoSQL[i][10].replace(/-/g, "");
+                var txt12 = document.createTextNode(fechaR);//fecha operacion
+                var td13 = document.createElement("td");
+                var txt13 = document.createTextNode("");//FECHA DE DETECCIÓN DE LAOPERACIÓN*
+                var td14 = document.createElement("td");
+                var txt14 = document.createTextNode(1);//Nacionalidad 
+                var td15 = document.createElement("td");
+                var txt15 = document.createTextNode(1);//Las claves son: 1 = Persona Física, 2 = Persona Mora
+                var td16 = document.createElement("td");
+                var txt16 = document.createTextNode("");//RAZÓN SOCIAL P.Moral
+                var td17 = document.createElement("td");
+                var txt17 = document.createTextNode(pagoSQL[i][16]);//NOMBRE: del cuentahabiente
+                var td18 = document.createElement("td");
+                var txt18 = document.createTextNode(pagoSQL[i][17]);//APELLIDO PATERNO
+                var td19 = document.createElement("td");
+                var txt19 = document.createTextNode(pagoSQL[i][18]);//APELLIDO MATERNO
+                var td20 = document.createElement("td");
+                var txt20 = document.createTextNode("");//RFC no va en relevantes
+                var td21 = document.createElement("td");
+                var txt21 = document.createTextNode(pagoSQL[i][19]);//CURP
+                var td22 = document.createElement("td");
+                var txt22 = document.createTextNode(pagoSQL[i][23]);//FECHA NAC O CONSTITU
+                var td23 = document.createElement("td");
+                var txt23 = document.createTextNode(pagoSQL[i][11] + " " + pagoSQL[i][13]);//DOMICILIO Especificar el domicilio de la persona 
+                //que se reporta de la siguiente manera: indicar la calle, número exterior e interior (si aplica), y código postal.
+                var td24 = document.createElement("td");
+                var txt24 = document.createTextNode(pagoSQL[i][12]);//COLONIA 
+                var td25 = document.createElement("td");
+                var txt25 = document.createTextNode(pagoSQL[i][14]);// CIUDAD
+                var td26 = document.createElement("td");
+                var txt26 = document.createTextNode(pagoSQL[i][22]);//TELEFONO
+                var td27 = document.createElement("td");
+                var txt27 = document.createTextNode(pagoSQL[i][15]);//ACTIVIDAD ECONOMICA
+                var td28 = document.createElement("td");
+                var txt28 = document.createTextNode(pagoSQL[i][20]);//Agente o Apoderado
+                var td29 = document.createElement("td");
+                var txt29 = document.createTextNode("");//ApePaterno
+                var td30 = document.createElement("td");
+                var txt30 = document.createTextNode("");//ApMatern
+                var td31 = document.createElement("td");
+                var txt31 = document.createTextNode(pagoSQL[i][21]);//RFC
+                var td32 = document.createElement("td");
+                var txt32 = document.createTextNode("");//curp
+                var td33 = document.createElement("td");
+                var txt33 = document.createTextNode("");//ConsecutivoCuentas
+                var td34 = document.createElement("td");
+                var txt34 = document.createTextNode("");//NumeroCunetaNSS
+                var td35 = document.createElement("td");
+                var txt35 = document.createTextNode("");//claveSujetoObliga
+                var td36 = document.createElement("td");
+                var txt36 = document.createTextNode("");//TitularCuenta
+                var td37 = document.createElement("td");
+                var txt37 = document.createTextNode("");//ApParteno
+                var td38 = document.createElement("td");
+                var txt38 = document.createTextNode("");//ApMaterno
+                var td39 = document.createElement("td");
+                var txt39 = document.createTextNode("");//Descripcion Operacion
+                var td40 = document.createElement("td");
+                var txt40 = document.createTextNode("");//Razones Insual Preocupante
+                /* var tdBoton = document.createElement("td");
+                 var x = document.createElement("INPUT");
+                 x.setAttribute("type", "button");
+                 x.setAttribute("value", "Eliminar");*/
+
+                td.appendChild(txt);
+                tr.appendChild(td);
+                td1.appendChild(txt1);
+                tr.appendChild(td1);
+                td2.appendChild(txt2);
+                tr.appendChild(td2);
+                td3.appendChild(txt3);
+                tr.appendChild(td3);
+                td4.appendChild(txt4);
+                tr.appendChild(td4);
+                td5.appendChild(txt5);
+                tr.appendChild(td5);
+                td6.appendChild(txt6);
+                tr.appendChild(td6);
+                td7.appendChild(txt7);
+                tr.appendChild(td7);
+                td8.appendChild(txt8);
+                tr.appendChild(td8);
+                td9.appendChild(txt9);
+                tr.appendChild(td9);
+                td10.appendChild(txt10);
+                tr.appendChild(td10);
+                td11.appendChild(txt11);
+                tr.appendChild(td11);
+                td12.appendChild(txt12);
+                tr.appendChild(td12);
+                td13.appendChild(txt13);
+                tr.appendChild(td13);
+                td14.appendChild(txt14);
+                tr.appendChild(td14);
+                td15.appendChild(txt15);
+                tr.appendChild(td15);
+                td16.appendChild(txt16);
+                tr.appendChild(td16);
+                td17.appendChild(txt17);
+                tr.appendChild(td17);
+                td18.appendChild(txt18);
+                tr.appendChild(td18);
+                td19.appendChild(txt19);
+                tr.appendChild(td19);
+                td20.appendChild(txt20);
+                tr.appendChild(td20);
+                td21.appendChild(txt21);
+                tr.appendChild(td21);
+                td22.appendChild(txt22);
+                tr.appendChild(td22);
+                td23.appendChild(txt23);
+                tr.appendChild(td23);
+                td24.appendChild(txt24);
+                tr.appendChild(td24);
+                td25.appendChild(txt25);
+                tr.appendChild(td25);
+                td26.appendChild(txt26);
+                tr.appendChild(td26);
+                td27.appendChild(txt27);
+                tr.appendChild(td27);
+                td28.appendChild(txt28);
+                tr.appendChild(td28);
+                td29.appendChild(txt29);
+                tr.appendChild(td29);
+                td30.appendChild(txt30);
+                tr.appendChild(td30);
+                td31.appendChild(txt31);
+                tr.appendChild(td31);
+                td32.appendChild(txt32);
+                tr.appendChild(td32);
+                td33.appendChild(txt33);
+                tr.appendChild(td33);
+                td34.appendChild(txt34);
+                tr.appendChild(td34);
+                td35.appendChild(txt35);
+                tr.appendChild(td35);
+                td36.appendChild(txt36);
+                tr.appendChild(td36);
+                td37.appendChild(txt37);
+                tr.appendChild(td37);
+                td38.appendChild(txt38);
+                tr.appendChild(td38);
+                td39.appendChild(txt39);
+                tr.appendChild(td39);
+                td40.appendChild(txt40);
+                tr.appendChild(td40);
+                /* tdBoton.appendChild(x);
+                 tr.appendChild(tdBoton)*/
+                $("#tblOpRel tbody").append(tr);
+                cont = parseInt(cont) + 1;//genera num de filas
+
+            }//ffor
+            // $("#tblORelevantes").css("display", "block");
+            var nombre = 1 + clEnt + aniomes + "." + clOrg;
+            if (boton === 'csv') {
+                csv('#tbRel', nombre);
+            } else {
+                Excel('#tblOpRel', nombre);
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor");
+        }
+    });
+}
+/**
+ * Funcion csv y Excel generar los reportes de operaciones 
+ * preocupantes, insuale,relevantes
+ * @param {type} tabla id de la tabla a leer
+ * @param {type} nombre del archivo que se genera
+ * @returns {file} archivo extencion csv separdo por comas
+ */
+var reporteOpPreocupante;
+function csv(tabla, nombre) {
+    if (tabla === "#tbEdPre") {
+        $("#tblOPreocupante").css("display", "block");
+        $(tabla).tableToCSV(reporteOpPreocupante, "csv", "3");
+    }
+    if (tabla === "#tbRel") {
+        $(tabla).tableToCSV(nombre, "csv", "1");
+        $(tabla).empty();
+    }
+    if (tabla === "#tbEdInu") {
+        $(tabla).tableToCSV(nombreInusual, "csv", "2");
+    }
+}
+function Excel(tabla, nombre) {
+    if (tabla === '#tblOpPre') {
+        $(tabla).tableToCSV(reporteOpPreocupante, "excel", "3");
+        //$("#tbEdPre").empty();//limpiar tabla
+    } else if (tabla === '#tblOpRel') {
+        $(tabla).tableToCSV(nombre, "excel", "1");
+        $("#tbRel").empty();//limpiar tabla
+    }
+    if (tabla === "#tblOpInu") {
+        $(tabla).tableToCSV(nombreInusual, "excel", "2");
+        //$("#tblOpInu").empty();//limpiar tabla
+    }
+}
+function reportExcel(idTbl){//encodeURIComponent
+var link = document.createElement('a');    
+        document.body.appendChild(link); 
+        link.download = "bitacora_usuario.xls";
+        link.href = 'data:application/vnd.ms-excel,' + escape($(idTbl).html());
+        link.click();
+        document.body.removeChild(link);
+}
+/***
+ * Funcion para Realizar una opracion Interna Preocupante
+ * @param {int} valor 1= si, 2=no 
+ * @returns {el usuario que hace la denuncia o bien solo se reciben los datos 
+ * de la persona aquien se denuncia}
+ */
+function selectDenunciaAnonima(valor) {
+    if (valor === 1) {
+        $("#chNo").prop('checked', false);
+        $("#divdenunciante").css("display", "none");
+    }
+    if (valor === 2) {
+        $("#chSi").prop('checked', false);
+        //buscar el usuario en sesion
+        $(document).ajaxSend(function (e, xhr, options) {
+            var token = $("input[name='_csrf']").val();
+            var cabecera = "X-CSRF-TOKEN";
+            xhr.setRequestHeader(cabecera, token);
+        });
+        $.ajax({
+            url: "usuario/usuarioEnsesion",
+            data: {datos: ''},
+            dataType: 'html',
+            type: 'GET',
+            success: function (retorno) {
+                var usuario = JSON.parse(retorno);
+                $("#nickuser").val(usuario[0]);
+                $("#emailUser").val(usuario[1]);
+                $("#nombreUser").val(usuario[2]);
+                $("#divdenunciante").css("display", "block");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Se ha producido un error en el servidor");
+            }
+        });
+    }//if
+}
+
+function denunciaPreocupante() {
+    var idusuario;
+    $("input[type=radio]:checked").each(function () {
+        var cont = 0;
+        $(this).closest('td').siblings().each(function () {
+            // obtenemos el texto del td pocion 0
+            if (cont === 0) {
+                idusuario = $(this).text();
+            }
+            cont++;
+        });
+    });//ya no hay selecion de mas
+    var descripcion = $("#descripcionOp").val();
+    var fecha = $("#fechSuceso").val();
+    var usuarionick = $("#nickuser").val();
+    if (typeof (idusuario) === "undefined") {
+        error("No se ha seleccionado el usuario");
+        return false;
+    }
+    if (descripcion === '') {
+        error("Es requerida una descripcion del hecho.");
+        return false;
+    }
+    if (fecha === '') {
+        error("No se ha seleccionado la fecha");
+        return false;
+    }
+    var datos = [idusuario, descripcion,
+        fecha, usuarionick];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "opepreocupante/guardarOperacionP",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            var operacionesP = JSON.parse(retorno);
+            var cant = 1;
+            for (var i in operacionesP) {
+                document.getElementById('report').innerHTML = cant;
+                document.getElementById('preocupante').innerHTML = cant;
+                $("#report").attr("title", "Tienes notificaciones");
+                cant++;
+            }
+            limpiarForm('frmPreocupantes');
+            $("#divdenunciante").css("display", "none");
+
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Se ha producido un error en el servidor red");
+        }
+    });//ajax
+}
+/**
+ * Fincion para buscar infomacion adicional de la persona acusada
+ * @returns {undefined}
+ */
+function buscarUsuarioPre() {
+    $("#tablePreocupantes tbody").on('click', 'tr', function () {
+        var idInfracUsuario = $('td', this).eq(2).text();
+        $("#usuarioidInf").val(idInfracUsuario);
+        var datos = [idInfracUsuario];
+        $(document).ajaxSend(function (e, xhr, options) {
+            var token = $("input[name='_csrf']").val();
+            var cabecera = "X-CSRF-TOKEN";
+            xhr.setRequestHeader(cabecera, token);
+        });
+        $.ajax({
+            url: "usuario/buscarUsuarioP",
+            data: {datos: datos},
+            dataType: 'html',
+            type: 'POST',
+            success: function (retorno) {
+                //alert(retorno);
+                var datosUsuario = JSON.parse(retorno);
+                console.log(datosUsuario);
+                $("#nick").val(datosUsuario[0]);
+                $("#email").val(datosUsuario[1]);
+                $("#nameC").val(datosUsuario[2]);
+                $("#sucursalS").val(datosUsuario[3]);
+                $("#telefonoS").val(datosUsuario[4]);
+                $("#idusuario").val(datosUsuario[5]);
+                $("#curp").val(datosUsuario[6]);
+                $("#sexo").val(datosUsuario[7]);
+
+            }
+        });//ajax
+    });//tabla
+}
+function notificacion() {
+    alertify.log("Esto es una notificaci&oacuten cualquiera.");
+    return false;
+}
+
+function ok(message) {
+    alertify.success(message);
+    return false;
+}
+function error(message) {
+    alertify.error(message);
+    return false;
+}
+
+function reportPreocupante() {
+    $("#divTbDenuncias").css("display", "none");
+    var arreglo = [];
+    var dato;
+    $("input[type=checkbox]:checked").each(function () {
+        var cont = 1;
+        $(this).closest('td').siblings().each(function () {
+            // obtenemos el texto del td 
+            if (cont === 3) {
+                dato = $(this).text();
+                arreglo.push(dato);   //idusuario
+            }
+            if (cont === 6) {
+                dato = $(this).text();
+                console.log(dato);
+                arreglo.push(dato);
+            }//descripcion
+
+            cont++;
+            //console.log($(this).text());
+        });
+        console.log('Soy arreglo ' + arreglo);
+    });//ya no hay selecion de mas 
+    if (arreglo.length === 0) {
+        $("#divTbDenuncias").css("display", "block");
+        error("NO se ha seleccionado algun cliente.");
+        return false;
+    }
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "opepreocupante/reportePreocupante",
+        data: {datos: arreglo},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            ok("Se han procesados los datos de manera correcta");
+            var operacionP = JSON.parse(retorno);
+            var fecha = new Date();
+            var mes = (fecha.getMonth()) + 1;
+            var periodo;
+            if (mes < 10) {
+                periodo = fecha.getFullYear() + "0" + (fecha.getMonth() + 1) + fecha.getDate();
+            } else {
+                periodo = fecha.getFullYear() + (fecha.getMonth() + 1) + fecha.getDate();
+            }
+            var cont = 1;
+            for (var i in operacionP) {
+                var folio = 0;
+                if (cont < 10) {
+                    folio = "00000" + cont;
+                }
+                if (cont > 10 && cont < 100) {
+                    folio = "0000" + cont;
+                }
+                if (cont > 100 & cont < 1000) {
+                    folio = "000" + cont;
+                }
+                var tr = document.createElement("tr");
+                var td = document.createElement("td");
+                var txt = document.createTextNode(3);//tipo de reporte
+                var td1 = document.createElement("td");
+                var txt1 = document.createTextNode(periodo);//periodoREporte
+                var td2 = document.createElement("td");
+                var txt2 = document.createTextNode(folio);//folio
+                var td3 = document.createElement("td");
+                var clOS = operacionP[i][0].replace(/-/g, "");
+                var txt3 = document.createTextNode("00" + clOS);//OrganosSuperentidadfinanciera 001002
+                var td4 = document.createElement("td");
+                var clEn = operacionP[i][1].replace(/-/g, "");
+                var txt4 = document.createTextNode("088" + clEn);//clave entidad 08821945
+                var td5 = document.createElement("td");
+                var txt5 = document.createTextNode(operacionP[i][2]);//localidad ciudad
+                var td6 = document.createElement("td");
+                var txt6 = document.createTextNode("0" + operacionP[i][3]);//Sucursal
+                var td7 = document.createElement("td");
+                console.log(servicio);
+                var SELECT;
+                var x;
+                var contador = 1;
+                SELECT = document.createElement("SELECT");
+                SELECT.setAttribute("id", "idOperacion");
+                var operacionS = JSON.parse(servicio);
+                for (var l in operacionS) {
+                    x = document.createElement("option");
+                    x.setAttribute("value", operacionS[l].clave);
+                    x.setAttribute("title", operacionS[l].descripcion);
+                    x.innerHTML = operacionS[l].clave;
+                    SELECT.appendChild(x);
+                    contador++;
+                }//for
+                td7.appendChild(SELECT);
+                console.log(instrumentoM);
+                var td8 = document.createElement("td");//instMon
+                var SELECT;
+                var x;
+                SELECT = document.createElement("SELECT");
+                SELECT.setAttribute("id", "idIntrumento");
+                var instrumento = JSON.parse(instrumentoM);
+                for (var l in instrumento) {
+                    x = document.createElement("option");
+                    x.setAttribute("value", instrumento[l].clave);
+                    x.setAttribute("title", instrumento[l].nombre);
+                    x.innerHTML = instrumento[l].clave;
+                    SELECT.appendChild(x);
+                }//for
+                td8.appendChild(SELECT);
+                var td9 = document.createElement("td");//NÚMERO DE CUENTA, CONTRATO, OPERACIÓN, PÓLIZA O NÚMERO DE SEGURIDAD SOCIAL Oficalcumplimineto
+                td9.setAttribute("contenteditable", "true");
+                var td10 = document.createElement("td");
+                td10.setAttribute("contenteditable", "true");//monto
+                var td11 = document.createElement("td");//moneda
+                var SELECT;
+                var x;
+                SELECT = document.createElement("SELECT");
+                SELECT.setAttribute("id", "idMonedaD");
+                console.log(divisa);
+                var moneda = JSON.parse(divisa);
+                for (var l in moneda) {
+                    x = document.createElement("option");
+                    x.setAttribute("value", moneda[l].clave);
+                    x.setAttribute("title", moneda[l].nombremoneda);
+                    x.innerHTML = moneda[l].clave;
+                    SELECT.appendChild(x);
+                }//for
+                td11.appendChild(SELECT);
+                var td12 = document.createElement("td");
+                var fechaO = operacionP[i][4].replace(/-/g, "");
+                var txt12 = document.createTextNode(fechaO);//fecha operacion
+                var td13 = document.createElement("td");
+                var fechaD = operacionP[i][4].replace(/-/g, "");
+                var txt13 = document.createTextNode(fechaD);//FECHA DE DETECCIÓN DE LAOPERACIÓN*
+                var td14 = document.createElement("td");
+                var txt14 = document.createTextNode(1);//Nacionalidad 
+                var td15 = document.createElement("td");
+                var txt15 = document.createTextNode("1");//Las claves son: 1 = Persona Física, 2 = Persona Mora
+                var td16 = document.createElement("td");
+                td16.setAttribute("contenteditable", "true");//RAZÓN SOCIAL P.Moral
+                var td17 = document.createElement("td");
+                var txt17 = document.createTextNode(operacionP[i][5]);//NOMBRE: del cuentahabiente
+                var td18 = document.createElement("td");
+                var txt18 = document.createTextNode(operacionP[i][6]);//APELLIDO PATERNO
+                var td19 = document.createElement("td");
+                var txt19 = document.createTextNode(operacionP[i][7]);//APELLIDO MATERNO
+                var td20 = document.createElement("td");//RFC no va en relevantes
+                td20.setAttribute("contenteditable", "true");
+                var td21 = document.createElement("td");
+                var txt21 = document.createTextNode(operacionP[i][8]);//CURP
+                var td22 = document.createElement("td");
+                var txt22 = document.createTextNode("");//FECHA NAC O CONSTITU
+                td22.setAttribute("contenteditable", "true");
+                var td23 = document.createElement("td");//DOMICILIO Especificar el domicilio de la persona
+                td23.setAttribute("contenteditable", "true");
+                td23.setAttribute("placeholder", "calle,numero");
+                //que se reporta de la siguiente manera: indicar la calle, número exterior e interior (si aplica), y código postal.
+                var td24 = document.createElement("td");
+                td24.setAttribute("contenteditable", "true");//COLONIA 
+                var td25 = document.createElement("td");
+                var txt25 = document.createTextNode("");// CIUDAD catalogo
+                var td26 = document.createElement("td");
+                var txt26 = document.createTextNode(operacionP[i][9]);//TELEFONO
+                var td27 = document.createElement("td");//ACTIVIDAD ECONOMICA
+                console.log(catalogo);
+                var SELECT;
+                var x;
+                var contador = 1;
+                SELECT = document.createElement("SELECT");
+                SELECT.setAttribute("id", "idActividad");
+                var actividad = JSON.parse(catalogo);
+                for (var l in actividad) {
+                    x = document.createElement("option");
+                    x.setAttribute("value", actividad[l].claveae);
+                    x.setAttribute("title", actividad[l].nombre);
+                    x.innerHTML = actividad[l].claveae;
+                    SELECT.appendChild(x);
+                    contador++;
+                }//for
+                td27.appendChild(SELECT);
+                console.log(instrumentoM);
+                var td28 = document.createElement("td");
+                var txt28 = document.createTextNode(operacionP[i][10]);//Agente o Apoderado
+                var td29 = document.createElement("td");
+                var txt29 = document.createTextNode("");//ApePaterno
+                var td30 = document.createElement("td");
+                var txt30 = document.createTextNode("");//ApMatern
+                var td31 = document.createElement("td");
+                var txt31 = document.createTextNode(operacionP[i][11]);//RFC
+                var td32 = document.createElement("td");//curp
+                td32.setAttribute("contenteditable", "true");
+                var td33 = document.createElement("td");//ConsecutivoCuentas
+                td33.setAttribute("contenteditable", "true");
+                var td34 = document.createElement("td");//NumeroCunetaNSS
+                td34.setAttribute("contenteditable", "true");
+                var td35 = document.createElement("td");//claveSujetoObliga
+                td35.setAttribute("contenteditable", "true");
+                var txt35 = document.createTextNode("0" + clEn);
+                var td36 = document.createElement("td");//TitularCuenta
+                td36.setAttribute("contenteditable", "true");
+                var td37 = document.createElement("td");//ApParteno
+                td37.setAttribute("contenteditable", "true");
+                var td38 = document.createElement("td");//ApMaterno
+                td38.setAttribute("contenteditable", "true");
+                var td39 = document.createElement("td");
+                td39.setAttribute("contenteditable", "true");//Descripcion Operacion
+                var td40 = document.createElement("td");
+                var txt40 = document.createTextNode(operacionP[i][12]);//Razones Insual Preocupante
+                td.appendChild(txt);
+                tr.appendChild(td);
+                td1.appendChild(txt1);
+                tr.appendChild(td1);
+                td2.appendChild(txt2);
+                tr.appendChild(td2);
+                td3.appendChild(txt3);
+                tr.appendChild(td3);
+                td4.appendChild(txt4);
+                tr.appendChild(td4);
+                td5.appendChild(txt5);
+                tr.appendChild(td5);
+                td6.appendChild(txt6);
+                tr.appendChild(td6);
+
+                tr.appendChild(td7);
+                tr.appendChild(td8);
+                // td9.appendChild(txt9);
+                tr.appendChild(td9);
+                // td10.appendChild(txt10);
+                tr.appendChild(td10);
+
+                tr.appendChild(td11);
+                td12.appendChild(txt12);
+                tr.appendChild(td12);
+                td13.appendChild(txt13);
+                tr.appendChild(td13);
+                td14.appendChild(txt14);
+                tr.appendChild(td14);
+                td15.appendChild(txt15);
+                tr.appendChild(td15);
+                //td16.appendChild(txt16);
+                tr.appendChild(td16);
+                td17.appendChild(txt17);
+                tr.appendChild(td17);
+                td18.appendChild(txt18);
+                tr.appendChild(td18);
+                td19.appendChild(txt19);
+                tr.appendChild(td19);
+                tr.appendChild(td20);
+                td21.appendChild(txt21);
+                tr.appendChild(td21);
+                td22.appendChild(txt22);
+                tr.appendChild(td22);
+                tr.appendChild(td23);
+                tr.appendChild(td24);
+                td25.appendChild(txt25);
+                tr.appendChild(td25);
+                td26.appendChild(txt26);
+                tr.appendChild(td26);
+                tr.appendChild(td27);
+                td28.appendChild(txt28);
+                tr.appendChild(td28);
+                td29.appendChild(txt29);
+                tr.appendChild(td29);
+                td30.appendChild(txt30);
+                tr.appendChild(td30);
+                td31.appendChild(txt31);
+                tr.appendChild(td31);
+                tr.appendChild(td32);
+                tr.appendChild(td33);
+                tr.appendChild(td34);
+                td35.appendChild(txt35);
+                tr.appendChild(td35);
+                tr.appendChild(td36);
+                tr.appendChild(td37);
+                tr.appendChild(td38);
+                tr.appendChild(td39);
+                td40.appendChild(txt40);
+                tr.appendChild(td40);
+                //var label=document.createElement("label"); label.htmlFor = "text" + operacionP[i]; label.innerHTML=operacionP;$("#h2").append(label);
+                $("#tblOpPre tbody").append(tr);//tblOpPre
+                cont = parseInt(cont) + 1;//genera num de filas
+
+            }//ffor
+            $("#tblOPreocupante").css("display", "block");
+            // TIPO DE REPORTE CLAVE DE  ENTIDAD FINANCIERA PERIODO PUNTO ÓRGANO SUPERVISOR
+            reporteOpPreocupante = 3 + clEn + periodo + "." + clOS;
+        }
+    });//ajax
+}
+/*CATALOGOS*/
+var catalogo;
+function actividadEconommica() {
+    $.ajax({
+        url: "opepreocupante/catalogoActividad",
+        data: {},
+        dataType: 'html',
+        type: 'GET',
+        success: function (datos) {
+            catalogo = datos;
+            return catalogo;
+        }
+    });//ajax
+}
+var instrumentoM;
+function instrumentoMonetario() {
+    $.ajax({
+        url: "opepreocupante/catalogoInstrumentoMonetario",
+        data: {},
+        dataType: 'html',
+        type: 'GET',
+        success: function (datos) {
+            instrumentoM = datos;
+            return instrumentoM;
+        }
+    });//ajax
+}
+var divisa;
+function monedaDivisa() {
+    $.ajax({
+        url: "opepreocupante/catalogoMonedaDivisa",
+        data: {},
+        dataType: 'html',
+        type: 'GET',
+        success: function (datos) {
+            divisa = datos;
+            return divisa;
+        }
+    });//ajax
+}
+var servicio;
+function tipoServicio() {
+    $.ajax({
+        url: "opepreocupante/catalogoTipoServicio",
+        data: {},
+        dataType: 'html',
+        type: 'GET',
+        success: function (datos) {
+            servicio = datos;
+            return servicio;
+        }
+    });//ajax
+}
+/**
+ * OPERACIONES INUSUALES
+ * consultar operaciones
+ */
+var nombreInusual;
+function reportInusual() {
+    var arreglo = [];
+    var dato;
+    $("input[type=checkbox]:checked").each(function () {
+        var cont = 1;
+        $(this).closest('td').siblings().each(function () {
+            // obtenemos el texto del td opeinusual/movimientos
+            if (cont === 2) {
+                dato = $(this).text();
+                arreglo.push(dato);   //idcliiente
+            }
+            cont++;
+        });
+        console.log('Soy arreglo ' + arreglo);
+    });
+    if (arreglo.length === 0) {
+        error("NO se ha seleccionado algún cliente");
+        return false;
+    }
+    $("#tbEdInu").empty();//limpiar tabla
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "opeinusual/reporte",
+        data: {datos: arreglo},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            var inusual = JSON.parse(retorno);
+            ok("Se han precesados los datos de manera correcta");
+            console.log(inusual);
+            $("#tblOInusual").css("display", "block");
+            var fecha = new Date();
+            var mes = (fecha.getMonth()) + 1;
+            var aniomesdia;
+            if (mes < 10) {
+                aniomesdia = fecha.getFullYear() + "0" + (fecha.getMonth() + 1) + fecha.getDate();
+            } else {
+                aniomesdia = fecha.getFullYear() + (fecha.getMonth() + 1) + fecha.getDate();
+            }
+            var cont = 1;
+            for (var i in inusual) {
+                var folio = 0;
+                if (cont < 10) {
+                    folio = "00000" + cont;
+                }
+                if (cont > 10 && cont < 100) {
+                    folio = "0000" + cont;
+                }
+                if (cont > 100 & cont < 1000) {
+                    folio = "000" + cont;
+                }
+                var tr = document.createElement("tr");
+                var td = document.createElement("td");
+                var txt = document.createTextNode(2);//tipo de reporte
+                var td1 = document.createElement("td");
+                var txt1 = document.createTextNode(aniomesdia);//periodoREporte
+                var td2 = document.createElement("td");
+                var txt2 = document.createTextNode(folio);//folio
+                var td3 = document.createElement("td");
+                var clOrg = inusual[i][0].replace(/-/g, "");
+                var txt3 = document.createTextNode("00" + clOrg);//OrganosSuperentidadfinanciera 001002
+                var td4 = document.createElement("td");
+                var clEnt = inusual[i][1].replace(/-/g, "");
+                var txt4 = document.createTextNode("088" + clEnt);//clave entidad 08821945
+                var td5 = document.createElement("td");
+                var txt5 = document.createTextNode(inusual[i][2]);//localidad ciudad
+                var td6 = document.createElement("td");
+                var txt6 = document.createTextNode("0" + inusual[i][3]);//Sucursal CP
+                var td7 = document.createElement("td");
+                var txt7 = document.createTextNode(inusual[i][4]);//ct_tipOperacion
+                var td8 = document.createElement("td");
+                var txt8 = document.createTextNode(inusual[i][5]);//instMon
+                var td9 = document.createElement("td");
+                var txt9 = document.createTextNode(inusual[i][6]);//CLAVE Remesa Oficalcumplimineto
+                var td10 = document.createElement("td");
+                var txt10 = document.createTextNode(inusual[i][7]);//monto
+                var td11 = document.createElement("td");
+                var txt11 = document.createTextNode(inusual[i][9]);//moneda
+                var td12 = document.createElement("td");
+                var fechaO = inusual[i][10].replace(/-/g, "");
+                var txt12 = document.createTextNode(fechaO);//fecha operacion
+                var td13 = document.createElement("td");
+                var txt13 = document.createTextNode("");//FECHA DE DETECCIÓN DE LAOPERACIÓN*
+                var td14 = document.createElement("td");
+                var txt14 = document.createTextNode(1);//Nacionalidad 
+                var td15 = document.createElement("td");
+                var txt15 = document.createTextNode(1);//Las claves son: 1 = Persona Física, 2 = Persona Mora
+                var td16 = document.createElement("td");
+                var txt16 = document.createTextNode("");//RAZÓN SOCIAL P.Moral
+                var td17 = document.createElement("td");
+                var txt17 = document.createTextNode(inusual[i][16]);//NOMBRE: del cuentahabiente
+                var td18 = document.createElement("td");
+                var txt18 = document.createTextNode(inusual[i][17]);//APELLIDO PATERNO
+                var td19 = document.createElement("td");
+                var txt19 = document.createTextNode(inusual[i][18]);//APELLIDO MATERNO
+                var td20 = document.createElement("td");
+                var txt20 = document.createTextNode("");//RFC no va en relevantes
+                var td21 = document.createElement("td");
+                var txt21 = document.createTextNode(inusual[i][19]);//CURP
+                var td22 = document.createElement("td");
+                var fechaNac = inusual[i][23].replace(/-/g, "");
+                var txt22 = document.createTextNode(fechaNac);//FECHA NAC O CONSTITU
+                var td23 = document.createElement("td");
+                var txt23 = document.createTextNode(inusual[i][11]);//DOMICILIO Especificar el domicilio de la persona 
+                //que se reporta de la siguiente manera: indicar la calle, número exterior e interior (si aplica), y código postal.
+                var td24 = document.createElement("td");
+                var txt24 = document.createTextNode(inusual[i][12]);//COLONIA 
+                var td25 = document.createElement("td");
+                var txt25 = document.createTextNode(inusual[i][14]);// CIUDAD
+                var td26 = document.createElement("td");
+                var txt26 = document.createTextNode(inusual[i][22]);//TELEFONO
+                var td27 = document.createElement("td");
+                var txt27 = document.createTextNode(inusual[i][15]);//ACTIVIDAD ECONOMICA
+                var td28 = document.createElement("td");
+                var txt28 = document.createTextNode(inusual[i][20]);//Agente o Apoderado
+                var td29 = document.createElement("td");
+                var txt29 = document.createTextNode("");//ApePaterno
+                var td30 = document.createElement("td");
+                var txt30 = document.createTextNode("");//ApMatern
+                var td31 = document.createElement("td");
+                var txt31 = document.createTextNode(inusual[i][21]);//RFC
+                var td32 = document.createElement("td");
+                var txt32 = document.createTextNode("");//curp
+                var td33 = document.createElement("td");
+                var txt33 = document.createTextNode("");//ConsecutivoCuentas
+                var td34 = document.createElement("td");
+                var txt34 = document.createTextNode("");//NumeroCunetaNSS
+                var td35 = document.createElement("td");
+                var txt35 = document.createTextNode("0" + clEnt);//claveSujetoObliga
+                var td36 = document.createElement("td");
+                var txt36 = document.createTextNode("");//TitularCuenta
+                var td37 = document.createElement("td");
+                var txt37 = document.createTextNode("");//ApParteno
+                var td38 = document.createElement("td");
+                var txt38 = document.createTextNode("");//ApMaterno
+                var td39 = document.createElement("td");
+                td39.setAttribute("contenteditable", "true");//Descripcion Operacion
+                var td40 = document.createElement("td");
+                td40.setAttribute("contenteditable", "true");//Razones Insual Preocupante
+                td.appendChild(txt);
+                tr.appendChild(td);
+                td1.appendChild(txt1);
+                tr.appendChild(td1);
+                td2.appendChild(txt2);
+                tr.appendChild(td2);
+                td3.appendChild(txt3);
+                tr.appendChild(td3);
+                td4.appendChild(txt4);
+                tr.appendChild(td4);
+                td5.appendChild(txt5);
+                tr.appendChild(td5);
+                td6.appendChild(txt6);
+                tr.appendChild(td6);
+                td7.appendChild(txt7);
+                tr.appendChild(td7);
+                td8.appendChild(txt8);
+                tr.appendChild(td8);
+                td9.appendChild(txt9);
+                tr.appendChild(td9);
+                td10.appendChild(txt10);
+                tr.appendChild(td10);
+                td11.appendChild(txt11);
+                tr.appendChild(td11);
+                td12.appendChild(txt12);
+                tr.appendChild(td12);
+                td13.appendChild(txt13);
+                tr.appendChild(td13);
+                td14.appendChild(txt14);
+                tr.appendChild(td14);
+                td15.appendChild(txt15);
+                tr.appendChild(td15);
+                td16.appendChild(txt16);
+                tr.appendChild(td16);
+                td17.appendChild(txt17);
+                tr.appendChild(td17);
+                td18.appendChild(txt18);
+                tr.appendChild(td18);
+                td19.appendChild(txt19);
+                tr.appendChild(td19);
+                td20.appendChild(txt20);
+                tr.appendChild(td20);
+                td21.appendChild(txt21);
+                tr.appendChild(td21);
+                td22.appendChild(txt22);
+                tr.appendChild(td22);
+                td23.appendChild(txt23);
+                tr.appendChild(td23);
+                td24.appendChild(txt24);
+                tr.appendChild(td24);
+                td25.appendChild(txt25);
+                tr.appendChild(td25);
+                td26.appendChild(txt26);
+                tr.appendChild(td26);
+                td27.appendChild(txt27);
+                tr.appendChild(td27);
+                td28.appendChild(txt28);
+                tr.appendChild(td28);
+                td29.appendChild(txt29);
+                tr.appendChild(td29);
+                td30.appendChild(txt30);
+                tr.appendChild(td30);
+                td31.appendChild(txt31);
+                tr.appendChild(td31);
+                td32.appendChild(txt32);
+                tr.appendChild(td32);
+                td33.appendChild(txt33);
+                tr.appendChild(td33);
+                td34.appendChild(txt34);
+                tr.appendChild(td34);
+                td35.appendChild(txt35);
+                tr.appendChild(td35);
+                td36.appendChild(txt36);
+                tr.appendChild(td36);
+                td37.appendChild(txt37);
+                tr.appendChild(td37);
+                td38.appendChild(txt38);
+                tr.appendChild(td38);
+                tr.appendChild(td39);
+                tr.appendChild(td40);
+                $("#tblOpInu tbody").append(tr);
+                cont = parseInt(cont) + 1;//genera num de filas
+
+            }//ffor
+            // $("#tblOInu").css("display", "block");
+            nombreInusual = 1 + clEnt + aniomesdia + "." + +clOrg;
+
+        }
+    });//ajax
+}
+function perfil() {
+    var porcentaje = $("#porcentaje").val();
+    $("#tableClientes tbody").on('click', 'tr', function () {
+        var idT = $('td', this).eq(1).text();
+        var estatuspago = $('td', this).eq(7).text();
+        var datos = [idT, porcentaje, estatuspago];
+
+        $(document).ajaxSend(function (e, xhr, options) {
+            var token = $("input[name='_csrf']").val();
+            var cabecera = "X-CSRF-TOKEN";
+            xhr.setRequestHeader(cabecera, token);
+        });
+        $.ajax({
+            url: "cliente/perfil",
+            data: {datos: datos},
+            dataType: 'html',
+            type: 'POST',
+            success: function (cliente) {
+                document.getElementById('tbMov').innerHTML = '';
+                document.getElementById('total').innerHTML = '';
+                var datos = JSON.parse(cliente);
+                $("#divContCli").css("display", "none");
+                var num = 1;
+                var total = 0;
+                for (var i in datos) {
+                    document.getElementById("nameCom").innerHTML = datos[i][1];
+                    document.getElementById("sexoC").innerHTML = datos[i][6];
+                    document.getElementById("curp").innerHTML = datos[i][2];
+                    document.getElementById("rcf").innerHTML = datos[i][3];
+                    document.getElementById("tipIden").innerHTML = datos[i][4];
+                    document.getElementById("fechNac").innerHTML = datos[i][5];
+                    document.getElementById("calle").innerHTML = datos[i][13];
+                    document.getElementById("colonia").innerHTML = datos[i][14];
+                    document.getElementById("codigopostal").innerHTML = datos[i][15];
+                    document.getElementById("ciudad").innerHTML = datos[i][16];
+                    document.getElementById("estado").innerHTML = datos[i][17];
+                    document.getElementById("pais").innerHTML = datos[i][18];
+
+
+                    $('#tableMovimientos tbody').append('<tr></tr>');
+                    var row = $('#tableMovimientos tbody tr').last();
+                    row.append('<td>' + num + '</td>');
+                    row.append('<td>' + datos[i][7] + '</td>');
+                    row.append('<td>' + datos[i][1] + '</td>');
+                    row.append('<td>' + "$" + datos[i][8] + '</td>');
+                    row.append('<td>' + datos[i][9] + '</td>');
+                    row.append('<td>' + datos[i][11] + '</td>');
+                    row.append('<td>' + datos[i][10] + '</td>');
+                    row.append('<td>' + datos[i][12] + '</td>');
+                    total = total + datos[i][8];
+                    console.log(total);
+                    num++;
+                }//for
+                //********************************
+                var porcentaje = $("#porcentaje").val();
+                var datos = [idT, porcentaje, estatuspago];
+                $.ajax({
+                    url: "cliente/limite",
+                    data: {datos: datos},
+                    dataType: 'html',
+                    type: 'POST',
+                    success: function (retorno) {
+                        if (retorno.length !== 0) {
+                            var datos = JSON.parse(retorno);
+                            $("#perfilCal").val(datos[0], [0]);
+                            $("#total").val(total);
+                            if (estatuspago === "2") {
+                                $("#divPagos").css("display", "none");
+                                $("#divPerfil").css("display", "block");
+                            } else {
+                                $("#divPerfil").css("display", "block");
+                            }
+                        } else {
+                            $("#perfilCal").val("0.00");
+                            $("#divPerfil").css("display", "block");
+                            $("#total").val(total);
+                        }//else
+                    }
+                });//ajaxsegundapeticion
+            }, //retorno
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Se ha producido un error en el servidor");
+            }
+        });//ajax
+    });//tabla
+}
+function cambioPorcentaje() {
+    document.getElementById('tbMov').innerHTML = '';
+    var id = $("#idclPf").val();
+    var porcentaje = $("#porcentaje").val();
+    var datos = [id, porcentaje];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "cliente/limite",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            var datos = JSON.parse(retorno);
+            console.log(datos[0][0]);
+            $("#perfilCal").val(datos[0][0]);
+        }
+    });//ajax
+}
+function verPerfil() {
+    $("#divPerfil").css("display", "none");
+    $("#divContCli").css("display", "block");
+    document.getElementById('tbMov').innerHTML = '';
+    //$("#pantalla").load("cliente");
+}
+/*VALIDACIONES*/
+function validarEmail(valorEmail) {
+    var valEmail = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    if (!valEmail.test(valorEmail)) {
+        error("El correo no es valido");
+        return false;
+    }
+}
+function  validarCURP(valorCurp) {
+    var valCurp = /^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/,
+            formato = valorCurp.match(valCurp);
+    if (!formato) { //sino coincide
+        error("El formato de la CURP no coincide");
+        return false;
+    }
+}
+function  validarTelefono(id, valorTel) {
+    var valTel = /^([0-9]+)$/;
+    var length = $(id).val().length;
+    $("#mensajeT").remove();
+    if (!valTel.test(valorTel) || length > 12 || length < 7) {
+        $(id).after("<p style='color:red' id='mensajeT'>La longitud maxima  " + 12 + "caracteres longitud m&iacutenima 7,usted escribio " + length + " caracteres</p>");
+        error("El n&uacutemero no es valido");
+        return false;
+    }
+}
+function validarNombre(valorNombre) {
+    var valNom = /^(([A-Za-zñÑáéíóúÁÉÍÓÚ\s]+){3,50})$/;
+    if (!valNom.test(valorNombre)) {
+        error("El nombre o apellido no es valido");
+        //error("La longitud m&aacutexima es de 50 caracteres");
+        return false;
+    }
+}
+function validarNickname(valorNickname) {
+    var valNick = /^([A-Za-z]{6,})$/;
+    if (!valNick.test(valorNickname)) {
+        error("El ninckname debe contener m&iacutenimo 6 caracteres, no se admiten carcteres especiales");
+        return false;
+    }
+}
+function validarPassword(valorPassword) {
+    var valPass = /^(([a-zA-Z0-9!#@$%&'*+\/=?^_-]){6,})$/;
+    if (!valPass.test(valorPassword)) {
+        error("El password debe contener m&iacutenimo 6 caracteres");
+        return false;
+    }
+}
+function validarCalle(valorCalle) {
+    var valCalle = /^([A-Za-z0-9#.\s]{5,50})$/;
+    if (!valCalle.test(valorCalle)) {
+        error("La direcci&oacuten no es valida,\n\
+ longitud m&iacutenima de 5 caracteres.");
+        return false;
+    }
+}
+function validarColonia(valorColonia) {
+    var valColonia = /^([A-Za-z.\s]{4,50})$/;
+    if (!valColonia.test(valorColonia)) {
+        error("La colonia no es valida,\n\
+ longitud m&iacutenima de 4 caracteres.");
+        return false;
+    }
+}

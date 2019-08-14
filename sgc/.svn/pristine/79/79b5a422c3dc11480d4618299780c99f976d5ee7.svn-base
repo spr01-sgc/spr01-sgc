@@ -1,0 +1,43 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.controller;
+
+import com.soma.transmisor.model.Pago;
+import com.soma.transmisor.model.Sucursal;
+import com.soma.transmisor.service.PagoService;
+import com.soma.transmisor.service.SucursalService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Controller
+@RequestMapping("/")
+public class ControllerOperacion {
+    @Autowired
+    SucursalService sucursalService;
+    @Autowired
+    PagoService pagoService;
+     @RequestMapping(value = {"/operelevante"}, method = RequestMethod.GET)
+    public String operaciones(ModelMap model) {
+        
+  List<Sucursal> lSucursal = sucursalService.showSucursal();
+            model.addAttribute("lSucursal", lSucursal);
+                  
+  List<Pago> lPago = pagoService.showPago();
+            model.addAttribute("lPago", lPago);
+            
+            return "operelevante";
+       
+    }
+    
+}

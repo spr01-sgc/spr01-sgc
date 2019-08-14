@@ -1,0 +1,57 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.service.impl;
+
+import com.soma.transmisor.dao.SucursalDao;
+import com.soma.transmisor.dao.impl.SucursalDaoImpl;
+import com.soma.transmisor.model.Sucursal;
+import com.soma.transmisor.service.SucursalService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author JUAN LUIS-SOMA
+ */
+@Transactional
+@Service("sucursalService")
+public class SucursalServiceImpl implements SucursalService{
+
+    @Autowired
+    SucursalDao sucursalDao; 
+    private boolean estadoMetodo = false;
+    @Override
+    public boolean update(Sucursal sucursal) {
+        sucursalDao.update(sucursal);
+        return estadoMetodo = true;
+    }
+
+    @Override
+    public boolean save(Sucursal sucursal) {
+        sucursalDao.save(sucursal);
+        return estadoMetodo = true;
+    }
+
+    @Override
+    public boolean delete(int sucursalid) {
+        sucursalDao.delete(sucursalid);
+        return estadoMetodo = true;
+    }
+
+    @Override
+    public Sucursal buscaId(int sucursalid) {
+        return sucursalDao.buscaId(sucursalid);
+    }
+
+    @Override
+    public List<Sucursal> showSucursal() {
+        return sucursalDao.showSucursal();
+    }
+
+    
+}

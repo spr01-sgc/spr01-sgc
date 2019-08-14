@@ -1,0 +1,24 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao;
+
+import com.soma.transmisor.model.OperacionPreocupante;
+import java.util.List;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+public interface OperacionPreocupanteDao {
+
+    void save(OperacionPreocupante operacion);
+
+    OperacionPreocupante buscaId(int operacionpid);
+
+    List<OperacionPreocupante> showOperacionPreocupante();
+
+    List<OperacionPreocupante> showOpePreocupanteUs(List<Integer> usuarios,List<String>descripciones);
+}

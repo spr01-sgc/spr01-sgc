@@ -1,0 +1,28 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao;
+
+import com.soma.transmisor.model.PersonaFisica;
+import java.util.List;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+public interface PersonaFisicaDao {
+    void update(PersonaFisica personaFisica);
+
+    void save(PersonaFisica personaFisica);
+    
+    PersonaFisica buscaCliente(int clienteid);
+    
+    PersonaFisica buscaPersona(String filtro, int parametro);
+    
+    PersonaFisica buscaNoidentificacion(String noIdentificacion);
+    
+    List<PersonaFisica> showFisica();
+
+}

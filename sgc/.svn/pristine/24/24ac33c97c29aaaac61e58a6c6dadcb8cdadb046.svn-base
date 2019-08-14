@@ -1,0 +1,110 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.dao.OperacionPreocupanteDao;
+import com.soma.transmisor.model.OperacionPreocupante;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Repository("operacionPreocupanteDao")
+public class OperacionPreocupanteDaoImpl extends HibernateDao<Integer, OperacionPreocupante> implements OperacionPreocupanteDao {
+
+    @Override
+    public void save(OperacionPreocupante operacion) {
+        guardar(operacion);
+        System.out.print(OperacionPreocupanteDaoImpl.class + "Se ha guardado correctamente el la operacion Preocupante" + operacion.toString());
+    }
+
+    @Override
+    public OperacionPreocupante buscaId(int operacionpid) {
+        System.out.println(OperacionPreocupanteDaoImpl.class + "\nBuscando DeteccionOperacion por ID: " + operacionpid);
+        OperacionPreocupante operacionpreid = getPorId(operacionpid);
+        return operacionpreid;
+    }
+
+    @Override
+    public List<OperacionPreocupante> showOperacionPreocupante() {
+        Criteria criteria = creaCriteria();
+       // criteria.add(Restrictions.eq("estatus", "justificar"));
+        criteria.addOrder(Order.desc("fecha"));   
+        //indicar que no traiga datos repetidos
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        //lista los operaciones preocupantes sin repetir algun dato
+        List<OperacionPreocupante> lPreocupante = criteria.list();
+        return lPreocupante;
+    }
+
+    @Override
+    public List<OperacionPreocupante> showOpePreocupanteUs(List<String> usuarios) {
+         String nombre ="";
+            String apePaterno = "";
+            String apeMaterno = ""; 
+            List<OperacionPreocupante> lOperaciones=new ArrayList<>();
+        Iterator iterator = usuarios.iterator();
+        while (iterator.hasNext()) {
+            String nombreC = (String) iterator.next();
+            System.out.println("trae " + nombreC);
+            String[] parts = nombreC.split(" ");
+             switch (parts.length) {
+                 case 4:
+                     nombre = parts[0] + " " + parts[1];
+                     apePaterno = parts[2];
+                     apeMaterno = parts[3];
+                     break;
+                 case 3:
+                     nombre = parts[0];
+                     apePaterno = parts[1];
+                     apeMaterno = parts[2];
+                     break;
+                 default:
+                     nombre = parts[0];
+                     apePaterno = parts[1];
+                     break;
+             }
+        SQLQuery query = getSession().createSQLQuery("SELECT E.nombrecorto as Org,E.razonsocial as SujeOb,cdS.claveciudad as localidad,cpS.clave as CP,\n"
+                + "(Select fecha from opreacionpreocupante\n" +
+" where nombre='"+nombreC+"') as fechOperacion,persona.nombre,persona.apaterno,persona.amaterno,persona.curp,tl.numtelefono,\n"
+                + "E.nombrecorto as Agente,E.rfc, (Select descripcion from opreacionpreocupante where nombre='"+nombreC+"') as descrip \n"
+                + "From entidad E inner join direccion dirEn\n"
+                + "ON E.direccionid_direccionid=dirEn.direccionid\n"
+                + "INNER JOIN sucursal s\n"
+                + "ON S.entidadid_entidadid=E.entidadid\n"
+                + "INNER JOIN direccion dirSu\n"
+                + "ON dirSu.direccionid=s.direccionid_direccionid\n"
+                + "INNER JOIN ct_codigopostal cpS\n"
+                + "On cpS.codigopostalid=dirSu.codigopostalid_codigopostalid\n"
+                + "INNER JOIN ct_ciudad cdS\n"
+                + "ON cdS.ciudadid=cpS.ciudad_ciudadid\n"
+                + "INNER JOIN usuario usu\n"
+                + "on usu.sucursalid_sucursalid=s.sucursalid\n"
+                + "INNER JOIN telefono tl\n"
+                + "on tl.telefonoid=usu.telefonoid_telefonoid\n"
+                + " inner join persona on usu.personaid_personaid=persona.personaid\n"
+                + "WHERE persona.nombre LIKE '%"+nombre+"%' "
+                + "and persona.apaterno like '%"+apePaterno+"%' and persona.amaterno like '%"+apeMaterno+"%'");
+        /*Consulta para cambiar el estatus de la persona que se acusa para no mostrarlas */
+        SQLQuery update = getSession().createSQLQuery("UPDATE opreacionpreocupante "
+                + "Set estatus='denunciado' where nombre='"+nombreC+"'");
+        update.executeUpdate();
+        List<OperacionPreocupante> lSumP = query.list();
+            lOperaciones.addAll(lSumP);
+        }
+        return lOperaciones;
+    }
+
+}

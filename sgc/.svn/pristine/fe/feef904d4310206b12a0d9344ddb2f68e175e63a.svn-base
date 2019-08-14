@@ -1,0 +1,102 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.model;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import org.hibernate.annotations.ForeignKey;
+
+/**
+ *Operaciones Internas Preocupantes
+ * @author JASMIN-SOMA
+ */
+@Entity
+@Table(name = "opreacionPreocupante")
+public class OperacionPreocupante implements Serializable{
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "oppreocupanteid")
+    private Integer oppreocupanteid;
+   // @Column(name = "clave")
+    //private String clave;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "fecha")//fecha en que sucedio
+    private Date fecha;
+    @Column(name = "nombre")//nombre completo del infractor
+    private String nombre;
+    @Column(name = "descripcion")//acciones que realizó
+    private String descripcion;
+    @Column(name = "estatus")//reportado/sin reportar
+    private String estatus;
+    //relacion con usuario que realiza la denuncia
+    @OneToOne(cascade = CascadeType.ALL)
+    @ForeignKey(name = "usuarioid_fk")
+    private Usuario usuarioid;
+
+    public Integer getOppreocupanteid() {
+        return oppreocupanteid;
+    }
+
+    public void setOppreocupanteid(Integer oppreocupanteid) {
+        this.oppreocupanteid = oppreocupanteid;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+    public Usuario getUsuarioid() {
+        return usuarioid;
+    }
+
+    public void setUsuarioid(Usuario usuarioid) {
+        this.usuarioid = usuarioid;
+    }
+
+    public String getEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(String estatus) {
+        this.estatus = estatus;
+    }
+
+    @Override
+    public String toString() {
+        return "OperacionPreocupante{" + "oppreocupanteid=" + oppreocupanteid + ", fecha=" + fecha + ", nombre=" + nombre + ", descripcion=" + descripcion + ", estatus=" + estatus + ", usuarioid=" + usuarioid + '}';
+    }
+  
+}

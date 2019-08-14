@@ -1,0 +1,47 @@
+<%-- 
+    Document   : bitacoraUsuario
+    Created on : 28/10/2017, 10:19:41 AM
+    Author     : Jasmin Santana
+--%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<div id = "pantalla">
+    <%@include file="index.jsp" %>
+    <br />
+    <br />
+    <br />
+                
+        <h1>Bitacora de Acciones de Usuario</h1>
+        <div class="container"> 
+        <!-- Listado de Acciones-->
+        <div  class="col-md-6">
+            <div class="table-responsive">
+                <table id="tableAcciones" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>ID Usuario</th>
+                            <th>Fecha</th>
+                            <th>Acción</th>
+                        </tr>
+                    <thead>
+                    <tbody id="bodytabla">
+                    <c:forEach items="${lBitaAcc}" var="bitacc" varStatus="contador">
+                        <tr>
+                            <td id="lBitaAcc">${bitacc.bitacoraid}</td>
+                            <td>${bitacc.usuario.nickname}</td>
+                            <td>${bitacc.fechaHora}</td>
+                            <td>${bitacc.accion.descripcion}</td>  
+
+                        </tr>
+
+                    </c:forEach>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+        </div>
+</div>

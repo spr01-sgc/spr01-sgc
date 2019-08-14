@@ -1,0 +1,48 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao;
+
+import com.soma.transmisor.model.CausaRechazo;
+import com.soma.transmisor.model.Pago;
+import java.util.Date;
+import java.util.List;
+
+/**
+ *
+ * @author LUIS-SOMA
+ */
+public interface PagoDao {
+
+    void update(Pago pago);
+
+    void save(Pago pago);
+
+    Pago buscaId(int pagoid);
+
+    List<Pago> showPago();
+
+    List<CausaRechazo> showCausa();
+
+    List<Pago> showPagoRel(Date fechIn, Date fechTer, int dolar, double valDolar);
+
+    List<Pago> consultarOperacion(Date fechIn, Date fechTer, int dolar,double valDolar);
+
+    List<Pago> notificacionRelevante(int dolar);
+
+    List<Pago> showOperacionInusual();
+
+    List<Pago> reporteOperacionIn(List<Integer> clienteId);
+
+    List<Pago> notificacionInusual(int clienteid);
+
+    Pago claveRemesa();
+
+    List<Object> buscarRemesa(String cveRemesa);
+
+    Pago remesa(String clave);
+
+    Pago buscaPagoId(int pagoId);
+}

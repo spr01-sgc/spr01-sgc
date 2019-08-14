@@ -1,0 +1,155 @@
+<%-- 
+    Document   : opeinusual
+    Created on : 6/02/2018, 01:24:01 PM
+    Author     : JASMIN-SOMA
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@include file="index.jsp" %>
+<br />
+<br />
+<br />
+<div class="container">   
+    <div class="panel-group">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Operaciones Inusuales</div>
+            <div id="contenidoPantalla" class="panel-body">        
+                <div class="row">
+                    <div class="form-group">
+                        <input type="text" class="form-control pull-right" style="width:20%" 
+                               id="search" onkeyup="busquedaTbl('tblOpInusu');" placeholder="Busqueda">
+                    </div>
+                    <!--  <form class="form-horizontal">
+                        <div class="form-group">
+                        <label class="control-label col-sm-1" for="sucursal">Sucursal: </label>
+                              <div class="col-sm-2">
+                                  <SELECT class="form-control" onchange="opeInporSuc();">
+                                      <option value="0">Seleccionar </option>
+                            <c:forEach items="${lSucursal}" var="sucursal">
+                                <option id="sucId"value="${sucursal.sucursalid}">${sucursal.nombresucursal}</option>
+                            </c:forEach>
+                        </SELECT>
+                    </div>                    
+                             <label  class="control-label col-sm-1" id="veces">Porcentaje:</label>
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <input type="number"  class="form-control" id="porcent" value="0.5"/> 
+                                </div>
+                            </div>
+                 </div>  
+                        <input type="hidden" name="${_csrf.parameterName}"
+                               value="${_csrf.token}" /> 
+                    </form>--> 
+                </div><!-- ROW--> 
+  <div class="table-responsive">
+                <h2>Operaciones Inusuales</h2>            
+                <table id="tblOpInusu" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th style="display: none">clienteId.</th>
+                            <th>Clave de Cliente</th>
+                            <th>Cliente</th>
+                            <th>Depósito</th>
+                            <th>Retiro</th>
+                            <th>Tipo de operación</th>
+                            <th>SAT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+ <c:forEach items="${lClienteIn}" var="inusual" varStatus="contador">
+                        <tr>
+                            <td>${contador.count}</td>
+                            <td style="display: none">${inusual[0]}</td>
+                            <td>${inusual[1]}</td>
+                            <td>${inusual[4]}</td>
+                            <td>${inusual[2]}</td>                                                
+                            <td>${inusual[3]}</td>                                                                           
+                            <td>${inusual[5]}</td>
+                            <td><input type="checkbox" id="inusualId"/></td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div><!-- table responsive-->
+                    
+            <input type="hidden" name="${_csrf.parameterName}"
+                               value="${_csrf.token}" />
+               <button type="button"id="generarReportecsv" onclick="reportInusual();" class="btn btn-warning" title="Generar Reporte">
+                            <span class="glyphicon glyphicon-file"></span>Reporte</button>       
+            </div><!--body-->
+        </div>
+    </div>                
+</div><!--Container style="display: none"-->
+<div id="tblOInusual"  style="display: none">    
+    <div class="container">
+          <div class="panel-group">
+        <div class="panel panel-info">
+            <div class="panel-heading">Reporte Operaciones Inusuales</div>
+            <div id="contenidoPantalla" class="panel-body">        
+            
+        <div  class="col-md-12">
+            <div class="table-responsive">
+                <h2 id="h2">Movimientos Inusuales</h2>           
+                <table id="tblOpInu" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Tipo de Reporte</th>
+                            <th>Periodo del reporte</th>
+                            <th>Folio</th>
+                            <th>Organo supervisor</th>
+                            <th>Clave del sujeto obligado</th>
+                            <th>Localidad</th>
+                            <th>Sucursal</th>
+                            <th>Tipo de Operación</th>
+                            <th>Instumento Monetario</th>
+                            <th>Numero de cuenta contrato u operación</th>
+                            <th>Monto</th>
+                            <th>Moneda</th>
+                            <th>Fecha de la operación</th>
+                            <th>Fecha detección de la operación</th>
+                            <th>Nacionalidad</th>
+                            <th>Tipo de Persona</th>
+                            <th>Razon social o denominación</th>
+                            <th>Nombre</th>
+                            <th>Apellido Paterno</th>
+                            <th>Apellido Materno</th>
+                            <th>RFC</th>
+                            <th>CURP</th>
+                            <th>Fecha de nacimiento o constitución</th>
+                            <th>Domicilio</th>
+                            <th>Colonia</th>
+                            <th>Ciudad</th>
+                            <th>Telefono</th>
+                            <th>Actividad Economica</th>                            
+                            <th>Agente o Apoderado Nombre</th>
+                            <th>Apellido Paterno</th>
+                            <th>Apellido Materno</th>
+                            <th>RFC</th>
+                            <th>CURP</th>
+                            <th>Consecutivo de cuentas</th>                            
+                            <th>Número de cuenta</th>
+                            <th>Clave del sujeto obligado</th>
+                            <th>Nombre del titular de la cuenta</th>
+                            <th>Apellido Paterno</th>
+                            <th>Apellido Materno</th>
+                            <th>Descripción de la operación</th>
+                            <th>Razones por las que se consideraa Inusual o Preocupante</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbEdInu">
+                    </tbody>
+                </table>
+            </div><!-- table responsive-->
+            <button type="button"id="generarReporteexcel" onclick="csv('#tbEdInu');" class="btn btn-warning" title="Generar Reporte">
+                <span class="glyphicon glyphicon-file"></span>CSV</button>
+            <button type="button"id="generarReporteexcel" onclick="Excel('#tblOpInu')" class="btn btn-warning" title="Generar Reporte">
+                <span class="glyphicon glyphicon-file"></span>Excel</button>
+            <input type="hidden" name="${_csrf.parameterName}"
+                   value="${_csrf.token}"/>
+        </div><!-- col-12-->
+    </div> <!--contaniner-->
+</div>
+          </div></div></div>
+    </body>
+</html>

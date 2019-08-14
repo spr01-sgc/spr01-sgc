@@ -1,0 +1,65 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.service.impl;
+
+import com.soma.transmisor.dao.DelitoDao;
+import com.soma.transmisor.dao.EntidadDao;
+import com.soma.transmisor.model.Delito;
+import com.soma.transmisor.model.Entidad;
+import com.soma.transmisor.model.Telefono;
+import com.soma.transmisor.service.EntidadService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author JUAN LUIS-SOMA
+ */
+@Transactional
+@Service("entidadService")
+public class EntidadServiceImpl implements EntidadService{
+
+    @Autowired
+    EntidadDao entidadDao;
+    private boolean estadoMetodo = false;
+    
+    @Override
+    public boolean update(Entidad entidad) {
+        entidadDao.update(entidad);
+        return estadoMetodo = true;
+    }
+
+    @Override
+    public boolean save(Entidad entidad) {
+        entidadDao.save(entidad);
+        return estadoMetodo = true;
+    }
+
+    @Override
+    public boolean delete(int entidadid) {
+        
+        entidadDao.delete(entidadid);
+        return estadoMetodo = true;
+    }
+
+    @Override
+    public Entidad buscaId(int entidadid) {
+        return  entidadDao.buscaId(entidadid);
+    }
+
+    @Override
+    public List<Entidad> showEntidad() {
+        return entidadDao.showEntidad();
+    }
+
+    /*@Override
+    public List<Telefono> showTelefono() {
+       return entidadDao.showTelefono();
+    }*/
+    
+}

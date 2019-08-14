@@ -1,0 +1,83 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao.impl;
+
+import com.soma.transmisor.dao.EntidadDao;
+import com.soma.transmisor.dao.HibernateDao;
+import com.soma.transmisor.model.Entidad;
+import com.soma.transmisor.model.Telefono;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author JUAN LUIS-SOMA
+ */
+@Repository("entidadDao")
+public class EntidadDaoImpl extends HibernateDao<Integer, Entidad> implements EntidadDao {
+
+    @Override
+    public void save(Entidad entidad) {
+        //guarda lo que trae del arreglo
+        guardar(entidad);
+        //mandar a consola
+        System.out.print(EntidadDaoImpl.class + "Se ha guardado correctamente la entidad" + entidad.toString());
+        
+    }
+
+    @Override
+    public void delete(int entidadid) {
+        //Elimina por id del delito 
+        Criteria crit = creaCriteria();
+        crit.add(Restrictions.eq("entidadid", entidadid));
+        Entidad enti = (Entidad) crit.uniqueResult();
+        eliminar(enti);
+        System.out.print(EntidadDaoImpl.class + "Se ha eliminado correctamente la entidad" + entidadid);
+    }
+
+    @Override
+    public void update(Entidad entidad) {
+        actualizar(entidad);
+        System.out.print(EntidadDaoImpl.class + "Se ha actualizado correctamente el entidad" + entidad.toString());
+    }
+
+    @Override
+    public Entidad buscaId(int entidadid) {
+        System.out.println(EntidadDaoImpl.class + "\nBuscando Entidad por usuarioId: " + entidadid);
+        Entidad entidad = getPorId(entidadid);
+        return entidad;
+    }
+
+    @Override
+    public List<Entidad> showEntidad() {
+        //criterias consultas a la base de datso
+        Criteria criteria = creaCriteria();
+        //indicar que no traiga datos repetidos
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        //lista los delitos sin repetir algun dato
+        List<Entidad> lEntidad = criteria.list();
+        return lEntidad;
+    }
+
+    /*@Override
+    public List<Telefono> showTelefono() {
+       Criteria criteria = creaCriteria()
+                .add(Restrictions.idEq("entidadid"))
+                .createCriteria("entidad_telefono")
+                .add(Restrictions.idEq("entidad_entidadid"))
+                .createCriteria("telefono")
+                .add(Restrictions.idEq("telefonoid"))
+                .add(Restrictions.idEq("telefonoid_telefonoid"));
+                
+             
+
+        List<Telefono> lTelefono = criteria.list();
+        return lTelefono;
+    }*/
+
+}

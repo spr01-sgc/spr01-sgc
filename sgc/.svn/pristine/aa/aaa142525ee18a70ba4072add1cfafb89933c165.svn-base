@@ -1,0 +1,304 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.controller;
+
+import com.soma.transmisor.model.ActividadEco;
+import com.soma.transmisor.model.Cliente;
+import com.soma.transmisor.model.InstrumentoMonetario;
+import com.soma.transmisor.model.MonedaDivisa;
+import com.soma.transmisor.model.OperacionPreocupante;
+import com.soma.transmisor.model.Pago;
+import com.soma.transmisor.model.PersonaFisica;
+import com.soma.transmisor.model.Sucursal;
+import com.soma.transmisor.model.TipoServicio;
+import com.soma.transmisor.model.Usuario;
+import com.soma.transmisor.service.ActividadEconomicaService;
+import com.soma.transmisor.service.ClienteService;
+import com.soma.transmisor.service.InstrumentoMonetarioService;
+import com.soma.transmisor.service.MonedaDivisaService;
+import com.soma.transmisor.service.OperacionPreocupanteService;
+import com.soma.transmisor.service.PagoService;
+import com.soma.transmisor.service.PersonaFisicaService;
+import com.soma.transmisor.service.SucursalService;
+import com.soma.transmisor.service.TipoServicioService;
+import com.soma.transmisor.service.UsuarioService;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationTrustResolver;
+import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+@Controller
+@RequestMapping("/")
+public class ControllerOperacion {
+
+    @Autowired
+    SucursalService sucursalService;
+    @Autowired
+    PagoService pagoService;
+    @Autowired
+    ClienteService clienteService;
+    @Autowired
+    UsuarioService usuarioService;
+    @Autowired
+    OperacionPreocupanteService operacionPreocupanteService;
+    @Autowired
+    PersonaFisicaService personaFisicaService;
+    @Autowired
+    ActividadEconomicaService actividadEconomicaService;
+    @Autowired
+    InstrumentoMonetarioService instrumentoMonetarioService;
+    @Autowired
+    MonedaDivisaService monedaDivisaService;
+    @Autowired
+    TipoServicioService tipoServicioService;
+
+    @RequestMapping(value = {"/operelevante"}, method = RequestMethod.GET)
+    public String operaciones(ModelMap model) {
+        if (!estaUsuarioAnonimo()) {
+            //bitacoraAcciones("login");
+             List<Sucursal> lSucursal = sucursalService.showSucursal();
+        model.addAttribute("lSucursal", lSucursal);
+        List<Pago>lOpRel= pagoService.notificacionRelevante(dolar);
+        model.addAttribute("lOpRel",lOpRel);
+        
+        return "operelevante";
+        }
+        return "login";
+    }
+    //Mostrar clientes y pagos mayores de 5000.00 DOLARES
+
+    @RequestMapping(value = "/operelevante/tblRelevant", method = RequestMethod.POST)
+    public @ResponseBody
+    List<Pago> verClientes(@RequestParam(value = "datos[]") String datos[]) throws ParseException {
+        SimpleDateFormat formatoDelTexto = new SimpleDateFormat("yyyy-MM-dd");
+        Date fechaIn;
+        Date fechaTer;
+        fechaIn = formatoDelTexto.parse(datos[0]);
+        fechaTer = formatoDelTexto.parse(datos[1]);
+        int dolares=Integer.parseInt(datos[2]);
+
+        List<Pago> lPagoR = pagoService.showPagoRel(fechaIn, fechaTer,dolares);
+        /*Iterator iterator = lPagoR.iterator();
+        while (iterator.hasNext()) {
+            Object[] tuple = (Object[]) iterator.next();
+                 String pago = (String) tuple[4];
+            Logger.getLogger("Pago").log(Level.INFO, "Lista"+pago);
+        }*/
+
+        return lPagoR;
+    }
+
+    @RequestMapping(value = "/operelevante/reporteRelevantes", method = RequestMethod.POST)
+    public @ResponseBody
+    List<Pago> generaReporte(ModelMap model, @RequestParam(value = "datos[]") String datos[]) throws ParseException {
+        SimpleDateFormat formatoDelTexto = new SimpleDateFormat("yyyy-MM-dd");
+        Date fechaIn;
+        Date fechaTer;
+        fechaIn = formatoDelTexto.parse(datos[0]);
+        fechaTer = formatoDelTexto.parse(datos[1]);
+        int dolares=Integer.parseInt(datos[2]);
+        List<Pago> lPagoR = pagoService.consultarOperacion(fechaIn, fechaTer,dolares);
+        return lPagoR;
+    }
+int dolar=5000;
+    @RequestMapping(value = "/operelevante/notOpRel", method = RequestMethod.POST)
+    public @ResponseBody
+    List<Pago> verOpeRele(ModelMap model, @RequestParam(value = "datos[]") String datos[]){
+        List<Pago> lOpre = new ArrayList<>();
+        dolar=Integer.parseInt(datos[0]);
+        //Calendar calendario = Calendar.getInstance();
+        //int hora, minutos, segundos;
+        //hora = calendario.get(Calendar.HOUR_OF_DAY);
+        //minutos = calendario.get(Calendar.MINUTE);
+        //segundos = calendario.get(Calendar.SECOND); if (hora == 13 && minutos==5) {
+            lOpre = pagoService.notificacionRelevante(dolar);
+       /* }
+        Iterator iterator = lOpre.iterator();
+        while (iterator.hasNext()) {
+            Object[] tuple = (Object[]) iterator.next();
+            Date fechai = new Date();
+            // Logger.getLogger("Fecha ").log(Level.INFO, "Tiene "+fecha);
+            int clienteid = (int) tuple[0];
+            Cliente cl = clienteService.buscaCliente(clienteid);
+            
+        }*/
+        return lOpre;
+    }
+    /***
+     * Operaciones Internas Preocupantes
+     * @param model
+     * @rol Oficial de cumplimiento
+     * @return la vista opepreocupante 
+     */
+      @RequestMapping(value = {"/opepreocupante"}, method = RequestMethod.GET)
+    public String operacionpreocupante(ModelMap model) {
+         if (!estaUsuarioAnonimo()) {
+        List<Sucursal> lSucursal = sucursalService.showSucursal();
+        model.addAttribute("lSucursal", lSucursal);
+        List<OperacionPreocupante> lOperacionPre=operacionPreocupanteService.showOperacionPreocupante();
+        model.addAttribute("lOperacionPre", lOperacionPre);
+        return "opepreocupante";
+         }
+         return "login";
+    }
+    //muestra la vista de Denuncia Operacion Preocupante
+         @RequestMapping(value = {"/denunopepreocupante"}, method = RequestMethod.GET)
+    public String denunciaOperacionPreocupante(ModelMap model) {
+         if (!estaUsuarioAnonimo()) {
+        List<Sucursal> lSucursal = sucursalService.showSucursal();
+        model.addAttribute("lSucursal", lSucursal);
+        List<Usuario> lUsuario = usuarioService.showUsuario();
+        model.addAttribute("lUsuario", lUsuario);
+        return "denunopepreocupante";
+         }return "login";
+    }
+     //Guarda las denuncias de operaciones Internas Preocupantes
+@RequestMapping(value = "/opepreocupante/guardarOperacionP",method = RequestMethod.POST)
+public @ResponseBody 
+ List<OperacionPreocupante> guardarOperacionP(@RequestParam(value = "datos[]") String datos[]) throws ParseException {
+        SimpleDateFormat formatoDelTexto = new SimpleDateFormat("yyyy-MM-dd");
+        OperacionPreocupante operacion=new OperacionPreocupante();
+        Date fecha=formatoDelTexto.parse(datos[2]);
+        operacion.setDescripcion(datos[1]);
+        operacion.setFecha(fecha);
+        operacion.setEstatus("justificar");
+        Usuario usuarioidEnsesion=usuarioService.busquedaNinckname(datos[3]);
+       operacion.setUsuarioiddenunciante(usuarioidEnsesion);
+        Usuario usuarioidInfractor=usuarioService.busquedaId(Integer.parseInt(datos[0]));
+       operacion.setUsuarioidinfractor(usuarioidInfractor);
+        operacionPreocupanteService.save(operacion);
+              // bitacoraAcciones("agregar");
+/***
+ Al guardar se mostraran las operaciones preocupantes existentes al oficial
+ * de cumplimiento.
+ * @return lista de operaciones no reportadas
+ */              List<OperacionPreocupante>lopePre=operacionPreocupanteService.showOperacionPreocupante();
+                return lopePre;
+
+    }
+     //Consulta para generar reporte operaciones Internas Preocupantes
+@RequestMapping(value = "/opepreocupante/reportePreocupante",method = RequestMethod.POST)
+public @ResponseBody 
+List<OperacionPreocupante> reportePreocupante(@RequestParam(value = "datos[]") String datos[]){
+  List<Integer>usuarios=new ArrayList();
+  List<String>descripciones=new ArrayList();
+  int cont=0;
+   for(int i=0; i<datos.length;i++){  
+        if(cont==i){
+        int dato1=Integer.parseInt(datos[i]);
+                    usuarios.add(dato1);                    
+                cont=cont+2;
+                }
+        else{
+            descripciones.add(datos[i]);
+        }
+            }//for 
+     List<OperacionPreocupante> usuario =operacionPreocupanteService.showOpePreocupanteUs(usuarios,descripciones);
+        return usuario;
+      
+    }//metodo
+@RequestMapping(value = "/opepreocupante/catalogoActividad",method = RequestMethod.GET)
+public @ResponseBody 
+List<ActividadEco> catalogoActividadEc(ModelMap model){
+   List<ActividadEco>lActividad=actividadEconomicaService.showActividadEconomica();
+      return lActividad;
+    }
+@RequestMapping(value = "/opepreocupante/catalogoInstrumentoMonetario",method = RequestMethod.GET)
+public @ResponseBody 
+List<InstrumentoMonetario> catalogoInstrumentoMon(ModelMap model){
+   List<InstrumentoMonetario>lInstrumento=instrumentoMonetarioService.showInstrumento();
+      return lInstrumento;
+    }
+@RequestMapping(value = "/opepreocupante/catalogoMonedaDivisa",method = RequestMethod.GET)
+public @ResponseBody 
+List<MonedaDivisa> catalogoMonedaDiv(ModelMap model){
+   List<MonedaDivisa>lMoneda=monedaDivisaService.showMonedaDivisa();
+      return lMoneda;
+    }//metodo
+@RequestMapping(value = "/opepreocupante/catalogoTipoServicio",method = RequestMethod.GET)
+public @ResponseBody 
+List<TipoServicio> catalogoTipoServicio(ModelMap model){
+   List<TipoServicio>lServico=tipoServicioService.showTipoServicio();
+      return lServico;
+    }//metodo
+/**
+ * Metodo que retorna la vista de operaciones inusuales
+ * @param model
+ * @return opeinusual
+ */
+    @RequestMapping(value = {"/opeinusual"}, method = RequestMethod.GET)
+    public String operacionInusual(ModelMap model) { 
+         if (!estaUsuarioAnonimo()) {
+        List<Sucursal> lSucursal = sucursalService.showSucursal();
+        model.addAttribute("lSucursal", lSucursal);
+        List<Pago>lClienteIn=pagoService.showOperacionInusual();        
+        model.addAttribute("lClienteIn", lClienteIn);
+        return "opeinusual";
+         }return "login";
+    }
+@RequestMapping(value = {"/opeinusual/reporte"}, method = RequestMethod.POST)
+public @ResponseBody 
+List<Pago> operacionInusualReporte(@RequestParam(value = "datos[]") String datos[]) { 
+     List<Integer>clienteid=new ArrayList();
+        for (String dato : datos) {
+            int clientes=Integer.parseInt(dato);
+            clienteid.add(clientes);
+        } //for 
+        List<Pago>lPerfil=pagoService.reporteOperacionIn(clienteid);  
+        return lPerfil;
+    }
+ @RequestMapping(value = {"/cliente"}, method = RequestMethod.GET)
+    public String clientes(ModelMap model) {
+        List<PersonaFisica>lpersonaCl=personaFisicaService.showFisica();
+        model.addAttribute("lpersonaCl", lpersonaCl);        
+        return "cliente";
+    }
+    @RequestMapping(value = {"/cliente/perfil"}, method = RequestMethod.POST)
+public @ResponseBody 
+List<Cliente> clientePerfil(@RequestParam(value = "datos[]") String datos[]) { 
+     List<Cliente>lPerfil=null;  
+    int clienteId=Integer.parseInt(datos[0]);
+    int estatusPagoId=Integer.parseInt(datos[2]);
+        lPerfil=clienteService.showCliente(clienteId,estatusPagoId);
+        return lPerfil;
+    }
+    @RequestMapping(value = {"/cliente/limite"}, method = RequestMethod.POST)
+public @ResponseBody 
+ List<Float> perfil(@RequestParam(value = "datos[]") String datos[]){
+     int clienteid=Integer.parseInt(datos[0]);
+    double porcentaje=Double.parseDouble(datos[1]);
+    int estatus=Integer.parseInt(datos[2]);
+    List<Float>lPerfil=clienteService.perfilTransaccional(clienteid, porcentaje,estatus);
+
+    return lPerfil;
+}
+ /**
+     * Este metodo verificara que un usuario este autenticado correctamente
+     */
+    private boolean estaUsuarioAnonimo() {
+        final Authentication autenticacion = SecurityContextHolder.getContext().getAuthentication();
+        AuthenticationTrustResolver authenticationTrustResolver = new AuthenticationTrustResolverImpl();
+        return authenticationTrustResolver.isAnonymous(autenticacion);
+    }       
+}//clase

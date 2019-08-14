@@ -1,0 +1,24 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.soma.transmisor.dao;
+
+import com.soma.transmisor.model.Pep;
+import java.util.List;
+
+/**
+ *
+ * @author JASMIN-SOMA
+ */
+public interface PepDao {
+    void save(Pep pep);
+    void update(Pep pep);
+    void delete(int pepid);
+
+    List<Pep> showPba();
+
+    Pep busquedaId(int pepid);
+    
+}
