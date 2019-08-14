@@ -95,8 +95,11 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="pwd">Password:<b style="color: red" title="Campo Requerido">*</b></label>
-                            <div class="col-sm-10">
-                                <input type="password" class="form-control" id="pass" placeholder="Ingrese password" required>
+                            <div class="col-sm-6">
+                                <input type="password" class="form-control" id="pass"  placeholder="Ingrese password" autocomplete="new-password">
+                            </div>
+                            <div class="col-sm-4">
+                                 <input type="checkbox" onclick="mostrar()">Show Password
                             </div>
                         </div>
                         <div class="form-group">
@@ -119,7 +122,7 @@
                             <label  class="control-label col-sm-2">Talleres:<b style="color: red" title="Campo Requerido">*</b></label>
                             <div class="col-sm-4">
                                 <!-- consulta catalogo -->
-                                 
+
                                 <select id="roltaller" class="form-control">
                                     <option value="0">Seleccione Taller</option>
                                     <c:forEach items="${lTaller}" var="taller">
@@ -131,7 +134,7 @@
                                 <input type="text"  style="display:none" class="form-control" id="idusuario" >
                             </div>
                         </div>
-                        
+
                     </form> 
                 </div><!--modal body-->
                 <div class="modal-footer">
