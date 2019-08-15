@@ -173,7 +173,7 @@ function agregarEmpleado() {
                 //unBlockUI();
                 //$.unblockUI();
             } else {
-                alertify.success("La serie " + datos + " esta disponible");
+                //alertify.success("La serie " + datos + " esta disponible");
                 //unBlockUI();
                 agregarEmpleado2();
                 return true;
@@ -242,46 +242,29 @@ function agregarEmpleado2() {
     });
 
 }
-/*Funcion que permite Agregar un nuevo puesto*/
-function agregarPuesto() {
-    var nombrePuesto = $("#nombrePuesto").val().trim();
-    
-    if (nombrePuesto === '') {
-        alertify.error("Hay campos vacios");
-        return false;
-    }
 
-    var datos = [nombrePuesto];
+function verificarSerie() {
+    var datos = [$("#serie").val().trim()];
     $(document).ajaxSend(function (e, xhr, options) {
         var token = $("input[name='_csrf']").val();
         var cabecera = "X-CSRF-TOKEN";
         xhr.setRequestHeader(cabecera, token);
     });
     $.ajax({
-        url: "empleado/agregarPuesto",
+        url: "empleado/verificarSerie",
         data: {datos: datos},
         dataType: 'html',
         type: 'POST',
         success: function (retorno) {
-            //alert(retorno);
-            switch (retorno) {
-                case 'errorDato':
-                    alertify.error("Los datos no se procesaron correctamente");
-                    break;
-                case 'error':
-                    alertify.error("Se ha producido un error en el servidor");
-                    break;
-                case 'exito':
-                    alertify.success("Los datos se procesarón CORRECTAMENTE!");
-                    break;
-                case 'errorAcceso':
-                    alertify.error("No ha iniciado sesion");
-                    break;
+            if (retorno.length !== 0) {
+                $("#serie").focus();
+                alertify.error("La serie " + datos + " ya existe");
+            } else {
+                alertify.success("La serie " + datos + " esta disponible");
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
             alertify.error("Se ha producido un error en el servidor");
         }
     });
-
 }
