@@ -28,7 +28,7 @@ public class CatalogoPuestosDaoImpl extends HibernateDao<Integer, CatalogoPuesto
 
     @Override
     public void update(CatalogoPuestos catalogo_puestos) {
-        update(catalogo_puestos);
+        actualizar(catalogo_puestos);
     }
 
     @Override
