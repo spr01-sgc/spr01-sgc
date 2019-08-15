@@ -112,7 +112,7 @@ public class ControllerEmpleado {
             empleado.setIdtaller(lTaller);
             empleado.setDescripcion(datos[7]);
             empleado.setFechaentrada(fecha);
-            
+
             if (empleadoService.save(empleado)) {
                 return "exito";
             } else {
@@ -155,12 +155,12 @@ public class ControllerEmpleado {
                         empleado.setSerie(datos[5]);
                         empleado.setIdtaller(lTaller);
                         empleado.setDescripcion(datos[7]);
-                        
-                        if(datos[3].equalsIgnoreCase("Baja")){
+
+                        if (datos[3].equalsIgnoreCase("Baja")) {
                             Date fecha = new Date();
                             empleado.setFechasalida(fecha);
                         }
-                        
+
                         if (empleadoService.update(empleado)) {
                             return "exito";
                         } else {
@@ -211,17 +211,24 @@ public class ControllerEmpleado {
         return "errorAcceso";
 
     }
-    
-     @RequestMapping(value = "/empleado/verificarSerie", method = RequestMethod.POST)
-    public @ResponseBody Empleado verificarSerie(@RequestParam(value = "datos[]") String datos[]) {
+
+    /**
+     * Metodo que verifica que la serie no exista
+     *
+     * @param datos
+     * @return
+     */
+    @RequestMapping(value = "/empleado/verificarSerie", method = RequestMethod.POST)
+    public @ResponseBody
+    Empleado verificarSerie(@RequestParam(value = "datos[]") String datos[]) {
         Empleado buscarSerie = null;
         if (!estaUsuarioAnonimo()) {
             buscarSerie = empleadoService.busquedaSerie(datos[0]);
-            
+
         }
         return buscarSerie;
     }
-    
+
     /**
      * Metodo para agregar Puestos
      *
@@ -230,27 +237,96 @@ public class ControllerEmpleado {
      */
     @RequestMapping(value = "/empleado/agregarPuesto", method = RequestMethod.POST)
     public @ResponseBody
-    String agregarPuesto(@RequestParam(value = "datos[]") String datos[]) {
+    List<CatalogoPuestos> agregarPuesto(@RequestParam(value = "datos[]") String datos[]) {
+
+        CatalogoPuestos puesto = new CatalogoPuestos();
+        puesto.setPuesto(datos[0]);
+
+        puestosService.save(puesto);
+        List<CatalogoPuestos> lPuesto = puestosService.showPuesto();
+        return lPuesto;
+
+    }
+
+    /**
+     * Metodo para mostrar puestos en el combo
+     *
+     * @param datos
+     * @return
+     */
+    @RequestMapping(value = "/empleado/mostrarPuestosCombo", method = RequestMethod.POST)
+    public @ResponseBody
+    List<CatalogoPuestos> mostrarPuestosCombo(@RequestParam(value = "datos[]") String datos[]) {
+
+        List<CatalogoPuestos> lPuesto = puestosService.showPuesto();
+        return lPuesto;
+
+    }
+
+    /**
+     * Metodo que actualiza un puesto
+     *
+     * @param datos
+     * @return
+     */
+    @RequestMapping(value = "/empleado/actualizarPuesto", method = RequestMethod.POST)
+    public @ResponseBody
+    List<CatalogoPuestos> actualizarPuesto(@RequestParam(value = "datos[]") String datos[]) {
+
+        List<CatalogoPuestos> lPuesto = puestosService.showPuesto();
+        if (!lPuesto.isEmpty()) {
+            for (CatalogoPuestos puesto : lPuesto) {
+                if (puesto.getIdpuesto() == Integer.parseInt(datos[0])) {
+
+                    //Se llena el modelo
+                    puesto.setPuesto(datos[1]);
+                    puestosService.update(puesto);
+                    lPuesto = puestosService.showPuesto();
+                }
+            }
+        }
+
+        return lPuesto;
+    }
+    /**
+     * Metodo para eliminar un puesto
+     *
+     * @param datos
+     * @return
+     */
+    @RequestMapping(value = "/empleado/eliminarPuestos", method = RequestMethod.POST)
+    public @ResponseBody
+    String eliminarPuestos(@RequestParam(value = "datos[]") String datos[]) {
         if (!estaUsuarioAnonimo()) {
             for (String dato : datos) {
                 if (dato.equals("")) {
                     // si hay datos vacios
                     return "errorDato";
                 }
+            }//termina de recorrer el arreglo
+
+            List<CatalogoPuestos> lPuesto = puestosService.showPuesto();
+
+            if (!lPuesto.isEmpty()) {
+                for (CatalogoPuestos puesto : lPuesto) {
+                    int IdPuesto = Integer.parseInt(datos[0]);
+                    if (puesto.getIdpuesto() == IdPuesto) {
+                        if (puestosService.delete(IdPuesto)) {
+                            return "exito";
+                        } else {
+                            return "error";
+                        }
+                    }
+
+                }
             }
 
-            CatalogoPuestos puesto = new CatalogoPuestos();
-            puesto.setPuesto(datos[0]);
-            
-            if (puestosService.save(puesto)) {
-                return "exito";
-            } else {
-                return "error";
-            }
-        }
+        }//el usuario es anonimo
+
         return "errorAcceso";
+
     }
-    
+
     /**
      * Este metodo verificara que un usuario este autenticado correctamente
      */
