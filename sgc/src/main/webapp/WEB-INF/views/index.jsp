@@ -33,7 +33,7 @@
         <script src="<c:url value='/assets/js/pages/usuario.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/assets/js/pages/molde.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/assets/js/pages/Generales.js'/>" type="text/javascript"></script>
-
+         <script src="<c:url value='/assets/js/pages/puesto.js'/>" type="text/javascript"></script>
         
         <!-- FIN JS PAGES -->
         <script src="<c:url value='/assets/js/bootstrap.min.js'/>" type="text/javascript"></script>
