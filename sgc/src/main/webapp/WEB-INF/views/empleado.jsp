@@ -144,11 +144,14 @@
                             <div class="col-sm-10">
                                 <input type="text"  style="display:none" class="form-control" id="fechasalida" >
                             </div>
+                            <div class="col-sm-10">
+                                <input type="text"  style="display:none" class="form-control" id="idPuesto" >
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="serie">Serie:<b style="color: red" title="Campo Requerido">*</b></label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" id="serie" placeholder="Ingrese Serie" >
+                                <input type="text" class="form-control" id="serie" onchange="verificarSerie();" placeholder="Ingrese Serie" >
                             </div>
                             <label  class="control-label col-sm-2">Taller:<b style="color: red" title="Campo Requerido">*</b></label>
                             <div class="col-sm-4">
@@ -171,12 +174,14 @@
 
                     </div>
                     <div class="form-group">
-                        <button id="agregarP" class="btn btn-info" onclick="btnPuesto();" data-toggle="modal" data-target="#myModalPuesto"> 
+
+                        <button id="agregarP" class="btn btn-info" data-toggle="modal" data-target="#myModalPuesto" > 
                             <span class="glyphicon glyphicon-plus"></span>Agregar Puesto
                         </button>
                         <button id="guardarE" type="button" class="btn btn-success" onclick="agregarEmpleado();">Guardar</button>
                         <button id="actualizarE" onclick="actualizarEmpleado();" class="btn btn-primary" >Actualizar</button>
                         <a id="empleado" href="<c:url value='/empleado'/>"><button type="button" class="btn btn-default" onclick="limpiarForm('frmEmpleado');">Cerrar</button></a>
+
 
                     </div>
                 </div><!--modal footer-->
@@ -217,16 +222,16 @@
                                     <th>Eliminar</th>
                                 </tr>
                             </thead>
-                            <tbody id="bodytabla">
+                            <tbody id="bodytablaP">
                                 <c:forEach items="${lPuesto}" var="puesto" varStatus="count"> 
                                     <tr> 
                                         <td id="idpuesto" style="display:none">${puesto.idpuesto}</td>
                                         <td id="nopuesto">${count.count}</td>
                                         <td>${puesto.puesto}</td>
-                                        <td><button id="mostrarP" onclick="mostrarPuesto();" data-toggle="modal" data-target="#myModal" class="btn btn-warning">
+                                        <td><button id="mostrarP" onclick="mostrarPuesto();" class="btn btn-warning">
                                                 <span class="glyphicon glyphicon-pencil"></span> </button></td>
                                         <!-- Eliminar -->
-                                        <td><button id="eliminarP" onclick="eliminarPuesto();"  class="btn btn-danger">
+                                        <td><button id="eliminarP" onclick="eliminarPuestos();" class="btn btn-danger">
                                                 <span class="glyphicon glyphicon-remove"></span> </button></td>
                                     </tr>
                                 </c:forEach>
@@ -234,12 +239,11 @@
                         </table>
                     </div>           
                 </div>
-
                 <div class="modal-footer">
                     <div class="form-group">
                         <button id="guardarP" type="button" class="btn btn-success" onclick="agregarPuesto();">Guardar</button>
                         <button id="actualizarP" onclick="actualizarPuesto();" class="btn btn-primary" >Actualizar</button>
-                        <button type="button" class="btn btn-default" onclick="limpiarForm('frmPuesto');" data-toggle="modal" data-target="#myModalPuesto">Cerrar</button>
+                        <button type="button" class="btn btn-default" onclick="mostrarPuestosCombo();" data-toggle="modal" data-target="#myModalPuesto">Cerrar</button>
 
                     </div>
                 </div><!--modal footer-->
