@@ -229,7 +229,7 @@ function mostrarPuestosTabla() {
                         "<td>" + count + "</td>" +
                         "<td>" + dato[i].puesto + "</td>" +
                         "<td><button id='mostrarP' onclick='mostrarPuesto();'" +
-                        "data-toggle='modal' data-target='#myModal' class='btn btn-warning'>" +
+                        "data-toggle='modal' class='btn btn-warning'>" +
                         "<span class='glyphicon glyphicon-pencil'></span></button></td>" +
                         "<td><button id='eliminarP' onclick='eliminarPuesto();' class='btn btn-danger'>" +
                         "<span class='glyphicon glyphicon-remove'></span> </button></td>" +
