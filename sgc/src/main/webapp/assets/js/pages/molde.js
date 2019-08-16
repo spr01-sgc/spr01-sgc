@@ -79,60 +79,60 @@ function eliminarMolde() {
 }
 /*Funcion que permite Agregar un nuevo molde*/
 function agregarMolde() {
-        var serie = $("#serie").val().trim();
-        var modelo = $("#modelo").val().trim();
-        var existencia = $("#existencia").val().trim();
-        var descripcion = $("#descripcion").val();
+    var serie = $("#serie").val().trim();
+    var modelo = $("#modelo").val().trim();
+    var existencia = $("#existencia").val().trim();
+    var descripcion = $("#descripcion").val();
 
-        if (serie === '' || modelo === '' || existencia === '' ) {
-            alertify.error("Hay campos vacios");
-            return false;
-        }
+    if (serie === '' || modelo === '' || existencia === '') {
+        alertify.error("Hay campos vacios");
+        return false;
+    }
 
-        var datos = [serie, modelo, existencia, descripcion];
-        $(document).ajaxSend(function (e, xhr, options) {
-            var token = $("input[name='_csrf']").val();
-            var cabecera = "X-CSRF-TOKEN";
-            xhr.setRequestHeader(cabecera, token);
-        });
-        $.ajax({
-            url: "molde/agregarMolde",
-            data: {datos: datos},
-            dataType: 'html',
-            type: 'POST',
-            success: function (retorno) {
-                //alert(retorno);
-                switch (retorno) {
-                    case 'errorDato':
-                        alertify.error("Los datos no se procesaron correctamente");
-                        break;
-                    case 'error':
-                        alertify.error("Se ha producido un error en el servidor");
-                        break;
-                    case 'exito':
-                        alertify.success("Los datos se procesarón CORRECTAMENTE!");
-                        setTimeout(function () {
-                            location.href = "molde";
-                        }, 1000);
-                        break;
-                    case 'errorAcceso':
-                        alertify.error("No ha iniciado sesion");
-                        break;
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alertify.error("Se ha producido un error en el servidor");
+    var datos = [serie, modelo, existencia, descripcion];
+    $(document).ajaxSend(function (e, xhr, options) {
+        var token = $("input[name='_csrf']").val();
+        var cabecera = "X-CSRF-TOKEN";
+        xhr.setRequestHeader(cabecera, token);
+    });
+    $.ajax({
+        url: "molde/agregarMolde",
+        data: {datos: datos},
+        dataType: 'html',
+        type: 'POST',
+        success: function (retorno) {
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alertify.error("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alertify.error("Se ha producido un error en el servidor");
+                    break;
+                case 'exito':
+                    alertify.success("Los datos se procesarón CORRECTAMENTE!");
+                    setTimeout(function () {
+                        location.href = "molde";
+                    }, 1000);
+                    break;
+                case 'errorAcceso':
+                    alertify.error("No ha iniciado sesion");
+                    break;
             }
-        });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alertify.error("Se ha producido un error en el servidor");
+        }
+    });
 
 }
 /*Funcion que permite actualizar un molde*/
 function actualizarMolde() {
-        var idMolde = $("#idMolde").val().trim();
-        var serie = $("#serie").val().trim();
-        var modelo = $("#modelo").val().trim();
-        var existencia = $("#existencia").val().trim();
-        var descripcion = $("#descripcion").val();
+    var idMolde = $("#idMolde").val().trim();
+    var serie = $("#serie").val().trim();
+    var modelo = $("#modelo").val().trim();
+    var existencia = $("#existencia").val().trim();
+    var descripcion = $("#descripcion").val();
 
     if (serie === '' || modelo === '' || existencia === '') {
         alertify.error("Hay campos vacios");
@@ -210,6 +210,52 @@ function agregarMolde2() {
         },
         error: function (jqXHR, textStatus, errorThrown) {
             alertify.error("Se ha producido un error en el servidor");
+        }
+    });
+}
+
+function validar() {
+    $('#frmMolde').validate({
+        focusInvalid: false,
+        onkeyup: false,
+        onfocusout: false,
+        errorClass: "invalid",
+        errorLabelContainer: "#error",
+        wrapper: "li",
+        rules: {
+            serie: {
+                required: true,
+                minlength: 2
+            },
+            modelo: {
+                required: true
+            },
+            existencia: {
+                required: true
+            },
+            descripcion: {
+                required: true
+
+            }
+        },
+        messages: {
+            serie: {
+                remote: "La serie ya existe",
+                required: "El campo 'Serie' es requerido",
+                minlength: "La serie del molde debe tener, mínimo, 2 caracteres"
+            },
+            modelo: {
+                required: "El campo 'Modelo' es requerido"
+            },
+            existencia: {
+                required: "El campo 'Existencia' es requerido"
+            },
+            descripcion: {
+                required: "El campo 'Descripcion' es requerido"
+            }
+        },
+        invalidHandler: function (event, validator) {
+            window.scrollTo(0, 0);
         }
     });
 }
