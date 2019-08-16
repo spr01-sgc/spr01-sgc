@@ -21,7 +21,7 @@
                 <div class="row">
                     <div class="form-group">
                         <div class="btn btn-group">
-                            <button id="agregarE" class="btn btn-info" onclick="btnEmpleado();" data-toggle="modal" data-target="#myModal"> 
+                            <button id="agregarE" class="btn btn-info" onclick="btnEmpleado();"> 
                                 <span class="glyphicon glyphicon-plus"></span>Agregar Empleado</button>
                         </div>
                         <input type="hidden" name="${_csrf.parameterName}"
