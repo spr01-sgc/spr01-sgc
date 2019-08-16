@@ -13,11 +13,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="Expires" content="0">
         <title>SGC</title>
-        <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
-        <link href="<c:url value='/assets/css/iconic.css'/>" rel="stylesheet" />
         <link href="<c:url value='/assets/css/style.css'/>" rel="stylesheet" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">   
         <link href="<c:url value='/assets/css/bootstrap.min.css'/>" rel="stylesheet" />
+        <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
         <link href="<c:url value='/assets/css/style2.css'/>" rel="stylesheet" />        
         <link href="<c:url value='/assets/css/style_light.css'/>" rel="stylesheet" />
         <link href="<c:url value='/assets/themes/alertify.core.css'/>" rel="stylesheet" />
@@ -27,14 +26,12 @@
         <link href="<c:url value='/assets/fonts/glyphicons-halflings-regular.ttf'/>"/>
         <link href="<c:url value='/assets/fonts/glyphicons-halflings-regular.woff'/>"/>
         <link href="<c:url value='/assets/fonts/glyphicons-halflings-regular.woff2'/>"/>
-        
+        <!--  JS    -->
         <script src="<c:url value= '/assets/js/jquery-3.2.1.min.js'/>" type="text/javascript"></script>
         <script src="<c:url value= '/assets/js/prefix-free.js'/>" type="text/javascript"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>  
         <script src="<c:url value='/assets/js/jquery.blockUI.js'/>" type="text/javascript"></script> 
         <script src="<c:url value='/assets/js/jquery.tabletoCSV.js'/>" type="text/javascript"></script>
-        <script src="<c:url value= '/assets/js/jquery-1.10.2.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/assets/js/bootstrap.min.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/assets/js/alertify.js'/>" type="text/javascript"></script>
         <script src="<c:url value= '/assets/js/xlsx.js'/>" type="text/javascript"></script>
