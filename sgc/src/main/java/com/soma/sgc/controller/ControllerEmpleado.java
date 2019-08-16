@@ -288,6 +288,7 @@ public class ControllerEmpleado {
 
         return lPuesto;
     }
+
     /**
      * Metodo para eliminar un puesto
      *
@@ -306,18 +307,22 @@ public class ControllerEmpleado {
             }//termina de recorrer el arreglo
 
             List<CatalogoPuestos> lPuesto = puestosService.showPuesto();
+            List<Empleado> lEmpleado = empleadoService.showEmpleadoPuesto(Integer.parseInt(datos[0]));
 
             if (!lPuesto.isEmpty()) {
-                for (CatalogoPuestos puesto : lPuesto) {
-                    int IdPuesto = Integer.parseInt(datos[0]);
-                    if (puesto.getIdpuesto() == IdPuesto) {
-                        if (puestosService.delete(IdPuesto)) {
-                            return "exito";
-                        } else {
-                            return "error";
+                if (lEmpleado.size() == 0) {
+                    for (CatalogoPuestos puesto : lPuesto) {
+                        int IdPuesto = Integer.parseInt(datos[0]);
+                        if (puesto.getIdpuesto() == IdPuesto) {
+                            if (puestosService.delete(IdPuesto)) {
+                                return "exito";
+                            } else {
+                                return "error";
+                            }
                         }
                     }
-
+                } else {
+                    return "existeRegistro";
                 }
             }
 
