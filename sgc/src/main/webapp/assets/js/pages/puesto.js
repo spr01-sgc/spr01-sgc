@@ -33,9 +33,9 @@ function agregarPuesto() {
                         "<td>" + count + "</td>" +
                         "<td>" + dato[i].puesto + "</td>" +
                         "<td><button id='mostrarP' onclick='mostrarPuesto();'" +
-                        "data-toggle='modal' data-target='#myModal' class='btn btn-warning'>" +
+                        "data-toggle='modal' class='btn btn-warning'>" +
                         "<span class='glyphicon glyphicon-pencil'></span></button></td>" +
-                        "<td><button id='eliminarP' onclick='eliminarPuesto();' class='btn btn-danger'>" +
+                        "<td><button id='eliminarP' onclick='eliminarPuestos();' class='btn btn-danger'>" +
                         "<span class='glyphicon glyphicon-remove'></span> </button></td>" +
                         "</tr>";
 
@@ -138,9 +138,9 @@ function actualizarPuesto() {
                         "<td>" + count + "</td>" +
                         "<td>" + dato[i].puesto + "</td>" +
                         "<td><button id='mostrarP' onclick='mostrarPuesto();'" +
-                        "data-toggle='modal' data-target='#myModal' class='btn btn-warning'>" +
+                        "data-toggle='modal' class='btn btn-warning'>" +
                         "<span class='glyphicon glyphicon-pencil'></span></button></td>" +
-                        "<td><button id='eliminarP' onclick='eliminarPuesto();' class='btn btn-danger'>" +
+                        "<td><button id='eliminarP' onclick='eliminarPuestos();' class='btn btn-danger'>" +
                         "<span class='glyphicon glyphicon-remove'></span> </button></td>" +
                         "</tr>";
 
@@ -148,6 +148,8 @@ function actualizarPuesto() {
                 count++;
             }
             $("#nombrePuesto").val('');
+            $("#guardarP").prop("disabled", false);
+            $("#actualizarP").prop("disabled", true);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             alertify.error("Se ha producido un error en el servidor");
@@ -194,6 +196,9 @@ function eliminarPuestos() {
                     case 'errorAcceso':
                         alertify.error("No ha iniciado sesion");
                         break;
+                    case 'existeRegistro':
+                        alertify.error("No se puede eliminar el puesto porque existe en otra tabla");
+                        break
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -231,7 +236,7 @@ function mostrarPuestosTabla() {
                         "<td><button id='mostrarP' onclick='mostrarPuesto();'" +
                         "data-toggle='modal' class='btn btn-warning'>" +
                         "<span class='glyphicon glyphicon-pencil'></span></button></td>" +
-                        "<td><button id='eliminarP' onclick='eliminarPuesto();' class='btn btn-danger'>" +
+                        "<td><button id='eliminarP' onclick='eliminarPuestos();' class='btn btn-danger'>" +
                         "<span class='glyphicon glyphicon-remove'></span> </button></td>" +
                         "</tr>";
 
