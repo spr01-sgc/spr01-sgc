@@ -7,6 +7,7 @@ function btnEmpleado() {
     //agregar empleado se deshabilita el boton actualizar
     $("#agregarE").css("display", "inline");
     $("#actualizarE").prop("disabled", true);
+    $("#myModal").modal("show");
 }
 /*Funcion que muestra la informacion de la tabla empleado en el formulario*/
 function mostrarEmpleado() {
