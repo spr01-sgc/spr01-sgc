@@ -7,6 +7,7 @@ function btnMolde2() {
     //agregar usuario se deshabilita el boton actualizar
     $("#guardarM").css("display", "inline");
     $("#actualizarM").prop("disabled", true);
+    $("#myModal").modal("show");
 }
 
 /*Funcion que muestra la informacion de la tabla molde en el formulario*/
@@ -213,7 +214,7 @@ function agregarMolde2() {
         }
     });
 }
-
+/*
 function validar() {
     $('#frmMolde').validate({
         focusInvalid: false,
@@ -258,7 +259,7 @@ function validar() {
             window.scrollTo(0, 0);
         }
     });
-}
+}*/
 
 
 

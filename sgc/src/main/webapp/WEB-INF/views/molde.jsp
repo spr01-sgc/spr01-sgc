@@ -6,9 +6,11 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<script src="<c:url value='/assets/js/pages/molde.js'/>" type="text/javascript"></script>
+
 
 <%@include file="index.jsp" %>
+<script src="<c:url value='/assets/js/pages/molde.js'/>" type="text/javascript"></script>
+
 <br />
 <br />
 <br />
@@ -20,7 +22,7 @@
                 <div class="row">
                     <div class="form-group">
                         <div class="btn btn-group">
-                            <button id="agregarM" class="btn btn-info" onclick="btnMolde2();" data-toggle="modal" data-target="#myModal"> 
+                            <button id="agregarM" class="btn btn-info" onclick="btnMolde2();"> 
                                 <span class="glyphicon glyphicon-plus"></span>Agregar Molde</button>
                         </div>
                         <input type="hidden" name="${_csrf.parameterName}"
