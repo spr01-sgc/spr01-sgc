@@ -6,7 +6,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<script src="<c:url value='/assets/js/pages/molde.js'/>" type="text/javascript"></script>
 
 <%@include file="index.jsp" %>
 <br />
