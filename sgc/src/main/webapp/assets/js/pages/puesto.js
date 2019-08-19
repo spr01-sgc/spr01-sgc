@@ -2,6 +2,9 @@ $(document).ready(function () {
     $("#actualizarP").prop("disabled", true);
 }); //ready
 
+function btnAgregarP(){
+    $("#myModalPuesto").modal("show");
+}
 /*Funcion que permite Agregar un nuevo puesto*/
 function agregarPuesto() {
     var nombrePuesto = $("#nombrePuesto").val().trim();
@@ -33,7 +36,7 @@ function agregarPuesto() {
                         "<td>" + count + "</td>" +
                         "<td>" + dato[i].puesto + "</td>" +
                         "<td><button id='mostrarP' onclick='mostrarPuesto();'" +
-                        "data-toggle='modal' class='btn btn-warning'>" +
+                        "class='btn btn-warning'>" +
                         "<span class='glyphicon glyphicon-pencil'></span></button></td>" +
                         "<td><button id='eliminarP' onclick='eliminarPuestos();' class='btn btn-danger'>" +
                         "<span class='glyphicon glyphicon-remove'></span> </button></td>" +
@@ -138,7 +141,7 @@ function actualizarPuesto() {
                         "<td>" + count + "</td>" +
                         "<td>" + dato[i].puesto + "</td>" +
                         "<td><button id='mostrarP' onclick='mostrarPuesto();'" +
-                        "data-toggle='modal' class='btn btn-warning'>" +
+                        "class='btn btn-warning'>" +
                         "<span class='glyphicon glyphicon-pencil'></span></button></td>" +
                         "<td><button id='eliminarP' onclick='eliminarPuestos();' class='btn btn-danger'>" +
                         "<span class='glyphicon glyphicon-remove'></span> </button></td>" +
@@ -234,7 +237,7 @@ function mostrarPuestosTabla() {
                         "<td>" + count + "</td>" +
                         "<td>" + dato[i].puesto + "</td>" +
                         "<td><button id='mostrarP' onclick='mostrarPuesto();'" +
-                        "data-toggle='modal' class='btn btn-warning'>" +
+                        "class='btn btn-warning'>" +
                         "<span class='glyphicon glyphicon-pencil'></span></button></td>" +
                         "<td><button id='eliminarP' onclick='eliminarPuestos();' class='btn btn-danger'>" +
                         "<span class='glyphicon glyphicon-remove'></span> </button></td>" +
