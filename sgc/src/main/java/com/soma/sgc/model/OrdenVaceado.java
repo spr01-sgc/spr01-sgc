@@ -5,6 +5,7 @@
  */
 package com.soma.sgc.model;
 
+import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,48 +22,35 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  *
- * @author DANIEL LOZA
+ * @author HASANI
  */
 @Entity
-@Table(name = "produccionVaceado")
-public class ProduccionVaceado {
+@Table(name = "ordenVaceado")
+public class OrdenVaceado implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idproduccionv")
-    private Integer idproduccionv;
-    
-    //Establece relacion con Empleado
-    @ManyToOne
-    @ForeignKey(name = "idempleado_fk")
-    private Empleado empleado;
-    
+    @Column(name = "ordenid")
+    private Integer ordenid;
     //Establece relacion con CodigoBarras
     @ManyToOne
     @ForeignKey(name = "idcodigobarras_fk")
     private CodigoBarras codigoBarras;
-    
-     @ManyToOne
+
+    @ManyToOne
     @ForeignKey(name = "idmolde_fk")
     private CatalogoMoldes idmolde;
-     
-       @OneToMany(cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<OrdenVaceado> ordenid;
+    @Column(name = "cantidad")
+    private Integer cantidad;
+    @Column(name = "descripcion")
+    private Integer descripcion;
 
-    public Integer getIdproduccionv() {
-        return idproduccionv;
+    public Integer getOrdenid() {
+        return ordenid;
     }
 
-    public void setIdproduccionv(Integer idproduccionv) {
-        this.idproduccionv = idproduccionv;
-    }
-
-    public Empleado getEmpleado() {
-        return empleado;
-    }
-
-    public void setEmpleado(Empleado empleado) {
-        this.empleado = empleado;
+    public void setOrdenid(Integer ordenid) {
+        this.ordenid = ordenid;
     }
 
     public CodigoBarras getCodigoBarras() {
@@ -81,11 +69,20 @@ public class ProduccionVaceado {
         this.idmolde = idmolde;
     }
 
-    public List<OrdenVaceado> getOrdenid() {
-        return ordenid;
+    public Integer getCantidad() {
+        return cantidad;
     }
 
-    public void setOrdenid(List<OrdenVaceado> ordenid) {
-        this.ordenid = ordenid;
+    public void setCantidad(Integer cantidad) {
+        this.cantidad = cantidad;
     }
+
+    public Integer getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(Integer descripcion) {
+        this.descripcion = descripcion;
+    }
+
 }
