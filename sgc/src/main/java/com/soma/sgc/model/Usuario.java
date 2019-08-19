@@ -29,23 +29,26 @@ public class Usuario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "usuarioid")
     private Integer usuarioid;
-    
+
     @Column(name = "nickname")
     private String nickname;
-    
+
     @Column(name = "pass")
     private String pass;
-    
+
     @Column(name = "correoelectronico")
     private String correoelectronico;
-    
+
     //Establece relacion con RolUsuario
     @ManyToOne
     @ForeignKey(name = "rolid_fk")
     private RolUsuario rol;
-       @ManyToOne
+    @ManyToOne
     @ForeignKey(name = "idtaller_fk")
     private CatalogoTaller idtaller;
+        @ManyToOne
+    @ForeignKey(name = "estatususuarioid_fk")
+    private EstatusUsuario estatusUsuario;
 
     public Integer getUsuarioid() {
         return usuarioid;
@@ -99,7 +102,13 @@ public class Usuario implements Serializable {
     public String toString() {
         return "Usuario{" + "usuarioid=" + usuarioid + ", nickname=" + nickname + ", pass=" + pass + ", correoelectronico=" + correoelectronico + ", rol=" + rol + ", idtaller=" + idtaller + '}';
     }
-    
 
- 
+    public EstatusUsuario getEstatusUsuario() {
+        return estatusUsuario;
+    }
+
+    public void setEstatusUsuario(EstatusUsuario estatusUsuario) {
+        this.estatusUsuario = estatusUsuario;
+    }
+
 }
