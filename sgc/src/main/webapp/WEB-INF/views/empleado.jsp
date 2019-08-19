@@ -176,7 +176,7 @@
                     </div>
                     <div class="form-group">
 
-                        <button id="agregarP" class="btn btn-info" data-toggle="modal" data-target="#myModalPuesto" > 
+                        <button id="agregarP" class="btn btn-info" onclick="btnAgregarP();" > 
                             <span class="glyphicon glyphicon-plus"></span>Agregar Puesto
                         </button>
                         <button id="guardarE" type="button" class="btn btn-success" onclick="agregarEmpleado();">Guardar</button>
