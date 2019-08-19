@@ -7,6 +7,7 @@ function btnTaller() {
     //agregar usuario se deshabilita el boton actualizar
     $("#guardarT").css("display", "inline");
     $("#actualizarT").prop("disabled", true);
+    $("#myModal").modal("show");
 }
 /*Funcion que muestra la informacion de la tabla usuario en el formulario*/
 function mostrarTaller() {
