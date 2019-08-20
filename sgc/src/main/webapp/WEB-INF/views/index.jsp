@@ -210,7 +210,7 @@
                                 <a id="molde" href="<c:url value='/molde'/>">MOLDES</a>
                                 <a id="taller" href="<c:url value='/taller'/>">TALLERES</a>
                                 <a id="empleado" href="<c:url value='/empleado'/>">EMPLEADOS</a>
-                                <a id="codigoBarras" href="<c:url value='/codigoBarras'/>">CODIGO BARRAS</a>
+                                <a id="codigoBarras" href="#">CODIGO BARRAS</a>
                             </div>
                         </c:if>
                     </li>
