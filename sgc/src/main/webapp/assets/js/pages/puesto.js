@@ -25,34 +25,30 @@ function agregarPuesto() {
         dataType: 'html',
         type: 'POST',
         success: function (retorno) {
-            var dato = JSON.parse(retorno);
-            $("#bodytablaP").html("");
-            alertify.success("Los datos se procesarón CORRECTAMENTE!");
-            var filas = dato.length;
-            var count = 1;
-            for (i = 0; i < filas; i++) {
-                var tabla = "<tr>" +
-                        "<td id='idpuesto' style='display:none'>" + dato[i].idpuesto + "</td>" +
-                        "<td>" + count + "</td>" +
-                        "<td>" + dato[i].puesto + "</td>" +
-                        "<td><button id='mostrarP' onclick='mostrarPuesto();'" +
-                        "class='btn btn-warning'>" +
-                        "<span class='glyphicon glyphicon-pencil'></span></button></td>" +
-                        "<td><button id='eliminarP' onclick='eliminarPuestos();' class='btn btn-danger'>" +
-                        "<span class='glyphicon glyphicon-remove'></span> </button></td>" +
-                        "</tr>";
-
-                $("#bodytablaP").append(tabla);
-                count++;
+                //alert(retorno);
+                switch (retorno) {
+                    case 'errorDato':
+                        alertify.error("Los datos no se procesaron correctamente");
+                        break;
+                    case 'error':
+                        alertify.error("No se puede eliminar porque existe en otras tablas");
+                        break;
+                    case 'exito':
+                        //carga lo que se indica en id DIV
+                        alertify.success("Los datos se procesarón CORRECTAMENTE!");
+                        mostrarPuestosTabla();
+                        break;
+                    case 'errorAcceso':
+                        alertify.error("No ha iniciado sesion");
+                        break;
+                    case 'existeRegistro':
+                        alertify.error("No se puede eliminar el puesto porque existe en otra tabla");
+                        break
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alertify.error("Se ha producido un error en el servidor");
             }
-
-            $("#nombrePuesto").val('');
-
-
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            alertify.error("Se ha producido un error en el servidor");
-        }
     });
 
 }
@@ -70,7 +66,7 @@ function mostrarPuestosCombo() {
         xhr.setRequestHeader(cabecera, token);
     });
     $.ajax({
-        url: "empleado/mostrarPuestosCombo",
+        url: "empleado/mostrarPuestos",
         data: {datos: datos},
         dataType: 'html',
         type: 'POST',
@@ -130,33 +126,30 @@ function actualizarPuesto() {
         type: 'POST',
         async: true,
         success: function (retorno) {
-            var dato = JSON.parse(retorno);
-            $("#bodytablaP").html("");
-            alertify.success("Los datos se procesarón CORRECTAMENTE!");
-            var filas = dato.length;
-            var count = 1;
-            for (i = 0; i < filas; i++) {
-                var tabla = "<tr>" +
-                        "<td id='idpuesto' style='display:none'>" + dato[i].idpuesto + "</td>" +
-                        "<td>" + count + "</td>" +
-                        "<td>" + dato[i].puesto + "</td>" +
-                        "<td><button id='mostrarP' onclick='mostrarPuesto();'" +
-                        "class='btn btn-warning'>" +
-                        "<span class='glyphicon glyphicon-pencil'></span></button></td>" +
-                        "<td><button id='eliminarP' onclick='eliminarPuestos();' class='btn btn-danger'>" +
-                        "<span class='glyphicon glyphicon-remove'></span> </button></td>" +
-                        "</tr>";
-
-                $("#bodytablaP").append(tabla);
-                count++;
+                //alert(retorno);
+                switch (retorno) {
+                    case 'errorDato':
+                        alertify.error("Los datos no se procesaron correctamente");
+                        break;
+                    case 'error':
+                        alertify.error("No se puede eliminar porque existe en otras tablas");
+                        break;
+                    case 'exito':
+                        //carga lo que se indica en id DIV
+                        alertify.success("Los datos se procesarón CORRECTAMENTE!");
+                        mostrarPuestosTabla();
+                        break;
+                    case 'errorAcceso':
+                        alertify.error("No ha iniciado sesion");
+                        break;
+                    case 'existeRegistro':
+                        alertify.error("No se puede eliminar el puesto porque existe en otra tabla");
+                        break
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alertify.error("Se ha producido un error en el servidor");
             }
-            $("#nombrePuesto").val('');
-            $("#guardarP").prop("disabled", false);
-            $("#actualizarP").prop("disabled", true);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            alertify.error("Se ha producido un error en el servidor");
-        }
     });
 }
 
@@ -221,7 +214,7 @@ function mostrarPuestosTabla() {
         xhr.setRequestHeader(cabecera, token);
     });
     $.ajax({
-        url: "empleado/mostrarPuestosCombo",
+        url: "empleado/mostrarPuestos",
         data: {datos: datos},
         dataType: 'html',
         type: 'POST',
