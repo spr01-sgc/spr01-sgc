@@ -70,7 +70,7 @@
                                             <td>${empleado.fechaentrada}</td>
                                             <td>${empleado.fechasalida}</td>
                                             <td>${empleado.descripcion}</td>
-                                            <td><button id="mostrarE" onclick="mostrarEmpleado();" data-toggle="modal" data-target="#myModal" class="btn btn-warning">
+                                            <td><button id="mostrarE" onclick="mostrarEmpleado();" class="btn btn-warning">
                                                     <span class="glyphicon glyphicon-pencil"></span> </button></td>
                                             <!-- Eliminar -->
                                             <td><button id="eliminarE" onclick="eliminarEmpleado();"  class="btn btn-danger">

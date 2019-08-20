@@ -54,7 +54,7 @@
                                             <td >${molde.modelo}</td>
                                             <td >${molde.enexistencia}</td>
                                             <td >${molde.descripcion}</td>
-                                            <td><button id="mostrarM" onclick="mostrarMolde();" data-toggle="modal" data-target="#myModal" class="btn btn-warning">
+                                            <td><button id="mostrarM" onclick="mostrarMolde();" class="btn btn-warning">
                                                     <span class="glyphicon glyphicon-pencil"></span> </button></td>
                                             <!-- Eliminar -->
                                             <td><button id="mostrarM" onclick="eliminarMolde();"  class="btn btn-danger">

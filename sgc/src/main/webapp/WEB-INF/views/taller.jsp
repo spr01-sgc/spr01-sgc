@@ -54,7 +54,7 @@
                                             <td>${taller.numeroEx}</td>
                                             
                                         
-                                            <td><button id="mostrarT" onclick="mostrarTaller();" data-toggle="modal" data-target="#myModal" class="btn btn-warning">
+                                            <td><button id="mostrarT" onclick="mostrarTaller();" class="btn btn-warning">
                                                     <span class="glyphicon glyphicon-pencil"></span> </button></td>
                                             <!-- Eliminar -->
                                             <td><button id="eliminaT" onclick="eliminarTaller();"  class="btn btn-danger">
