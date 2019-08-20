@@ -237,14 +237,27 @@ public class ControllerEmpleado {
      */
     @RequestMapping(value = "/empleado/agregarPuesto", method = RequestMethod.POST)
     public @ResponseBody
-    List<CatalogoPuestos> agregarPuesto(@RequestParam(value = "datos[]") String datos[]) {
+    String agregarPuesto(@RequestParam(value = "datos[]") String datos[]) {
 
-        CatalogoPuestos puesto = new CatalogoPuestos();
-        puesto.setPuesto(datos[0]);
+        if (!estaUsuarioAnonimo()) {
+            for (String dato : datos) {
+                if (dato.equals("")) {
+                    // si hay datos vacios
+                    return "errorDato";
+                }
+            }
 
-        puestosService.save(puesto);
-        List<CatalogoPuestos> lPuesto = puestosService.showPuesto();
-        return lPuesto;
+            //Creacion del objeto 
+            CatalogoPuestos puesto = new CatalogoPuestos();
+            puesto.setPuesto(datos[0]);
+
+            if (puestosService.save(puesto)) {
+                return "exito";
+            } else {
+                return "error";
+            }
+        }
+        return "errorAcceso";
 
     }
 
@@ -254,9 +267,9 @@ public class ControllerEmpleado {
      * @param datos
      * @return
      */
-    @RequestMapping(value = "/empleado/mostrarPuestosCombo", method = RequestMethod.POST)
+    @RequestMapping(value = "/empleado/mostrarPuestos", method = RequestMethod.POST)
     public @ResponseBody
-    List<CatalogoPuestos> mostrarPuestosCombo(@RequestParam(value = "datos[]") String datos[]) {
+    List<CatalogoPuestos> mostrarPuestos(@RequestParam(value = "datos[]") String datos[]) {
 
         List<CatalogoPuestos> lPuesto = puestosService.showPuesto();
         return lPuesto;
@@ -271,22 +284,35 @@ public class ControllerEmpleado {
      */
     @RequestMapping(value = "/empleado/actualizarPuesto", method = RequestMethod.POST)
     public @ResponseBody
-    List<CatalogoPuestos> actualizarPuesto(@RequestParam(value = "datos[]") String datos[]) {
+    String actualizarPuesto(@RequestParam(value = "datos[]") String datos[]) {
 
-        List<CatalogoPuestos> lPuesto = puestosService.showPuesto();
-        if (!lPuesto.isEmpty()) {
-            for (CatalogoPuestos puesto : lPuesto) {
-                if (puesto.getIdpuesto() == Integer.parseInt(datos[0])) {
+        if (!estaUsuarioAnonimo()) {
+            for (String dato : datos) {
+                if (dato.equals("")) {
+                    // si hay datos vacios
+                    return "errorDato";
+                }
+            }
 
-                    //Se llena el modelo
-                    puesto.setPuesto(datos[1]);
-                    puestosService.update(puesto);
-                    lPuesto = puestosService.showPuesto();
+            List<CatalogoPuestos> lPuesto = puestosService.showPuesto();
+            if (!lPuesto.isEmpty()) {
+                for (CatalogoPuestos puesto : lPuesto) {
+                    if (puesto.getIdpuesto() == Integer.parseInt(datos[0])) {
+
+                        puesto.setPuesto(datos[1]);
+
+                        if (puestosService.update(puesto)) {
+                            return "exito";
+                        } else {
+                            return "error";
+                        }
+                    }
                 }
             }
         }
 
-        return lPuesto;
+        return "errorAcceso";
+
     }
 
     /**
