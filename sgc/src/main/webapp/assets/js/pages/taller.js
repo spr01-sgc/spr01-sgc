@@ -13,6 +13,7 @@ function btnTaller() {
 function mostrarTaller() {
     $("#guardarT").css("display", "none");//oculta el boton guardar
     $("#actualizarT").prop("disabled", false);//habilita el boton actualizar
+    $("#myModal").modal("show");
     //al dar clic lo que tiene en el renglo lo pase a la caja de texto
     $("#tableTaller tbody").on('click', 'tr', function () {
         //id de usuario a actualizar

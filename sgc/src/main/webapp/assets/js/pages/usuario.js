@@ -13,6 +13,7 @@ function btnUsuario() {
 function mostrarUsuario() {
     $("#guardarU").css("display", "none");//oculta el boton guardar
     $("#actualizarU").prop("disabled", false);//habilita el boton actualizar
+    $("#myModal").modal("show");
     //al dar clic lo que tiene en el renglo lo pase a la caja de texto
     $("#tableUsuario tbody").on('click', 'tr', function () {
         //id de usuario a actualizar

@@ -14,6 +14,7 @@ function mostrarEmpleado() {
     $("#guardarE").prop("disabled", true);
     $("#agregarE").css("display", "none");//oculta el boton guardar
     $("#actualizarE").prop("disabled", false);//habilita el boton actualizar
+    $("#myModal").modal("show");
     //al dar clic lo que tiene en el renglo lo pase a la caja de texto
     $("#tableEmpleado tbody").on('click', 'tr', function () {
         //id del empleado a actualizar

@@ -14,6 +14,7 @@ function btnMolde2() {
 function mostrarMolde() {
     $("#guardarM").css("display", "none");//oculta el boton guardar
     $("#actualizarM").prop("disabled", false);//habilita el boton actualizar
+    $("#myModal").modal("show");
     //al dar clic lo que tiene en el renglon lo pase a la caja de texto
     $("#tableMoldes tbody").on('click', 'tr', function () {
         //informacion del Molde
