@@ -28,14 +28,13 @@
                                     </c:forEach>
                                 </select>                                            
                             </div> 
+                             <label class="control-label col-sm-1" for="ser">Serie:<b style="color: red" title="Campo Requerido">*</b></label>
+                            <div class="col-sm-2">
+                                <input disabled type="text" class="form-control" id="serie"  placeholder="Serie" value="" >
+                            </div>
                             <label  class="control-label col-sm-1">Fecha:<b style="color: red" title="Campo Requerido">*</b></label>
                             <div class="col-sm-2">
-                                <input type="date" class="form-control" id="fechPoli" onchange="fechaPeriodo();" >
-                            </div>
-                            <label class="control-label col-sm-1" for="ser">Serie:<b style="color: red" title="Campo Requerido">*</b></label>
-                            <div class="col-sm-2">
-                                <input disabled type="text" class="form-control" id="serie" style="display: none" placeholder="Serie" value="${lusuarioS.usuarioid}" >
-                                <input disabled type="text" class="form-control" id="SeriePoli" onkeyup="mayuscula(this);" placeholder="Serie" value="${lusuarioS.serie}" >
+                                <input type="date" class="form-control" id="fecha" onchange="fechaPeriodo();" >
                             </div>
                         </div>
                         <div class="form-group">
