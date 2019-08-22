@@ -157,6 +157,16 @@ public class Empleado implements Serializable {
         return "Empleado{" + "idempleado=" + idempleado + ", nombre=" + nombre + ", app=" + app + ", apm=" + apm + ", descripcion=" + descripcion + ", serie=" + serie + ", estatus=" + estatus + ", fechaentrada=" + fechaentrada + ", idtaller=" + idtaller + '}';
     }
 
+    public Empleado(Integer idempleado, String nombre) {
+        this.idempleado = idempleado;
+        this.nombre = nombre;
+    }
+
+    
+    public Empleado() {
+       
+    }
+
 
 
 
