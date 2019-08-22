@@ -6,6 +6,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="index.jsp" %>
 <script src="<c:url value='/assets/js/pages/ordenVaceado.js'/>" type="text/javascript"></script>
+<script src="<c:url value="/assets/js/jquery.autocomplete.min.js" />"></script>
 <br />
 <br />
 <br />
@@ -19,14 +20,15 @@
                         <input type="hidden" name="${_csrf.parameterName}"value="${_csrf.token}" />
                         <div class="form-group">
                             <label  class="control-label col-sm-2">Empleado:<b style="color: red" title="Campo Requerido">*</b></label>
-                            <div class="col-sm-2">
-                                <!-- consulta catalogo -->
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" id="nombreE" size="35" maxlength="35" >
+                                <!-- consulta catalogo 
                                 <select id="tipoVaceado" class="form-control">
                                     <option value="0">Seleccione tipo</option>
                                     <c:forEach items="${lTipoVaceado}" var="tipoVaceado">
                                         <option  value="${tipoVaceado.tipoid}">${tipoVaceado.tipoVaceado} </option>
                                     </c:forEach>
-                                </select>                                            
+                                </select>              -->                              
                             </div> 
                              <label class="control-label col-sm-1" for="ser">Serie:<b style="color: red" title="Campo Requerido">*</b></label>
                             <div class="col-sm-2">
@@ -39,7 +41,7 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="conce">Concepto: <b style="color: red" title="Campo Requerido">*</b></label>
-                            <div class="col-sm-8">
+                            <div class="col-sm-9">
                                 <input type="text" class="form-control" id="concept" size="35" maxlength="35" >
                             </div>
                         </div>
