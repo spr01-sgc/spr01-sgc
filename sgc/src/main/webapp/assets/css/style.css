@@ -726,3 +726,7 @@ ul.topnav li.right {float: right;}
     margin-left: 15%;
     margin-right: 15%;
 }
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+.autocomplete-suggestion { padding: 5px 5px; white-space: nowrap; overflow: hidden; font-size:13px}
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong {  color: #3399FF; }
