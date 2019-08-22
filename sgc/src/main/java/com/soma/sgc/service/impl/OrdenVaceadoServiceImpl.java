@@ -5,6 +5,7 @@
  */
 package com.soma.sgc.service.impl;
 import com.soma.sgc.dao.OrdenVaceadoDao;
+import com.soma.sgc.model.Empleado;
 import com.soma.sgc.model.OrdenVaceado;
 import com.soma.sgc.service.OrdenVaceadoService;
 import java.util.List;
@@ -56,6 +57,13 @@ public class OrdenVaceadoServiceImpl implements OrdenVaceadoService{
         ordenDao.delete(ordenid);
         return estadoMetodo=true;
     }
+
+    @Override
+    public List<Empleado> autocompleateE(String autocompleateE) {
+        return ordenDao.autocompleateE(autocompleateE);
+    }
+    
+    
     
     
 }
