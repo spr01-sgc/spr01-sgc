@@ -5,6 +5,7 @@
  */
 package com.soma.sgc.dao;
 
+import com.soma.sgc.model.Empleado;
 import com.soma.sgc.model.OrdenVaceado;
 import java.util.List;
 
@@ -23,5 +24,7 @@ public interface OrdenVaceadoDao {
     List<OrdenVaceado> showVaceado();
 
     OrdenVaceado busquedaId(int ordenid);
+    
+    List<Empleado> autocompleateE(String autocompleateE);
 
 }
