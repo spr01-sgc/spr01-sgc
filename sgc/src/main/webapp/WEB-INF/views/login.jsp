@@ -22,43 +22,69 @@
         <!--  Fonts and icons-->
         <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="text-center">
+                                <h3><i class="glyphicon glyphicon-lock" style="font-size:2em;"></i></h3>
+                                <h2 class="text-center">Login</h2>
+                                <div class="panel-body">
+                                    <form  action="${urlLogin}" method="POST">
+                                        <c:if test="${param.error != null}">
+                                            <div class="alert alert-danger alert-dismissable" style="text-align: center;">
+                                                <strong> ¡Nickname o Contraseña Incorrectos!</strong>
+                                            </div>
+                                        </c:if>
+                                        
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">@</span>
+                                                <input id="nick"
+                                                       name="nickname"
+                                                       autofocus="autofocus"
+                                                       class="form-control"
+                                                       placeholder="Username"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="glyphicon glyphicon-lock"></i>
+                                                </span>
+                                                <input id="contrasena"
+                                                       name="contrasena"
+                                                       class="form-control"
+                                                       placeholder="Password"
+                                                       type="password"/>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="${_csrf.parameterName}"  value="${_csrf.token}" />
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-success btn-block">Login</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            New user? <a href="/" th:href="@{/registration}">Register</a>
+                        </div>
+                        <div class="col-md-12">
+                            Forgot password? <a href="/" th:href="@{/forgot-password}">Reset password</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <body style="text-align: center;background: rgba(179,220,237,1);">
-        <div class="container" style="width: 700px; text-align: left;background: rgba(113,206,239,1);padding-top: 50px">
-            <h3 style="text-align: center">Iniciar Sesión</h3>
-            <div class="panel-body">                                      
-                <c:url var="urlLogin" value="/login"/>
-                <form action="${urlLogin}" method="POST">
-                    <c:if test="${param.error != null}">
-                        <div class="alert alert-danger alert-dismissable" style="text-align: center;">
-                            <strong> ¡Nickname o Contraseña Incorrectos!</strong>
-                        </div>
-                    </c:if>
-                    <div class="col-lg-12">
-                        <!--  <div class="col-lg-6"> <img src="/assets/img/soma.jpeg" class="img-responsive" alt="Responsive image"> </div>-->
-                        <div class="col-lg-6">
-                            <div class="input-group input-sm">
-                                <input type="text" class="form-control" id="nick" name="nickname" placeholder="NickName" required>
-                                <label class="input-group-addon" for="nick"><i class="fa fa-user border-input"></i></label>   
-                            </div>
-                            <div class="input-group input-sm">
-                                <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Contraseña">
-                                <label class="input-group-addon border-input" for="contrasena"><i class="fa fa-lock"></i></label> 
-                            </div>
-                        </div>
-                        <input type="hidden" name="${_csrf.parameterName}"  value="${_csrf.token}" />
-                        <br/>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="col-lg-6">
-                            <div class="form-actions" align="center">
-                                <input id="login" type="submit" 
-                                       class="btn btn-block btn-info active" value="Continuar">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div><!--panelbody-->           
-        </div><!--container-->
+
+        <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
+        <script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+
     </body>
 </html>
