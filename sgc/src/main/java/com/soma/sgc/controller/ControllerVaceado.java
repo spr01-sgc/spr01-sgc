@@ -5,6 +5,8 @@
  */
 package com.soma.sgc.controller;
 
+import java.util.ArrayList;
+import com.soma.sgc.model.Empleado;
 import java.net.UnknownHostException;
 import com.soma.sgc.model.OrdenVaceado;
 import com.soma.sgc.model.ProduccionVaceado;
@@ -41,6 +43,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/")
 public class ControllerVaceado {
 
+    List<Empleado> data = new ArrayList<Empleado>();
+
+    ControllerVaceado() {
+        // init data for testing
+        data.add(new Empleado(1, "ruby"));
+        data.add(new Empleado(2, "CV"));
+    }
+
     @Autowired
     UsuarioService usuarioService;
 
@@ -64,12 +74,26 @@ public class ControllerVaceado {
             List<ProduccionVaceado> lvaceado = produccionService.showVaceado();
             // enviar los datos JSP
             model.addAttribute("lvaceado", lvaceado);
-             List<OrdenVaceado> lOrden = ordenService.showVaceado();
+            List<OrdenVaceado> lOrden = ordenService.showVaceado();
             // enviar los datos JSP
             model.addAttribute("lOrden", lOrden);
             return "vaceado";
         }
         return "login";
+    }
+
+    /**
+     * Metodo para autocompletar el campo de empleado
+     *
+     * @param model
+     * @return el acceso a usuarios o bien deniega el acceso y retorna el login
+     */
+
+    @RequestMapping(value = "vaceado/getEmpleados", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Empleado> getEmpleados(@RequestParam String nombre) {
+        List<Empleado> lEmpleado = ordenService.autocompleateE(nombre.toUpperCase());
+        return lEmpleado;
     }
 
     public String usuarioEnSesion() {
