@@ -7,10 +7,12 @@ package com.soma.sgc.dao.impl;
 
 import com.soma.sgc.dao.HibernateDao;
 import com.soma.sgc.dao.OrdenVaceadoDao;
+import com.soma.sgc.model.Empleado;
 import com.soma.sgc.model.OrdenVaceado;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -58,4 +60,29 @@ public class OrdenVaceadoDaoImpl extends HibernateDao<Integer,OrdenVaceado> impl
         return vaceado;
     }
     
+//    public ArrayList<String> autocompleateE(String autocompleateE) {
+//        ArrayList<String> list = new ArrayList<String>();
+//        String data;
+//        try {
+//            ps = connection
+//                    .prepareStatement("SELECT nombre,apm,app FROM empleado");
+//            ps.setString(1, autocompleateE + "%");
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                data = rs.getString("");
+//                list.add(data);
+//            }
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//        return list;
+//    }
+    
+    public List<Empleado> autocompleateE(String autocompleateE) {
+        SQLQuery query = getSession().createSQLQuery("SELECT idempleado, nombre, app, apm, serie FROM Empleado "
+                + "where nombre like '%"+autocompleateE+"%' or app like '%"+autocompleateE+"%' "
+                        + "or apm like '%"+autocompleateE+"%'");
+        List<Empleado> lempleado = query.list();
+        return lempleado;
+    }
 }
