@@ -25,6 +25,6 @@ public interface OrdenVaceadoDao {
 
     OrdenVaceado busquedaId(int ordenid);
     
-    List<Empleado> autocompleateE(String autocompleateE);
+    List<Empleado> mostrarEmpleado(String autocompleateE);
 
 }
