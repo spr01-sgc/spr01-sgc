@@ -21,7 +21,7 @@
                         <div class="form-group">
                             <label  class="control-label col-sm-2">Empleado:<b style="color: red" title="Campo Requerido">*</b></label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="nombreE" size="35" maxlength="35" >
+                                <input type="text" class="form-control" id="nombreE" onkeydown="autocompleate();" size="35" maxlength="35" >
                                 <!-- consulta catalogo 
                                 <select id="tipoVaceado" class="form-control">
                                     <option value="0">Seleccione tipo</option>
@@ -36,7 +36,7 @@
                             </div>
                             <label  class="control-label col-sm-1">Fecha:<b style="color: red" title="Campo Requerido">*</b></label>
                             <div class="col-sm-2">
-                                <input type="date" class="form-control" id="fecha" onchange="obtenerDatosEmpleado();" >
+                                <input type="date" class="form-control" id="fecha"  >
                             </div>
                         </div>
                         <div class="form-group">
