@@ -59,8 +59,8 @@ public class OrdenVaceadoServiceImpl implements OrdenVaceadoService{
     }
 
     @Override
-    public List<Empleado> autocompleateE(String autocompleateE) {
-        return ordenDao.autocompleateE(autocompleateE);
+    public List<Empleado> mostrarEmpleado(String autocompleateE) {
+        return ordenDao.mostrarEmpleado(autocompleateE);
     }
     
     
