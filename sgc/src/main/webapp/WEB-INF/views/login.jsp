@@ -6,9 +6,6 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Inicio de Sesión</title>
-        <script type="text/javascript" async="" src="./Core Login Form Flat Responsive Widget Template __ w3layouts_files/analytics.js.descarga"></script>
-        <script async="" src="./Core Login Form Flat Responsive Widget Template __ w3layouts_files/analytics.js.descarga"></script>
-
         <script>
             addEventListener("load", function () {
                 setTimeout(hideURLbar, 0);
@@ -81,10 +78,7 @@
                 </div>
             </div>
         </div>
-
-
         <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
         <script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-
     </body>
 </html>
