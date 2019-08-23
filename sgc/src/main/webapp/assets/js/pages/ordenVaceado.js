@@ -35,3 +35,39 @@ function btnAgregarMoldes() {
 function cerrarModal() {
     $("#myModal9").modal("hide");
 }
+
+function obtenerDatosEmpleado(){
+    var nombre = $("#nombreE").val();
+    var datos = [nombre];
+    
+    $(document).ajaxSend(function (e, xhr, options) {
+            var token = $("input[name='_csrf']").val();
+            var cabecera = "X-CSRF-TOKEN";
+            xhr.setRequestHeader(cabecera, token);
+        });
+
+        $.ajax({
+            url: "vaceado/mostrarEmpleados",
+            data: {datos: datos},
+            dataType: 'html',
+            type: 'POST',
+            success: function (retorno) {
+                var data = JSON.parse(retorno);
+                console.log(data);
+                console.log("mike " + data[0]);
+                var tam = data.length;
+                for(i = 0; i<tam; i++){
+                    console.log("sad " + data[i+3]);
+                    $("#serie").empty();
+                    $("#serie").val(data[i]);
+                }
+                $("#serie").val("");
+                $("#serie").val(data[4]);
+                
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alertify.error("Se ha producido un error en el servidor");
+            }
+        });
+   
+}
