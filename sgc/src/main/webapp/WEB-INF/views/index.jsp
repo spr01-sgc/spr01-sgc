@@ -13,30 +13,15 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="Expires" content="0">
         <title>SGC</title>
-        <link href="<c:url value='/assets/css/style.css'/>" rel="stylesheet" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">   
-        <link href="<c:url value='/assets/css/bootstrap.min.css'/>" rel="stylesheet" />
-        <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
-        <link href="<c:url value='/assets/css/style2.css'/>" rel="stylesheet" />        
-        <link href="<c:url value='/assets/css/style_light.css'/>" rel="stylesheet" />
-        <link href="<c:url value='/assets/themes/alertify.core.css'/>" rel="stylesheet" />
-        <link href="<c:url value='/assets/themes/alertify.default.css'/>" rel="stylesheet" />
-        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
-        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
-        <link href="<c:url value='/assets/fonts/glyphicons-halflings-regular.ttf'/>"/>
-        <link href="<c:url value='/assets/fonts/glyphicons-halflings-regular.woff'/>"/>
-        <link href="<c:url value='/assets/fonts/glyphicons-halflings-regular.woff2'/>"/>
+        <!-- CSS -->
+        <link href="<c:url value='/assets/css/style.css'/>" rel="stylesheet" /> 
+        <link href="<c:url value='/assets/css/bootstrap.min.css'/>" rel="stylesheet" />      
         <!--  JS    -->
-        <script src="<c:url value= '/assets/js/jquery-3.2.1.min.js'/>" type="text/javascript"></script>
-        <script src="<c:url value= '/assets/js/prefix-free.js'/>" type="text/javascript"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>  
-        <script src="<c:url value='/assets/js/jquery.blockUI.js'/>" type="text/javascript"></script> 
-        <script src="<c:url value='/assets/js/jquery.tabletoCSV.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/assets/js/jquery-1.10.2.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/assets/js/bootstrap.min.js'/>" type="text/javascript"></script>
+        <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
+        <script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
         <script src="<c:url value='/assets/js/alertify.js'/>" type="text/javascript"></script>
-        <script src="<c:url value= '/assets/js/xlsx.js'/>" type="text/javascript"></script>
-        <script src="<c:url value= '/assets/js/xlsx.full.min.js'/>" type="text/javascript"></script>
-        <script src="<c:url value= '/assets/js/jszip.js'/>" type="text/javascript"></script>
         <!-- JS PAGES -->
         <script src="<c:url value='/assets/js/pages/Generales.js'/>" type="text/javascript"></script>
         <!-- FIN JS PAGES -->
@@ -190,18 +175,15 @@
     <body>
         <div class="principal_menu_dos">
             <div class = "img_menu_dos">
-                <img src="<c:url value= '/assets/img/soma2.jpg'/>">
+                <img src="<c:url value= '/assets/images/soma2.jpg'/>">
             </div>
             <div class="user_menu_dos">
                 <span class="glyphicon glyphicon-user user_span"></span><a id="user_en_sesion2"> 
                     HOLA: ${user_en_sesion}</a>
-
             </div>
             <div class="opciones_menu_dos size_font">
                 <ul class="topnav">
                     <li><a class="active" href="<c:url value='/'/>">INICIO</a></li>
-
-
                     <li class="dropdown1">
                         <a href="#">GESTION SISTEMA</a>
                         <c:if test='${pageContext.request.isUserInRole("ADMIN")}'> 
