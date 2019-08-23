@@ -36,7 +36,7 @@
                             </div>
                             <label  class="control-label col-sm-1">Fecha:<b style="color: red" title="Campo Requerido">*</b></label>
                             <div class="col-sm-2">
-                                <input type="date" class="form-control" id="fecha" onchange="fechaPeriodo();" >
+                                <input type="date" class="form-control" id="fecha" onchange="obtenerDatosEmpleado();" >
                             </div>
                         </div>
                         <div class="form-group">
