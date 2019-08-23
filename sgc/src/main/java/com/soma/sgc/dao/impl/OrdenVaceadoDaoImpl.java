@@ -60,28 +60,10 @@ public class OrdenVaceadoDaoImpl extends HibernateDao<Integer,OrdenVaceado> impl
         return vaceado;
     }
     
-//    public ArrayList<String> autocompleateE(String autocompleateE) {
-//        ArrayList<String> list = new ArrayList<String>();
-//        String data;
-//        try {
-//            ps = connection
-//                    .prepareStatement("SELECT nombre,apm,app FROM empleado");
-//            ps.setString(1, autocompleateE + "%");
-//            ResultSet rs = ps.executeQuery();
-//            while (rs.next()) {
-//                data = rs.getString("");
-//                list.add(data);
-//            }
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-//        return list;
-//    }
-    
-    public List<Empleado> autocompleateE(String autocompleateE) {
+    public List<Empleado> mostrarEmpleado(String autocompleateE) {
         SQLQuery query = getSession().createSQLQuery("SELECT idempleado, nombre, app, apm, serie FROM Empleado "
-                + "where nombre like '%"+autocompleateE+"%' or app like '%"+autocompleateE+"%' "
-                        + "or apm like '%"+autocompleateE+"%'");
+                + "WHERE (nombre||' '||app||' '||apm) LIKE '%"+autocompleateE+"%' OR app LIKE '%"+autocompleateE+"%' "
+                        + "OR apm LIKE '%"+autocompleateE+"%'");
         List<Empleado> lempleado = query.list();
         return lempleado;
     }
