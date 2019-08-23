@@ -92,8 +92,23 @@ public class ControllerVaceado {
     @RequestMapping(value = "vaceado/getEmpleados", method = RequestMethod.GET)
     public @ResponseBody
     List<Empleado> getEmpleados(@RequestParam String nombre) {
-        List<Empleado> lEmpleado = ordenService.autocompleateE(nombre.toUpperCase());
+        List<Empleado> lEmpleado = ordenService.mostrarEmpleado(nombre.toUpperCase());
         return lEmpleado;
+    }
+    
+    /**
+     * Metodo para mostrar el empleado
+     *
+     * @param datos
+     * @return
+     */
+    @RequestMapping(value = "/vaceado/mostrarEmpleados", method = RequestMethod.POST)
+    public @ResponseBody
+    List<Empleado> mostrarEmpleados(@RequestParam(value = "datos[]") String datos[]) {
+
+        List<Empleado> lEmpleado = ordenService.mostrarEmpleado(datos[0]);
+        return lEmpleado;
+
     }
 
     public String usuarioEnSesion() {
