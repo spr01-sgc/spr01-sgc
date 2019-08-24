@@ -25,5 +25,7 @@ public interface CatalogoTallerService {
     CatalogoTaller busquedaId(int idtaller);
     
     CatalogoTaller mostrarNombre(int idtaller);
+    
+    List<CatalogoTaller> validarExistencia(int idtaller);
 
 }
