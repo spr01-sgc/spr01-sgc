@@ -57,10 +57,10 @@
                                             <td>${usuario.rol.nombre}</td>
                                             <td style="display:none">${usuario.idtaller.idtaller}</td>
                                             <td>${usuario.idtaller.nombre}</td>
-                                            <td><button id="mostrarU" onclick="mostrarUsuario();" class="btn btn-warning">
+                                            <td><button id="mostrarU" onclick="eliminar_actualizar_usuario();" class="btn btn-warning">
                                                     <span class="glyphicon glyphicon-pencil"></span> </button></td>
                                             <!-- Eliminar -->
-                                            <td><button id="mostrarU" onclick="eliminarUsuario1();"  class="btn btn-danger">
+                                            <td><button id="mostrarU" onclick="eliminar_actualizar_usuario();"  class="btn btn-danger">
                                                     <span class="glyphicon glyphicon-remove"></span> </button></td>
                                         </tr>
                                     </c:forEach>

@@ -38,7 +38,7 @@
                                         <th>No</th>
                                         <th>Taller</th>
                                         <th>Dirección</th>
-                                         <th>Numero-Ex</th>
+                                        <th>Numero-Ex</th>
                                         <th>Actualizar</th>
                                         <th>Eliminar</th>
                                     </tr>
@@ -46,18 +46,16 @@
                                 <tbody id="bodytabla">
                                     <c:forEach items="${ltaller}" var="taller" varStatus="count"> 
                                         <tr>                               
-                                         
+
                                             <td id="notaller">${count.count}</td>
-                                             <td style="display:none" >${taller.idtaller}</td> 
+                                            <td style="display:none" >${taller.idtaller}</td> 
                                             <td>${taller.nombre}</td>
                                             <td>${taller.direccion}</td>
                                             <td>${taller.numeroEx}</td>
-                                            
-                                        
-                                            <td><button id="mostrarT" onclick="mostrarTaller();" class="btn btn-warning">
+                                            <td><button id="mostrarT" onclick="eliminar_actualizar_taller();" class="btn btn-warning">
                                                     <span class="glyphicon glyphicon-pencil"></span> </button></td>
                                             <!-- Eliminar -->
-                                            <td><button id="eliminaT" onclick="eliminarTaller();"  class="btn btn-danger">
+                                            <td><button id="eliminaT" onclick="eliminar_actualizar_taller();"  class="btn btn-danger">
                                                     <span class="glyphicon glyphicon-remove"></span> </button></td>
                                         </tr>
                                     </c:forEach>

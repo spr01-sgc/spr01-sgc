@@ -70,10 +70,10 @@
                                             <td>${empleado.fechaentrada}</td>
                                             <td>${empleado.fechasalida}</td>
                                             <td>${empleado.descripcion}</td>
-                                            <td><button id="mostrarE" onclick="mostrarEmpleado();" class="btn btn-warning">
+                                            <td><button id="mostrarE" onclick="eliminar_actualizar_empleado();" class="btn btn-warning">
                                                     <span class="glyphicon glyphicon-pencil"></span> </button></td>
                                             <!-- Eliminar -->
-                                            <td><button id="eliminarE" onclick="eliminarEmpleado();"  class="btn btn-danger">
+                                            <td><button id="eliminarE" onclick="eliminar_actualizar_empleado();"  class="btn btn-danger">
                                                     <span class="glyphicon glyphicon-remove"></span> </button></td>
                                         </tr>
                                     </c:forEach>
@@ -229,10 +229,10 @@
                                         <td id="idpuesto" style="display:none">${puesto.idpuesto}</td>
                                         <td id="nopuesto">${count.count}</td>
                                         <td>${puesto.puesto}</td>
-                                        <td><button id="mostrarP" onclick="mostrarPuesto();" class="btn btn-warning">
+                                        <td><button id="mostrarP" onclick="eliminar_actualizar();" class="btn btn-warning">
                                                 <span class="glyphicon glyphicon-pencil"></span> </button></td>
                                         <!-- Eliminar -->
-                                        <td><button id="eliminarP" onclick="eliminarPuestos();" class="btn btn-danger">
+                                        <td><button id="eliminarP" onclick="eliminar_actualizar();" class="btn btn-danger">
                                                 <span class="glyphicon glyphicon-remove"></span> </button></td>
                                     </tr>
                                 </c:forEach>

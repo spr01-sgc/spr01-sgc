@@ -54,10 +54,10 @@
                                             <td >${molde.modelo}</td>
                                             <td >${molde.enexistencia}</td>
                                             <td >${molde.descripcion}</td>
-                                            <td><button id="mostrarM" onclick="mostrarMolde();" class="btn btn-warning">
+                                            <td><button id="mostrarM" onclick="eliminar_actualizar_molde();" class="btn btn-warning">
                                                     <span class="glyphicon glyphicon-pencil"></span> </button></td>
                                             <!-- Eliminar -->
-                                            <td><button id="mostrarM" onclick="eliminarMolde();"  class="btn btn-danger">
+                                            <td><button id="mostrarM" onclick="eliminar_actualizar_molde();"  class="btn btn-danger">
                                                     <span class="glyphicon glyphicon-remove"></span> </button></td>
                                         </tr>
                                     </c:forEach>
