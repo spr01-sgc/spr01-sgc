@@ -56,6 +56,11 @@ public class CatalogoTallerServiceImpl implements CatalogoTallerService {
     public CatalogoTaller mostrarNombre(int idtaller) {
         return tallerDao.mostrarNombre(idtaller);
     }
+
+    @Override
+    public List<CatalogoTaller> validarExistencia(int idtaller) {
+        return tallerDao.validarExistencia(idtaller);
+    }
     
 }
 
