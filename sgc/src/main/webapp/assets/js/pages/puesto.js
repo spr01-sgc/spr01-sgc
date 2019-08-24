@@ -2,7 +2,7 @@ $(document).ready(function () {
     $("#actualizarP").prop("disabled", true);
 }); //ready
 
-function btnAgregarP(){
+function btnAgregarP() {
     $("#myModalPuesto").modal("show");
 }
 /*Funcion que permite Agregar un nuevo puesto*/
@@ -25,30 +25,30 @@ function agregarPuesto() {
         dataType: 'html',
         type: 'POST',
         success: function (retorno) {
-                //alert(retorno);
-                switch (retorno) {
-                    case 'errorDato':
-                        alertify.error("Los datos no se procesaron correctamente");
-                        break;
-                    case 'error':
-                        alertify.error("No se puede eliminar porque existe en otras tablas");
-                        break;
-                    case 'exito':
-                        //carga lo que se indica en id DIV
-                        alertify.success("Los datos se procesarón CORRECTAMENTE!");
-                        mostrarPuestosTabla();
-                        break;
-                    case 'errorAcceso':
-                        alertify.error("No ha iniciado sesion");
-                        break;
-                    case 'existeRegistro':
-                        alertify.error("No se puede eliminar el puesto porque existe en otra tabla");
-                        break
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alertify.error("Se ha producido un error en el servidor");
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alertify.error("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alertify.error("No se puede eliminar porque existe en otras tablas");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    alertify.success("Los datos se procesarón CORRECTAMENTE!");
+                    mostrarPuestosTabla();
+                    break;
+                case 'errorAcceso':
+                    alertify.error("No ha iniciado sesion");
+                    break;
+                case 'existeRegistro':
+                    alertify.error("No se puede eliminar el puesto porque existe en otra tabla");
+                    break
             }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alertify.error("Se ha producido un error en el servidor");
+        }
     });
 
 }
@@ -90,19 +90,6 @@ function mostrarPuestosCombo() {
     });
 
 }
-/*Funcion que muestra la informacion de la tabla puesto en el formulario*/
-function mostrarPuesto() {
-    $("#guardarP").prop("disabled", true);
-    $("#actualizarP").prop("disabled", false);//habilita el boton actualizar
-    //al dar clic lo que tiene en el renglo lo pase a la caja de texto
-    $("#tablePuesto tbody").on('click', 'tr', function () {
-        //id del puesto a actualizar
-        var idPuesto = $('td', this).eq(0).text();
-        $("#idPuesto").val(idPuesto);
-        var puesto = $('td', this).eq(2).text();
-        $("#nombrePuesto").val(puesto);
-    });
-}
 /*Funcion que permite actualizar un empelado*/
 function actualizarPuesto() {
     var idPuesto = $("#idPuesto").val();
@@ -126,81 +113,90 @@ function actualizarPuesto() {
         type: 'POST',
         async: true,
         success: function (retorno) {
-                //alert(retorno);
-                switch (retorno) {
-                    case 'errorDato':
-                        alertify.error("Los datos no se procesaron correctamente");
-                        break;
-                    case 'error':
-                        alertify.error("No se puede eliminar porque existe en otras tablas");
-                        break;
-                    case 'exito':
-                        //carga lo que se indica en id DIV
-                        alertify.success("Los datos se procesarón CORRECTAMENTE!");
-                        mostrarPuestosTabla();
-                        break;
-                    case 'errorAcceso':
-                        alertify.error("No ha iniciado sesion");
-                        break;
-                    case 'existeRegistro':
-                        alertify.error("No se puede eliminar el puesto porque existe en otra tabla");
-                        break
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alertify.error("Se ha producido un error en el servidor");
+            //alert(retorno);
+            switch (retorno) {
+                case 'errorDato':
+                    alertify.error("Los datos no se procesaron correctamente");
+                    break;
+                case 'error':
+                    alertify.error("No se puede eliminar porque existe en otras tablas");
+                    break;
+                case 'exito':
+                    //carga lo que se indica en id DIV
+                    alertify.success("Los datos se procesarón CORRECTAMENTE!");
+                    mostrarPuestosTabla();
+                    break;
+                case 'errorAcceso':
+                    alertify.error("No ha iniciado sesion");
+                    break;
+                case 'existeRegistro':
+                    alertify.error("No se puede eliminar el puesto porque existe en otra tabla");
+                    break
             }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alertify.error("Se ha producido un error en el servidor");
+        }
     });
 }
 
 /*Funcion que elimina un puesto*/
-function eliminarPuestos() {
-    $("#tablePuesto tbody").on('click', 'tr', function () {
-        var idPuesto = $('td', this).eq(0).text();
-        $("#idPuesto").val(idPuesto);
-        var id = $("#idPuesto").val();
-        if (id === '') {
-            alertify.error("No se ha seleccionado una opci&oacuten");
-            return false;
-        }
-        var datos = [id];
-        $(document).ajaxSend(function (e, xhr, options) {
-            var token = $("input[name='_csrf']").val();
-            var cabecera = "X-CSRF-TOKEN";
-            xhr.setRequestHeader(cabecera, token);
-        });
-
-        $.ajax({
-            url: "empleado/eliminarPuestos",
-            data: {datos: datos},
-            dataType: 'html',
-            type: 'POST',
-            success: function (retorno) {
-                //alert(retorno);
-                switch (retorno) {
-                    case 'errorDato':
-                        alertify.error("Los datos no se procesaron correctamente");
-                        break;
-                    case 'error':
-                        alertify.error("No se puede eliminar porque existe en otras tablas");
-                        break;
-                    case 'exito':
-                        //carga lo que se indica en id DIV
-                        alertify.success("Los datos se procesarón CORRECTAMENTE!");
-                        mostrarPuestosTabla();
-                        break;
-                    case 'errorAcceso':
-                        alertify.error("No ha iniciado sesion");
-                        break;
-                    case 'existeRegistro':
-                        alertify.error("No se puede eliminar el puesto porque existe en otra tabla");
-                        break
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alertify.error("Se ha producido un error en el servidor");
+function eliminar_actualizar() {
+    $("#tablePuesto tbody tr").on("click", "td", function () {
+        var idPuesto = $(this).parent().children().eq(0).text();
+        var iNumcol = $(this).parent().children().index($(this));
+        if (iNumcol === 3) {
+            $("#guardarP").prop("disabled", true);
+            $("#actualizarP").prop("disabled", false);//habilita el boton actualizar
+            $("#idPuesto").val(idPuesto);
+            var puesto = $(this).parent().children().eq(2).text();
+            $("#nombrePuesto").val(puesto);
+        } else if (iNumcol === 4) {
+            $("#idPuesto").val(idPuesto);
+            var id = $("#idPuesto").val();
+            if (id === '') {
+                alertify.error("No se ha seleccionado una opci&oacuten");
+                return false;
             }
-        });
+            var datos = [id];
+            $(document).ajaxSend(function (e, xhr, options) {
+                var token = $("input[name='_csrf']").val();
+                var cabecera = "X-CSRF-TOKEN";
+                xhr.setRequestHeader(cabecera, token);
+            });
+
+            $.ajax({
+                url: "empleado/eliminarPuestos",
+                data: {datos: datos},
+                dataType: 'html',
+                type: 'POST',
+                success: function (retorno) {
+                    //alert(retorno);
+                    switch (retorno) {
+                        case 'errorDato':
+                            alertify.error("Los datos no se procesaron correctamente");
+                            break;
+                        case 'error':
+                            alertify.error("No se puede eliminar porque existe en otras tablas");
+                            break;
+                        case 'exito':
+                            //carga lo que se indica en id DIV
+                            alertify.success("Los datos se procesarón CORRECTAMENTE!");
+                            mostrarPuestosTabla();
+                            break;
+                        case 'errorAcceso':
+                            alertify.error("No ha iniciado sesion");
+                            break;
+                        case 'existeRegistro':
+                            alertify.error("No se puede eliminar el puesto porque existe en otra tabla");
+                            break
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alertify.error("Se ha producido un error en el servidor");
+                }
+            });
+        }
     });
 }
 
@@ -229,10 +225,10 @@ function mostrarPuestosTabla() {
                         "<td id='idpuesto' style='display:none'>" + dato[i].idpuesto + "</td>" +
                         "<td>" + count + "</td>" +
                         "<td>" + dato[i].puesto + "</td>" +
-                        "<td><button id='mostrarP' onclick='mostrarPuesto();'" +
+                        "<td><button id='mostrarP' onclick='eliminar_actualizar();'" +
                         "class='btn btn-warning'>" +
                         "<span class='glyphicon glyphicon-pencil'></span></button></td>" +
-                        "<td><button id='eliminarP' onclick='eliminarPuestos();' class='btn btn-danger'>" +
+                        "<td><button id='eliminarP' onclick='eliminar_actualizar();' class='btn btn-danger'>" +
                         "<span class='glyphicon glyphicon-remove'></span> </button></td>" +
                         "</tr>";
 
@@ -241,6 +237,10 @@ function mostrarPuestosTabla() {
             }
 
             $("#nombrePuesto").val('');
+            $("#actualizarP").prop("disabled", true);
+            $("#guardarP").prop("disabled", false);
+            $("#idPuesto").val('');
+
         },
         error: function (jqXHR, textStatus, errorThrown) {
             alertify.error("Se ha producido un error en el servidor");

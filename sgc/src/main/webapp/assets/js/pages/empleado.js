@@ -9,88 +9,87 @@ function btnEmpleado() {
     $("#actualizarE").prop("disabled", true);
     $("#myModal").modal("show");
 }
-/*Funcion que muestra la informacion de la tabla empleado en el formulario*/
-function mostrarEmpleado() {
-    $("#guardarE").prop("disabled", true);
-    $("#agregarE").css("display", "none");//oculta el boton guardar
-    $("#actualizarE").prop("disabled", false);//habilita el boton actualizar
-    $("#myModal").modal("show");
-    //al dar clic lo que tiene en el renglo lo pase a la caja de texto
-    $("#tableEmpleado tbody").on('click', 'tr', function () {
-        //id del empleado a actualizar
-        var idEmpleado = $('td', this).eq(0).text();
-        $("#idEmpleado").val(idEmpleado);
-        var serie = $('td', this).eq(2).text();
-        $("#serie").val(serie);
-        var nombre = $('td', this).eq(3).text();
-        $("#nombre").val(nombre);
-        var app = $('td', this).eq(4).text();
-        $("#app").val(app);
-        var apm = $('td', this).eq(5).text();
-        $("#apm").val(apm);
-        var puesto = $('td', this).eq(6).text();
-        $("#puesto").val(puesto);
-        var taller = $('td', this).eq(8).text();
-        $("#IDtaller").val(taller);
-        var estatus = $('td', this).eq(10).text();
-        $("#estatus").val(estatus);
-        var fechaEntrada = $('td', this).eq(11).text();
-        $("#fechaEstatus").val(fechaEntrada);
-        var fechaSalida = $('td', this).eq(12).text();
-        $("#fechaEstatus").val(fechaSalida);
-        var descripcion = $('td', this).eq(13).text();
-        $("#descripcion").val(descripcion);
-    });
-}
-/*Funcion que elimina un empleado*/
-function eliminarEmpleado() {
-    $("#tableEmpleado tbody").on('click', 'tr', function () {
-        var idEmpleado = $('td', this).eq(0).text();
-        $("#idEmpleado").val(idEmpleado);
-        var id = $("#idEmpleado").val();
-        if (id === '') {
-            alertify.error("No se ha seleccionado una opci&oacuten");
-            return false;
-        }
-        var datos = [id];
-        $(document).ajaxSend(function (e, xhr, options) {
-            var token = $("input[name='_csrf']").val();
-            var cabecera = "X-CSRF-TOKEN";
-            xhr.setRequestHeader(cabecera, token);
-        });
 
-        $.ajax({
-            url: "empleado/eliminarEmpleado",
-            data: {datos: datos},
-            dataType: 'html',
-            type: 'POST',
-            success: function (retorno) {
-                //alert(retorno);
-                switch (retorno) {
-                    case 'errorDato':
-                        alertify.error("Los datos no se procesaron correctamente");
-                        break;
-                    case 'error':
-                        alertify.error("Se ha producido un error en el servidor");
-                        break;
-                    case 'exito':
-                        //carga lo que se indica en id DIV
-                        alertify.success("Los datos se procesarón CORRECTAMENTE!");
-                        setTimeout(function () {
-                            location.href = "empleado";
-                        }, 1000);
-                        break;
-                    case 'errorAcceso':
-                        alertify.error("No ha iniciado sesion");
-                        break;
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alertify.error("Se ha producido un error en el servidor");
+function eliminar_actualizar_empleado() {
+    $("#tableEmpleado tbody tr").on("click", "td", function () {
+        var idEmpleado = $(this).parent().children().eq(0).text();
+        var iNumcol = $(this).parent().children().index($(this));
+        if (iNumcol === 14) {
+            $("#guardarE").prop("disabled", true);
+            $("#agregarE").css("display", "none");//oculta el boton guardar
+            $("#actualizarE").prop("disabled", false);//habilita el boton actualizar
+            $("#myModal").modal("show");
+
+            $("#idEmpleado").val(idEmpleado);
+            var serie = $(this).parent().children().eq(2).text();
+            $("#serie").val(serie);
+            var nombre = $(this).parent().children().eq(3).text();
+            $("#nombre").val(nombre);
+            var app = $(this).parent().children().eq(4).text();
+            $("#app").val(app);
+            var apm = $(this).parent().children().eq(5).text();
+            $("#apm").val(apm);
+            var puesto = $(this).parent().children().eq(6).text();
+            $("#puesto").val(puesto);
+            var taller = $(this).parent().children().eq(8).text();
+            $("#IDtaller").val(taller);
+            var estatus = $(this).parent().children().eq(10).text();
+            $("#estatus").val(estatus);
+            var fechaEntrada = $(this).parent().children().eq(11).text();
+            $("#fechaEstatus").val(fechaEntrada);
+            var fechaSalida = $(this).parent().children().eq(12).text();
+            $("#fechaEstatus").val(fechaSalida);
+            var descripcion = $(this).parent().children().eq(13).text();
+            $("#descripcion").val(descripcion);
+
+        } else if (iNumcol === 15) {
+            $("#idEmpleado").val(idEmpleado);
+            var id = $("#idEmpleado").val();
+            if (id === '') {
+                alertify.error("No se ha seleccionado una opci&oacuten");
+                return false;
             }
-        });
+            var datos = [id];
+            $(document).ajaxSend(function (e, xhr, options) {
+                var token = $("input[name='_csrf']").val();
+                var cabecera = "X-CSRF-TOKEN";
+                xhr.setRequestHeader(cabecera, token);
+            });
+
+            $.ajax({
+                url: "empleado/eliminarEmpleado",
+                data: {datos: datos},
+                dataType: 'html',
+                type: 'POST',
+                success: function (retorno) {
+                    //alert(retorno);
+                    switch (retorno) {
+                        case 'errorDato':
+                            alertify.error("Los datos no se procesaron correctamente");
+                            break;
+                        case 'error':
+                            alertify.error("Se ha producido un error en el servidor");
+                            break;
+                        case 'exito':
+                            //carga lo que se indica en id DIV
+                            alertify.success("Los datos se procesarón CORRECTAMENTE!");
+                            setTimeout(function () {
+                                location.href = "empleado";
+                            }, 1000);
+                            break;
+                        case 'errorAcceso':
+                            alertify.error("No ha iniciado sesion");
+                            break;
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alertify.error("Se ha producido un error en el servidor");
+                }
+            });
+        }
     });
 }
+
 /*Funcion que permite actualizar un empelado*/
 function actualizarEmpleado() {
     var nombre = $("#nombre").val().trim();
@@ -270,3 +269,4 @@ function verificarSerie() {
         }
     });
 }
+

@@ -10,73 +10,70 @@ function btnMolde2() {
     $("#myModal").modal("show");
 }
 
-/*Funcion que muestra la informacion de la tabla molde en el formulario*/
-function mostrarMolde() {
-    $("#guardarM").css("display", "none");//oculta el boton guardar
-    $("#actualizarM").prop("disabled", false);//habilita el boton actualizar
-    $("#myModal").modal("show");
-    //al dar clic lo que tiene en el renglon lo pase a la caja de texto
-    $("#tableMoldes tbody").on('click', 'tr', function () {
-        //informacion del Molde
-        var idMoldeT = $('td', this).eq(1).text();
-        $("#idMolde").val(idMoldeT);
-        var serieMoldeT = $('td', this).eq(2).text();
-        $("#serie").val(serieMoldeT);
-        var modelMoldeT = $('td', this).eq(3).text();
-        $("#modelo").val(modelMoldeT);
-        var existMoldeT = $('td', this).eq(4).text();
-        $("#existencia").val(existMoldeT);
-        var descripcionMoldeT = $('td', this).eq(5).text();
-        $("#descripcion").val(descripcionMoldeT);
-    });
-}
-/*Funcion que elimina un Molde*/
-function eliminarMolde() {
-    $("#tableMoldes tbody").on('click', 'tr', function () {
-        var idmoldeT = $('td', this).eq(1).text();
-        $("#idMolde").val(idmoldeT);
-        var id = $("#idMolde").val();
-        if (id === '') {
-            alertify.error("No se ha seleccionado una opci&oacuten");
-            return false;
-        }
-        var datos = [id];
-        $(document).ajaxSend(function (e, xhr, options) {
-            var token = $("input[name='_csrf']").val();
-            var cabecera = "X-CSRF-TOKEN";
-            xhr.setRequestHeader(cabecera, token);
-        });
+function eliminar_actualizar_molde() {
+    $("#tableMoldes tbody tr").on("click", "td", function () {
+        var idMoldeT = $(this).parent().children().eq(1).text();
+        var iNumcol = $(this).parent().children().index($(this));
+        if (iNumcol === 6) {
+            $("#guardarM").css("display", "none");//oculta el boton guardar
+            $("#actualizarM").prop("disabled", false);//habilita el boton actualizar
+            $("#myModal").modal("show");
 
-        $.ajax({
-            url: "molde/eliminarMolde",
-            data: {datos: datos},
-            dataType: 'html',
-            type: 'POST',
-            success: function (retorno) {
-                //alert(retorno);
-                switch (retorno) {
-                    case 'errorDato':
-                        alertify.error("Los datos no se procesaron correctamente");
-                        break;
-                    case 'error':
-                        alertify.error("Se ha producido un error en el servidor");
-                        break;
-                    case 'exito':
-                        //carga lo que se indica en id DIV
-                        alertify.success("Los datos se procesarón CORRECTAMENTE!");
-                        setTimeout(function () {
-                            location.href = "molde";
-                        }, 1000);
-                        break;
-                    case 'errorAcceso':
-                        alertify.error("No ha iniciado sesion");
-                        break;
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alertify.error("Se ha producido un error en el servidor");
+            $("#idMolde").val(idMoldeT);
+            var serieMoldeT = $(this).parent().children().eq(2).text();
+            $("#serie").val(serieMoldeT);
+            var modelMoldeT = $(this).parent().children().eq(3).text();
+            $("#modelo").val(modelMoldeT);
+            var existMoldeT = $(this).parent().children().eq(4).text();
+            $("#existencia").val(existMoldeT);
+            var descripcionMoldeT = $(this).parent().children().eq(5).text();
+            $("#descripcion").val(descripcionMoldeT);
+
+        } else if (iNumcol === 7) {
+            $("#idMolde").val(idMoldeT);
+            var id = $("#idMolde").val();
+            if (id === '') {
+                alertify.error("No se ha seleccionado una opci&oacuten");
+                return false;
             }
-        });
+            var datos = [id];
+            $(document).ajaxSend(function (e, xhr, options) {
+                var token = $("input[name='_csrf']").val();
+                var cabecera = "X-CSRF-TOKEN";
+                xhr.setRequestHeader(cabecera, token);
+            });
+
+            $.ajax({
+                url: "molde/eliminarMolde",
+                data: {datos: datos},
+                dataType: 'html',
+                type: 'POST',
+                success: function (retorno) {
+                    //alert(retorno);
+                    switch (retorno) {
+                        case 'errorDato':
+                            alertify.error("Los datos no se procesaron correctamente");
+                            break;
+                        case 'error':
+                            alertify.error("Se ha producido un error en el servidor");
+                            break;
+                        case 'exito':
+                            //carga lo que se indica en id DIV
+                            alertify.success("Los datos se procesarón CORRECTAMENTE!");
+                            setTimeout(function () {
+                                location.href = "molde";
+                            }, 1000);
+                            break;
+                        case 'errorAcceso':
+                            alertify.error("No ha iniciado sesion");
+                            break;
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alertify.error("Se ha producido un error en el servidor");
+                }
+            });
+        }
     });
 }
 /*Funcion que permite Agregar un nuevo molde*/
@@ -216,51 +213,51 @@ function agregarMolde2() {
     });
 }
 /*
-function validar() {
-    $('#frmMolde').validate({
-        focusInvalid: false,
-        onkeyup: false,
-        onfocusout: false,
-        errorClass: "invalid",
-        errorLabelContainer: "#error",
-        wrapper: "li",
-        rules: {
-            serie: {
-                required: true,
-                minlength: 2
-            },
-            modelo: {
-                required: true
-            },
-            existencia: {
-                required: true
-            },
-            descripcion: {
-                required: true
-
-            }
-        },
-        messages: {
-            serie: {
-                remote: "La serie ya existe",
-                required: "El campo 'Serie' es requerido",
-                minlength: "La serie del molde debe tener, mínimo, 2 caracteres"
-            },
-            modelo: {
-                required: "El campo 'Modelo' es requerido"
-            },
-            existencia: {
-                required: "El campo 'Existencia' es requerido"
-            },
-            descripcion: {
-                required: "El campo 'Descripcion' es requerido"
-            }
-        },
-        invalidHandler: function (event, validator) {
-            window.scrollTo(0, 0);
-        }
-    });
-}*/
+ function validar() {
+ $('#frmMolde').validate({
+ focusInvalid: false,
+ onkeyup: false,
+ onfocusout: false,
+ errorClass: "invalid",
+ errorLabelContainer: "#error",
+ wrapper: "li",
+ rules: {
+ serie: {
+ required: true,
+ minlength: 2
+ },
+ modelo: {
+ required: true
+ },
+ existencia: {
+ required: true
+ },
+ descripcion: {
+ required: true
+ 
+ }
+ },
+ messages: {
+ serie: {
+ remote: "La serie ya existe",
+ required: "El campo 'Serie' es requerido",
+ minlength: "La serie del molde debe tener, mínimo, 2 caracteres"
+ },
+ modelo: {
+ required: "El campo 'Modelo' es requerido"
+ },
+ existencia: {
+ required: "El campo 'Existencia' es requerido"
+ },
+ descripcion: {
+ required: "El campo 'Descripcion' es requerido"
+ }
+ },
+ invalidHandler: function (event, validator) {
+ window.scrollTo(0, 0);
+ }
+ });
+ }*/
 
 
 
