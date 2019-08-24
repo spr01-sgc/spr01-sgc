@@ -8,9 +8,11 @@ package com.soma.sgc.dao.impl;
 import com.soma.sgc.dao.HibernateDao;
 import com.soma.sgc.dao.CatalogoTallerDao;
 import com.soma.sgc.model.CatalogoTaller;
+import java.math.BigInteger;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -65,6 +67,18 @@ public class CatalogoTallerDaoImpl extends HibernateDao<Integer, CatalogoTaller>
         criteria.addOrder(Order.desc("idtaller"));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return (CatalogoTaller) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<CatalogoTaller> validarExistencia(int idtaller) {
+        SQLQuery query = getSession().createSQLQuery(
+                "SELECT idtaller_idtaller FROM empleado WHERE idtaller_idtaller = " + idtaller
+                + " UNION ALL "
+                + " SELECT idtaller_idtaller FROM usuario WHERE idtaller_idtaller = " + idtaller
+        );
+//        int cantidad = (int) query.uniqueResult();
+          List<CatalogoTaller> cantidad = query.list();
+        return cantidad;
     }
 
 }
