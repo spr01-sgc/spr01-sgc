@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package com.soma.sgc.controller;
+
 import java.net.UnknownHostException;
 import com.soma.sgc.model.CatalogoTaller;
 import com.soma.sgc.model.RolUsuario;
@@ -38,14 +39,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/")
 public class ControllerTaller {
-    
-       @Autowired
+
+    @Autowired
     UsuarioService usuarioService;
-    
-   
+
     @Autowired
     CatalogoTallerService tallerService;
-       /**
+
+    /**
      * Metodo para mostrar vista usuarios
      *
      * @param model
@@ -54,17 +55,17 @@ public class ControllerTaller {
     @RequestMapping(value = {"/taller"}, method = RequestMethod.GET)
     public String usuario(ModelMap model) {
 
-        if (!estaUsuarioAnonimo()) { 
-              
-                  model.addAttribute("user_en_sesion", usuarioEnSesion());
-                 List<CatalogoTaller> ltaller = tallerService.showTaller();
+        if (!estaUsuarioAnonimo()) {
+
+            model.addAttribute("user_en_sesion", usuarioEnSesion());
+            List<CatalogoTaller> ltaller = tallerService.showTaller();
             // enviar los datos JSP
             model.addAttribute("ltaller", ltaller);
-        return "taller";
+            return "taller";
         }
         return "login";
     }
-    
+
     /**
      * Metodo para Agregar Usuarios
      *
@@ -82,13 +83,11 @@ public class ControllerTaller {
                 }
             }
 
-         
             // creacion de objeto usuario
-           CatalogoTaller taller = new CatalogoTaller();
-           taller.setNombre(datos[0]);
-           taller.setDireccion(datos[1]);
-           taller.setNumeroEx(datos[2]);
-          
+            CatalogoTaller taller = new CatalogoTaller();
+            taller.setNombre(datos[0]);
+            taller.setDireccion(datos[1]);
+            taller.setNumeroEx(datos[2]);
 
             if (tallerService.save(taller)) {
                 return "exito";
@@ -98,9 +97,8 @@ public class ControllerTaller {
         }
         return "errorAcceso";
     }
-    
-    //Metodo para actualizar Usuario
 
+    //Metodo para actualizar Usuario
     @RequestMapping(value = "/taller/actualizarTaller", method = RequestMethod.POST)
     public @ResponseBody
     String actualizarTaller(@RequestParam(value = "datos[]") String datos[]) {
@@ -116,18 +114,12 @@ public class ControllerTaller {
             if (!ltaller.isEmpty()) {
                 for (CatalogoTaller taller : ltaller) {
                     if (taller.getIdtaller() == Integer.parseInt(datos[0])) {
-                      taller.setNombre(datos[1]);
-                      taller.setDireccion(datos[2]);
-                      taller.setNumeroEx(datos[3]);
-                        
-                    
-                  
-                     
-                   
-                        
-                  
+                        taller.setNombre(datos[1]);
+                        taller.setDireccion(datos[2]);
+                        taller.setNumeroEx(datos[3]);
+
                         if (tallerService.update(taller)) {
-                          //bitacoraUsuarioDaoAux.bitacoraUsuario("Modificar Usuario", usuarioEnSesion(), estaUsuarioAnonimo());
+                            //bitacoraUsuarioDaoAux.bitacoraUsuario("Modificar Usuario", usuarioEnSesion(), estaUsuarioAnonimo());
                             return "exito";
                         } else {
                             return "error";
@@ -154,35 +146,40 @@ public class ControllerTaller {
             }//termina de recorrer el arreglo
 
             List<CatalogoTaller> ltaller = tallerService.showTaller();
+            List<CatalogoTaller> existe = tallerService.validarExistencia(Integer.parseInt(datos[0]));
 
             if (!ltaller.isEmpty()) {
-                for (CatalogoTaller taller : ltaller) {
-                    //obtiene el id del delitoa a eliminar
-                    int Id = Integer.parseInt(datos[0]);
-                    if (taller.getIdtaller() == Integer.parseInt(datos[0])) {
+                if (existe.size() == 0) {
+                    for (CatalogoTaller taller : ltaller) {
+                        //obtiene el id del delitoa a eliminar
+                        int Id = Integer.parseInt(datos[0]);
+                        if (taller.getIdtaller() == Integer.parseInt(datos[0])) {
 //                    
 
-                        if (tallerService.delete(Id)) {
+                            if (tallerService.delete(Id)) {
 
-                            //bitacoraUsuarioDaoAux.bitacoraUsuario("Eliminar ", usuarioEnSesion(), estaUsuarioAnonimo());
-                            return "exito";
-                        } else {
-                            return "error";
+                                //bitacoraUsuarioDaoAux.bitacoraUsuario("Eliminar ", usuarioEnSesion(), estaUsuarioAnonimo());
+                                return "exito";
+                            } else {
+                                return "error";
+                            }
                         }
-                    }
-                }//end for|
-            }//si no esta vacia la lista de delitos
+                    }//end for
+                } else {
+                    return "existeRegistro";
+                }
+            }
 
         }//el usuario es anonimo
 
         return "errorAcceso";
 
     }
-        
 
-        public String usuarioEnSesion() {
+    public String usuarioEnSesion() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String nicknamePrincipal = null;  String pass = null;
+        String nicknamePrincipal = null;
+        String pass = null;
 
         if (principal instanceof UserDetails) {
             //Es igual al usuario que esta en sesion
@@ -201,5 +198,5 @@ public class ControllerTaller {
         AuthenticationTrustResolver authenticationTrustResolver = new AuthenticationTrustResolverImpl();
         return authenticationTrustResolver.isAnonymous(autenticacion);
     }
-    
+
 }
