@@ -62,6 +62,8 @@ function eliminar_actualizar_taller() {
                         case 'errorAcceso':
                             alert("No ha iniciado sesion");
                             break;
+                        case 'existeRegistro':
+                            alertify.error("No se puede eliminar el registro, otra tabla ocupa de el");
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
