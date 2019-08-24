@@ -13,14 +13,19 @@ import java.util.List;
  * @author HASANI
  */
 public interface CatalogoTallerDao {
-    
+
     void save(CatalogoTaller catalogo_taller);
+
     void update(CatalogoTaller catalogo_taller);
+
     void delete(int idtaller);
 
     List<CatalogoTaller> showTaller();
+
     CatalogoTaller busquedaId(int idtaller);
+
     CatalogoTaller mostrarNombre(int idtaller);
 
-    
+    List<CatalogoTaller> validarExistencia(int idtaller);
+
 }
